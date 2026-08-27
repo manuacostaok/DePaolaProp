@@ -1,1 +1,42 @@
 @import "tailwindcss";
+
+/* Tokens portados de la Fase 12 / depaola-demo/style.css — no cambiar
+   estos valores sin validar con la muestra aprobada por De Paola. */
+@theme {
+  --color-bg: #faf8f3;
+  --color-bg-alt: #efe9dc;
+  --color-ink: #211f1b;
+  --color-ink-soft: #57534a;
+  --color-brand: #24443f;
+  --color-brand-dark: #172c29;
+  --color-brand-tint: #e4ede9;
+  --color-line: #ded7c6;
+  --color-success: #3f7a5c;
+  --color-alert: #b9853a;
+  --color-whatsapp: #25d366;
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --radius-control: 4px;
+  --radius-card: 10px;
+
+  --shadow-soft:
+    0 1px 2px rgba(23, 44, 41, 0.06),
+    0 8px 24px rgba(23, 44, 41, 0.06);
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-ink font-sans antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-medium tracking-tight;
+  }
+  p {
+    @apply text-ink-soft;
+  }
+}
