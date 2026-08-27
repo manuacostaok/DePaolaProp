@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sobre Nosotros | De Paola Propiedades</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="muestra-ribbon">MUESTRA DE DISEÑO — <strong>textos reales</strong> tomados de "Sobre Nosotros" del sitio actual de De Paola.</div>
+
+<header class="site">
+  <div class="container nav-row">
+    <a href="index.html" class="logo-wrap">
+      <img src="https://static.wixstatic.com/media/c9cb98_ae5c5052d1cb4dc7b029b9b84a144a1c~mv2.png" alt="De Paola Propiedades">
+      <span class="brand-name">De Paola</span>
+    </a>
+    <nav class="main-nav">
+      <a href="propiedades.html">Propiedades</a>
+      <a href="zonas.html">Zonas</a>
+      <a href="vender.html">Vender</a>
+      <a href="nosotros.html" class="active">Nosotros</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="vender.html" class="btn btn-primary btn-small">Tasá tu propiedad</a>
+      <button class="hamburger" aria-label="Abrir menú">☰</button>
+    </div>
+  </div>
+</header>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html">Inicio</a>
+    <a href="propiedades.html">Propiedades</a>
+    <a href="zonas.html">Zonas</a>
+    <a href="vender.html">Vender</a>
+    <a href="nosotros.html">Nosotros</a>
+    <a href="contacto.html">Contacto</a>
+  </div>
+
+
+<section style="padding-bottom:0;">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Inicio</a> / Nosotros</div>
+    <span class="section-kicker">Perfil de la empresa</span>
+    <h1 style="font-size:34px;max-width:720px;">Defendemos y preservamos el valor de tu propiedad.</h1>
+    <p style="max-width:680px;font-size:17px;">Somos una empresa que se dedica, se esfuerza y se compromete a defender y preservar el valor de su propiedad. Lo invitamos a conocer nuestro estilo, nuestro equipo de trabajo altamente capacitado, ofreciéndole información legal y técnica, para desarrollar la operación inmobiliaria más valiosa de su vida.</p>
+    <p style="max-width:680px;">Respondemos a cada una de las necesidades de nuestros clientes, ofrecemos experiencia, firmeza, garantía, estabilidad, tranquilidad y solidez en cada uno de los procesos inmobiliarios, en todas sus fases.</p>
+  </div>
+</section>
+
+<section class="section-alt">
+  <div class="container two-col">
+    <img src="https://static.wixstatic.com/media/c9cb98_ea6951b2401e4b199e3e7b8eca0d94d0~mv2.jpg" alt="Tatiana De Paola" style="border-radius:var(--radius-lg);aspect-ratio:3/4;object-fit:cover;">
+    <div>
+      <span class="section-kicker">Fundadora</span>
+      <h2>Tatiana De Paola</h2>
+      <p>Soy una empresaria joven que trabaja hace veinte años haciendo lo que más me gusta. Me apasiona lo que hago y eso se refleja en todas las negociaciones. Deseo que en cada operación inmobiliaria encuentren en mí una asesora de confianza con la que puedan contar, alguien que estará acompañándolos desde el principio hasta el final, porque entiendo que detrás de cada trato que se cierra hay un sueño por cumplir, un hogar por habitar.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div><span class="section-kicker">Equipo</span><h2>Nuestros especialistas</h2></div>
+      <a href="contacto.html" class="btn btn-outline btn-small">Contactar</a>
+    </div>
+    <div class="muted-note">Por ahora solo hay ficha pública de Tatiana De Paola — el resto del equipo se agrega con fotos y datos reales (pendiente, según la Fase 9).</div>
+    <div class="grid">
+      <div class="card-agent">
+        <img src="https://static.wixstatic.com/media/c9cb98_ea6951b2401e4b199e3e7b8eca0d94d0~mv2.jpg" alt="Tatiana De Paola">
+        <div style="font-weight:600;">Tatiana De Paola</div>
+        <div style="font-size:13.5px;color:var(--ink-soft);">Fundadora · Villa Martelli</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:0;padding-top:0;">
+      <span>© De Paola Propiedades · CMCPSI 6308</span>
+      <span><a href="index.html" style="display:inline;color:#C9D3CC;">Volver al inicio</a></span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/5491128755265" target="_blank" aria-label="WhatsApp">☎</a>
+
+
+<script>
+  var hb = document.querySelector('.hamburger');
+  var mn = document.getElementById('mobileNav');
+  if(hb && mn){
+    hb.addEventListener('click', function(){
+      mn.classList.toggle('open');
+    });
+  }
+</script>
+</body>
+</html>

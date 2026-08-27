@@ -1,0 +1,330 @@
+// De Paola Propiedades 2.0 — schema inicial
+// Traduce el modelo conceptual de la Fase 18 a un schema Prisma real.
+// `isSample` / `needsReview` / `hasMarketData` existen para poder distinguir
+// contenido de ejemplo de contenido real (brief, sección 5) sin tocar código
+// cuando lleguen los datos definitivos de De Paola.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Currency {
+  ARS
+  USD
+}
+
+enum OperationType {
+  VENTA
+  ALQUILER
+}
+
+enum PropertyType {
+  CASA
+  DEPARTAMENTO
+  PH
+  TERRENO
+  LOCAL
+  OFICINA
+  GALPON
+}
+
+enum PropertyCondition {
+  A_ESTRENAR
+  MUY_BUENO
+  BUENO
+  A_REFACCIONAR
+}
+
+enum PropertyStatus {
+  ACTIVA
+  RESERVADA
+  VENDIDA
+  ALQUILADA
+  PAUSADA
+}
+
+enum LeadType {
+  COMPRAR
+  ALQUILAR
+  VENDER
+  TASAR
+  INVERTIR
+}
+
+enum LeadStatus {
+  NUEVO
+  CONTACTADO
+  EN_PROCESO
+  CERRADO
+}
+
+model Office {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  phone     String?
+  whatsapp  String?
+  email     String?
+  hours     String?
+  lat       Float?
+  lng       Float?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  agents     Agent[]
+  properties Property[]
+}
+
+model Agent {
+  id                String   @id @default(cuid())
+  name              String
+  slug              String   @unique
+  photoUrl          String?
+  isPlaceholderPhoto Boolean @default(true)
+  title             String?
+  bio               String?
+  phone             String?
+  whatsapp          String?
+  email             String?
+  isSample          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  officeId String?
+  office   Office? @relation(fields: [officeId], references: [id])
+
+  specializations Neighborhood[] @relation("AgentNeighborhoods")
+  properties      Property[]
+  leads           Lead[]
+  inquiries       Inquiry[]
+  appointments    Appointment[]
+}
+
+model Neighborhood {
+  id                String   @id @default(cuid())
+  name              String
+  slug              String   @unique
+  description       String
+  lifestyleContent  String?
+  transportContent  String?
+  schoolsContent    String?
+  needsReview       Boolean  @default(true)
+  hasMarketData     Boolean  @default(false)
+  avgPriceUsd       Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  agents            Agent[]            @relation("AgentNeighborhoods")
+  locations         PropertyLocation[]
+  articles          Article[]
+  leads             Lead[]
+  valuationRequests ValuationRequest[]
+}
+
+model PropertyLocation {
+  id            String   @id @default(cuid())
+  address       String?
+  isApproximate Boolean  @default(false)
+  lat           Float?
+  lng           Float?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  neighborhoodId String
+  neighborhood   Neighborhood @relation(fields: [neighborhoodId], references: [id])
+
+  property Property?
+}
+
+model Property {
+  id            String            @id @default(cuid())
+  slug          String            @unique
+  title         String
+  description   String
+  operationType OperationType
+  propertyType  PropertyType
+  price         Decimal
+  currency      Currency
+  coveredArea   Float?
+  totalArea     Float?
+  rooms         Int?
+  bedrooms      Int?
+  bathrooms     Int?
+  hasGarage     Boolean           @default(false)
+  ageYears      Int?
+  condition     PropertyCondition?
+  status        PropertyStatus    @default(ACTIVA)
+  isSample      Boolean           @default(false)
+  publishedAt   DateTime?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  locationId String            @unique
+  location   PropertyLocation  @relation(fields: [locationId], references: [id])
+
+  agentId String
+  agent   Agent  @relation(fields: [agentId], references: [id])
+
+  officeId String?
+  office   Office? @relation(fields: [officeId], references: [id])
+
+  images       PropertyImage[]
+  features     PropertyFeature[]
+  favorites    Favorite[]
+  leads        Lead[]
+  inquiries    Inquiry[]
+  appointments Appointment[]
+}
+
+model PropertyImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String?
+  order     Int      @default(0)
+  isCover   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model PropertyFeature {
+  id  String @id @default(cuid())
+  key   String
+  label String
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  phone     String?
+  createdAt DateTime @default(now())
+
+  favorites Favorite[]
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, propertyId])
+}
+
+model Lead {
+  id           String     @id @default(cuid())
+  type         LeadType
+  status       LeadStatus @default(NUEVO)
+  contactName  String
+  contactPhone String
+  contactEmail String?
+  message      String?
+  filtersJson  Json?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id])
+
+  neighborhoodId String?
+  neighborhood   Neighborhood? @relation(fields: [neighborhoodId], references: [id])
+
+  agentId String?
+  agent   Agent?  @relation(fields: [agentId], references: [id])
+
+  inquiry          Inquiry?
+  appointment      Appointment?
+  valuationRequest ValuationRequest?
+}
+
+model Inquiry {
+  id        String   @id @default(cuid())
+  message   String?
+  createdAt DateTime @default(now())
+
+  leadId String @unique
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  agentId String
+  agent   Agent  @relation(fields: [agentId], references: [id])
+}
+
+model Appointment {
+  id               String   @id @default(cuid())
+  preferredDate    DateTime?
+  preferredTimeSlot String?
+  confirmed        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  leadId String @unique
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id])
+
+  agentId String
+  agent   Agent  @relation(fields: [agentId], references: [id])
+}
+
+model ValuationRequest {
+  id                    String             @id @default(cuid())
+  address               String?
+  propertyType          PropertyType?
+  coveredArea           Float?
+  totalArea             Float?
+  rooms                 Int?
+  condition             PropertyCondition?
+  hasEnoughComparables  Boolean            @default(false)
+  estimatedMin          Decimal?
+  estimatedMax          Decimal?
+  currency              Currency?
+  createdAt             DateTime           @default(now())
+
+  leadId String @unique
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  neighborhoodId String?
+  neighborhood   Neighborhood? @relation(fields: [neighborhoodId], references: [id])
+}
+
+model Category {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  articles Article[]
+}
+
+model Article {
+  id            String    @id @default(cuid())
+  title         String
+  slug          String    @unique
+  body          String
+  coverImageUrl String?
+  authorName    String?
+  isSample      Boolean   @default(false)
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  neighborhoodId String?
+  neighborhood   Neighborhood? @relation(fields: [neighborhoodId], references: [id])
+}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vender y tasar tu propiedad | De Paola Propiedades</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .tasacion-form input, .tasacion-form select{
+    width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:var(--radius);
+    font-family:var(--sans);font-size:14px;margin-bottom:12px;background:var(--white);
+  }
+  .tasacion-form label{font-size:13px;font-weight:600;display:block;margin-bottom:5px;}
+  .step-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .info-card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius-lg);padding:var(--s4);}
+</style>
+</head>
+<body>
+
+<div class="muestra-ribbon">MUESTRA DE DISEÑO — <strong>no es el sitio final.</strong> Este flujo es 100% humano: sin estimación automática ni IA, tal como se definió en la estrategia.</div>
+
+<header class="site">
+  <div class="container nav-row">
+    <a href="index.html" class="logo-wrap">
+      <img src="https://static.wixstatic.com/media/c9cb98_ae5c5052d1cb4dc7b029b9b84a144a1c~mv2.png" alt="De Paola Propiedades">
+      <span class="brand-name">De Paola</span>
+    </a>
+    <nav class="main-nav">
+      <a href="propiedades.html">Propiedades</a>
+      <a href="zonas.html">Zonas</a>
+      <a href="vender.html" class="active">Vender</a>
+      <a href="nosotros.html">Nosotros</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="vender.html" class="btn btn-primary btn-small">Tasá tu propiedad</a>
+      <button class="hamburger" aria-label="Abrir menú">☰</button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html">Inicio</a>
+    <a href="propiedades.html">Propiedades</a>
+    <a href="zonas.html">Zonas</a>
+    <a href="vender.html">Vender</a>
+    <a href="nosotros.html">Nosotros</a>
+    <a href="contacto.html">Contacto</a>
+  </div>
+</header>
+
+<section style="padding-bottom:0;">
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Inicio</a> / Vender</div>
+    <span class="section-kicker">Vender · Tasación</span>
+    <h1 style="font-size:34px;max-width:680px;">¿Cuánto vale tu propiedad?</h1>
+    <p style="max-width:600px;">Contanos algunos datos básicos y un especialista de De Paola te contacta con una tasación profesional — sin estimaciones automáticas, sin compromiso.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container two-col" style="align-items:flex-start;">
+
+    <div class="tasacion-form info-card">
+      <h3 style="margin-bottom:var(--s3);">Contanos sobre tu propiedad</h3>
+
+      <label>Dirección o zona</label>
+      <input type="text" placeholder="Ej: Martínez, o una dirección puntual">
+
+      <div class="step-row">
+        <div>
+          <label>Tipo de propiedad</label>
+          <select><option>Casa</option><option>Departamento</option><option>PH</option><option>Terreno</option></select>
+        </div>
+        <div>
+          <label>Ambientes</label>
+          <input type="number" placeholder="Ej: 4">
+        </div>
+      </div>
+
+      <div class="step-row">
+        <div>
+          <label>Superficie aprox. (m²)</label>
+          <input type="number" placeholder="Ej: 180">
+        </div>
+        <div>
+          <label>Estado</label>
+          <select><option>Muy bueno</option><option>Bueno</option><option>A refaccionar</option></select>
+        </div>
+      </div>
+
+      <label>Nombre y contacto</label>
+      <input type="text" placeholder="Nombre">
+      <input type="tel" placeholder="WhatsApp o teléfono">
+
+      <button class="btn btn-primary" style="width:100%;">Solicitar tasación</button>
+      <p style="font-size:12.5px;margin-top:10px;margin-bottom:0;">Un agente de De Paola te va a contactar directamente — no se genera ningún valor automático en este paso.</p>
+    </div>
+
+    <div style="display:grid;gap:var(--s3);">
+      <div class="info-card">
+        <h3 style="font-size:17px;">Cómo funciona</h3>
+        <p style="margin-bottom:0;">Nuestro equipo revisa los datos que nos dejás y, con 20 años de operaciones reales en Zona Norte, te contacta para coordinar una tasación en persona — la forma más precisa de saber cuánto vale tu propiedad hoy.</p>
+      </div>
+      <div class="info-card">
+        <h3 style="font-size:17px;">¿Preferís hablar directo?</h3>
+        <p>Escribinos por WhatsApp y coordinamos la visita de tasación.</p>
+        <a href="https://wa.me/5491128755265" class="btn btn-whatsapp btn-small">Escribir por WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="site">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:0;padding-top:0;">
+      <span>© De Paola Propiedades · CMCPSI 6308</span>
+      <span><a href="index.html" style="display:inline;color:#C9D3CC;">Volver al inicio</a></span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/5491128755265" target="_blank" aria-label="WhatsApp">☎</a>
+
+
+<script>
+  var hb = document.querySelector('.hamburger');
+  var mn = document.getElementById('mobileNav');
+  if(hb && mn){
+    hb.addEventListener('click', function(){
+      mn.classList.toggle('open');
+    });
+  }
+</script>
+</body>
+</html>

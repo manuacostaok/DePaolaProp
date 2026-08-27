@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casa 5 ambientes en Villa Martelli | De Paola Propiedades</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .detail-wrap{display:grid;grid-template-columns:1.6fr 1fr;gap:var(--s5);align-items:start;}
+  @media(max-width:900px){ .detail-wrap{grid-template-columns:1fr;} }
+  .gallery{display:grid;grid-template-columns:2fr 1fr;gap:8px;border-radius:var(--radius-lg);overflow:hidden;margin-bottom:var(--s4);}
+  .gallery img{width:100%;height:100%;object-fit:cover;}
+  .gallery-main{grid-row:span 2;aspect-ratio:4/3;}
+  .gallery-side img{aspect-ratio:16/10;}
+  .side-panel{
+    position:sticky; top:90px; background:var(--white); border:1px solid var(--line);
+    border-radius:var(--radius-lg); padding:var(--s4);
+  }
+  .feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:14px;color:var(--ink-soft);margin:var(--s3) 0;}
+  .agent-box{display:flex;gap:12px;align-items:center;border-top:1px solid var(--line);padding-top:var(--s3);margin-top:var(--s3);}
+  .agent-box img{width:52px;height:52px;border-radius:50%;object-fit:cover;}
+</style>
+</head>
+<body>
+
+<div class="muestra-ribbon">MUESTRA DE DISEÑO — <strong>propiedad real</strong> tomada del sitio actual de De Paola (fotos y datos publicados hoy en depaolapropiedades.com).</div>
+
+<header class="site">
+  <div class="container nav-row">
+    <a href="index.html" class="logo-wrap">
+      <img src="https://static.wixstatic.com/media/c9cb98_ae5c5052d1cb4dc7b029b9b84a144a1c~mv2.png" alt="De Paola Propiedades">
+      <span class="brand-name">De Paola</span>
+    </a>
+    <nav class="main-nav">
+      <a href="propiedades.html" class="active">Propiedades</a>
+      <a href="zonas.html">Zonas</a>
+      <a href="vender.html">Vender</a>
+      <a href="nosotros.html">Nosotros</a>
+      <a href="contacto.html">Contacto</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="vender.html" class="btn btn-primary btn-small">Tasá tu propiedad</a>
+      <button class="hamburger" aria-label="Abrir menú">☰</button>
+    </div>
+  </div>
+</header>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html">Inicio</a>
+    <a href="propiedades.html">Propiedades</a>
+    <a href="zonas.html">Zonas</a>
+    <a href="vender.html">Vender</a>
+    <a href="nosotros.html">Nosotros</a>
+    <a href="contacto.html">Contacto</a>
+  </div>
+
+
+<section>
+  <div class="container">
+    <div class="breadcrumb"><a href="index.html">Inicio</a> / <a href="propiedades.html">Propiedades</a> / Casa en Villa Martelli</div>
+
+    <div class="detail-wrap">
+      <div>
+        <div class="gallery">
+          <div class="gallery-main"><img src="https://static.wixstatic.com/media/c9cb98_5ec56de5f90541ce85109538669a2cb5~mv2.jpg" alt="Fachada"></div>
+          <div class="gallery-side"><img src="https://static.wixstatic.com/media/c9cb98_aa4578ab0f0c4842b92237169466e681~mv2.jpg" alt="Interior"></div>
+          <div class="gallery-side"><img src="https://static.wixstatic.com/media/c9cb98_3a9ff6e898414906a0c3044e64b53a34~mv2.jpg" alt="Interior"></div>
+        </div>
+
+        <span class="badge" style="position:static;display:inline-block;margin-bottom:10px;">Venta</span>
+        <h1 style="font-size:32px;">Casa con 5 ambientes — Barrio Parque</h1>
+        <p style="font-size:15px;">Méjico al 3100, Villa Martelli</p>
+
+        <div class="feat-grid" style="grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:var(--s3) 0;">
+          <div><strong style="color:var(--ink);">5</strong><br>Ambientes</div>
+          <div><strong style="color:var(--ink);">Sí</strong><br>Quincho</div>
+          <div><strong style="color:var(--ink);">Sí</strong><br>Jardín</div>
+          <div><strong style="color:var(--ink);">Sí</strong><br>Garage</div>
+        </div>
+
+        <h2 style="margin-top:var(--s4);">Descripción</h2>
+        <p>Casa de 5 ambientes en Barrio Parque, Villa Martelli, con quincho, jardín y garage. Publicada actualmente por De Paola Propiedades en Zonaprop y Argenprop — esta ficha muestra cómo se va a ver alojada en el propio sitio, con más fotos, mapa y contacto directo con el agente, en vez de derivar a un portal externo.</p>
+
+        <h2>Ubicación</h2>
+        <div style="background:var(--bg-alt);border-radius:var(--radius-lg);height:220px;display:flex;align-items:center;justify-content:center;color:var(--ink-soft);font-size:14px;">Mapa interactivo — Méjico al 3100, Villa Martelli</div>
+      </div>
+
+      <div class="side-panel">
+        <div class="card-price" style="font-size:26px;">Consultar precio</div>
+        <p style="font-size:13.5px;margin-bottom:var(--s3);">Publicada en Zonaprop y Argenprop — cotización a confirmar con el agente.</p>
+
+        <a href="https://wa.me/5491128755265" class="btn btn-whatsapp" style="width:100%;margin-bottom:10px;">Consultar por WhatsApp</a>
+        <a href="contacto.html" class="btn btn-outline" style="width:100%;margin-bottom:10px;">Solicitar visita</a>
+        <a href="mailto:contacto@depaolapropiedades.com?subject=MEJICO%20AL%203100" class="btn btn-outline" style="width:100%;">Consultar por email</a>
+
+        <div class="agent-box">
+          <img src="https://static.wixstatic.com/media/c9cb98_ea6951b2401e4b199e3e7b8eca0d94d0~mv2.jpg" alt="Tatiana De Paola">
+          <div>
+            <div style="font-weight:600;font-size:14.5px;">Tatiana De Paola</div>
+            <div style="font-size:13px;color:var(--ink-soft);">Fundadora · Villa Martelli</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="container">
+    <div class="footer-bottom" style="border-top:0;padding-top:0;">
+      <span>© De Paola Propiedades · CMCPSI 6308</span>
+      <span><a href="index.html" style="display:inline;color:#C9D3CC;">Volver al inicio</a></span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/5491128755265" target="_blank" aria-label="WhatsApp">☎</a>
+
+
+<script>
+  var hb = document.querySelector('.hamburger');
+  var mn = document.getElementById('mobileNav');
+  if(hb && mn){
+    hb.addEventListener('click', function(){
+      mn.classList.toggle('open');
+    });
+  }
+</script>
+</body>
+</html>
