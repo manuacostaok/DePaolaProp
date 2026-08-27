@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
     // (no para imágenes externas/subidas por usuarios).
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "static.wixstatic.com",
+      },
+    ],
   },
 };
 

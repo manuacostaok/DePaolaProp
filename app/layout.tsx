@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
+import { Header } from "@/components/layout/header";
+import { Footer } from "@/components/layout/footer";
+import { BottomNav } from "@/components/layout/bottom-nav";
+import { WhatsAppFloat } from "@/components/layout/whatsapp-float";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -26,7 +30,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`${fraunces.variable} ${inter.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Header />
+        {children}
+        <Footer />
+        <BottomNav />
+        <WhatsAppFloat />
+      </body>
     </html>
   );
 }
