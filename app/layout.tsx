@@ -4,7 +4,6 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { WhatsAppFloat } from "@/components/layout/whatsapp-float";
-import { InstallBanner } from "@/components/pwa/install-banner";
 import { OrganizationSchema } from "@/components/seo/organization-schema";
 import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
@@ -58,7 +57,6 @@ export default function RootLayout({
         <Footer />
         <BottomNav />
         <WhatsAppFloat />
-        <InstallBanner />
       </body>
     </html>
   );

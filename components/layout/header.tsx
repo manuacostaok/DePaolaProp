@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { MAIN_NAV, SITE } from "@/lib/nav";
+import { MAIN_NAV } from "@/lib/nav";
+import { DpIcon } from "@/lib/brand-icon";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 
 export function Header() {
@@ -9,7 +9,9 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-line bg-bg">
       <div className="relative mx-auto flex max-w-[1240px] items-center justify-between px-6 py-3.5 sm:px-8">
         <Link href="/" className="flex items-center gap-2.5">
-          <Image src={SITE.logoUrl} alt={SITE.name} width={120} height={40} className="h-10 w-auto" priority />
+          <div className="overflow-hidden rounded-[8px]">
+            <DpIcon size={40} padding={0.14} />
+          </div>
           <span className="font-display text-[19px] text-brand-dark">De Paola</span>
         </Link>
 
