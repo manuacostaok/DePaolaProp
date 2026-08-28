@@ -115,6 +115,13 @@ export async function getNeighborhoodOptions() {
   return neighborhoods.map((n) => ({ value: n.slug, label: n.name }));
 }
 
+// Distinto del anterior: acá el value es el id real (FK), no el slug de URL —
+// lo necesitan los flujos que crean registros (Lead, ValuationRequest, etc.).
+export async function getNeighborhoodIdOptions() {
+  const neighborhoods = await prisma.neighborhood.findMany({ orderBy: { name: "asc" } });
+  return neighborhoods.map((n) => ({ value: n.id, label: n.name }));
+}
+
 export async function getSimilarProperties(params: {
   excludeId: string;
   neighborhoodId: string;

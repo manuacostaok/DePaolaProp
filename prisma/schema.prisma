@@ -264,6 +264,9 @@ model Inquiry {
   agent   Agent  @relation(fields: [agentId], references: [id])
 }
 
+// propertyId es opcional porque una cita puede ser para visitar una
+// publicación existente O para una visita de tasación (Fase 5), donde
+// todavía no hay una Property cargada.
 model Appointment {
   id               String   @id @default(cuid())
   preferredDate    DateTime?
@@ -274,8 +277,8 @@ model Appointment {
   leadId String @unique
   lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
 
-  propertyId String
-  property   Property @relation(fields: [propertyId], references: [id])
+  propertyId String?
+  property   Property? @relation(fields: [propertyId], references: [id])
 
   agentId String
   agent   Agent  @relation(fields: [agentId], references: [id])
