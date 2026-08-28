@@ -46,9 +46,22 @@ type ResultState =
   | { status: "confirmed" }
   | { status: "error" };
 
-export function TasacionWizard({ neighborhoodOptions }: { neighborhoodOptions: { value: string; label: string }[] }) {
-  const [step, setStep] = useState(1);
-  const [form, setForm] = useState<FormState>(INITIAL_STATE);
+export function TasacionWizard({
+  neighborhoodOptions,
+  initialNeighborhoodId,
+  initialPropertyType,
+}: {
+  neighborhoodOptions: { value: string; label: string }[];
+  initialNeighborhoodId?: string;
+  initialPropertyType?: PropertyType;
+}) {
+  const prefilled = Boolean(initialNeighborhoodId && initialPropertyType);
+  const [step, setStep] = useState(prefilled ? 2 : 1);
+  const [form, setForm] = useState<FormState>({
+    ...INITIAL_STATE,
+    neighborhoodId: initialNeighborhoodId ?? "",
+    propertyType: initialPropertyType ?? "",
+  });
   const [result, setResult] = useState<ResultState>({ status: "idle" });
 
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
@@ -157,6 +170,10 @@ export function TasacionWizard({ neighborhoodOptions }: { neighborhoodOptions: {
             onChange={(e) => update("propertyType", e.target.value as PropertyType)}
           />
         </div>
+      )}
+
+      {step === 2 && prefilled && (
+        <Callout>Ya cargamos la zona y el tipo de propiedad que nos dejaste en el paso anterior.</Callout>
       )}
 
       {step === 2 && (

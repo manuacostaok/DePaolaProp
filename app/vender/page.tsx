@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import { getNeighborhoodIdOptions } from "@/lib/search";
+import { VenderWizard } from "@/components/leads/vender-wizard";
 
 export const metadata: Metadata = { title: "Vender mi propiedad | De Paola Propiedades" };
 
@@ -19,7 +21,9 @@ const REASONS = [
   },
 ];
 
-export default function VenderPage() {
+export default async function VenderPage() {
+  const neighborhoodOptions = await getNeighborhoodIdOptions();
+
   return (
     <main>
       <section className="bg-brand-dark py-16 text-center text-white">
@@ -46,6 +50,13 @@ export default function VenderPage() {
               <p>{reason.body}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="bg-bg-alt py-16">
+        <div className="mx-auto max-w-[560px] px-6 sm:px-8">
+          <h2 className="mb-6 text-center">Contanos sobre tu propiedad</h2>
+          <VenderWizard neighborhoodOptions={neighborhoodOptions} />
         </div>
       </section>
     </main>
