@@ -1,5 +1,6 @@
 import { PrismaClient, OperationType, PropertyType, PropertyCondition } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { hashPassword } from "../lib/password";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -33,9 +34,13 @@ async function seedOfficesAndAgent() {
     },
   });
 
+  // Contraseña de PRUEBA para poder entrar a /admin ahora — cambiarla antes
+  // de un lanzamiento real (Fase 19). Login: contacto@depaolapropiedades.com
+  const testPasswordHash = await hashPassword("45kzeOAlad9G");
+
   await prisma.agent.upsert({
     where: { slug: "tatiana-de-paola" },
-    update: {},
+    update: { role: "ADMINISTRADOR", passwordHash: testPasswordHash },
     create: {
       slug: "tatiana-de-paola",
       name: "Tatiana De Paola",
@@ -47,6 +52,8 @@ async function seedOfficesAndAgent() {
       email: "contacto@depaolapropiedades.com",
       office: { connect: { id: "office-villa-martelli" } },
       isSample: false,
+      role: "ADMINISTRADOR",
+      passwordHash: testPasswordHash,
     },
   });
 }
@@ -147,6 +154,7 @@ async function seedRealProperties() {
       hasGarage: true,
       status: "ACTIVA",
       isSample: false,
+      isFeatured: true,
       publishedAt: new Date(),
       agent: { connect: { id: agent.id } },
       office: { connect: { id: "office-villa-martelli" } },
@@ -193,6 +201,7 @@ async function seedRealProperties() {
       hasGarage: true,
       status: "ACTIVA",
       isSample: false,
+      isFeatured: true,
       publishedAt: new Date(),
       agent: { connect: { id: agent.id } },
       office: { connect: { id: "office-villa-martelli" } },
