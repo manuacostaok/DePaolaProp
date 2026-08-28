@@ -3,8 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { MOBILE_NAV } from "@/lib/nav";
+import { cn } from "@/lib/cn";
 
-export function MobileMenu() {
+export function MobileMenu({ light = false }: { light?: boolean }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -14,7 +15,7 @@ export function MobileMenu() {
         onClick={() => setOpen((value) => !value)}
         aria-label={open ? "Cerrar menú" : "Abrir menú"}
         aria-expanded={open}
-        className="text-2xl text-ink"
+        className={cn("text-2xl", light ? "text-white" : "text-ink")}
       >
         {open ? "✕" : "☰"}
       </button>

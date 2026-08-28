@@ -5,7 +5,7 @@ export type ButtonVariant = "primary" | "outline" | "whatsapp" | "ghost" | "onDa
 export type ButtonSize = "md" | "sm";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-control font-semibold font-sans transition-[transform,background-color,border-color] duration-150 ease-out hover:-translate-y-px disabled:pointer-events-none disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none";
+  "inline-flex items-center justify-center gap-2 rounded-pill font-semibold font-sans transition-[transform,background-color,border-color] duration-150 ease-out hover:-translate-y-px disabled:pointer-events-none disabled:opacity-50 motion-reduce:transform-none motion-reduce:transition-none";
 
 const variants: Record<ButtonVariant, string> = {
   primary: "bg-brand text-white border border-transparent hover:bg-brand-dark",
