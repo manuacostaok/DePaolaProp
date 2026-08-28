@@ -9,6 +9,15 @@ import { ActionPanel } from "@/components/property/action-panel";
 import { LocationMap } from "@/components/property/location-map";
 import { PropertyCard } from "@/components/ui/property-card";
 import { Badge } from "@/components/ui/badge";
+import { JsonLd } from "@/components/seo/json-ld";
+import { SITE_URL } from "@/lib/site-url";
+
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const properties = await prisma.property.findMany({ where: { status: "ACTIVA" }, select: { slug: true } });
+  return properties.map((p) => ({ slug: p.slug }));
+}
 
 async function getProperty(slug: string) {
   return prisma.property.findUnique({
@@ -25,11 +34,16 @@ async function getProperty(slug: string) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const property = await getProperty(slug);
-  if (!property) return { title: "Propiedad no encontrada | De Paola Propiedades" };
+  if (!property) return { title: "Propiedad no encontrada" };
+
+  const title = `${property.title} — ${property.location.neighborhood.name}`;
+  const description = property.description.slice(0, 160);
+  const image = property.images[0]?.url;
 
   return {
-    title: `${property.title} — ${property.location.neighborhood.name} | De Paola Propiedades`,
-    description: property.description.slice(0, 160),
+    title,
+    description,
+    openGraph: { title, description, images: image ? [image] : undefined },
   };
 }
 
@@ -48,6 +62,27 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
 
   return (
     <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "RealEstateListing",
+          url: `${SITE_URL}/propiedades/${property.slug}`,
+          name: property.title,
+          description: property.description,
+          image: property.images.map((img) => img.url),
+          datePosted: property.publishedAt?.toISOString(),
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: property.location.address ?? undefined,
+            addressLocality: property.location.neighborhood.name,
+            addressRegion: "Buenos Aires",
+            addressCountry: "AR",
+          },
+          ...(price != null && property.currency
+            ? { offers: { "@type": "Offer", price, priceCurrency: property.currency, availability: "https://schema.org/InStock" } }
+            : {}),
+        }}
+      />
       <p className="mb-4 text-sm text-ink-soft">
         <Link href="/">Inicio</Link> / <Link href="/propiedades">Propiedades</Link> / {property.title}
       </p>

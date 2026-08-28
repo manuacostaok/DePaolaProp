@@ -6,6 +6,10 @@ import { ZoneCard } from "@/components/ui/zone-card";
 import { Callout } from "@/components/ui/callout";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
 
+// ISR: evita pegarle a Postgres en cada visita a la página más
+// concurrida del sitio (Fase 16 — LCP crítico en Home).
+export const revalidate = 60;
+
 async function getFeaturedProperties() {
   return prisma.property.findMany({
     where: { status: "ACTIVA" },

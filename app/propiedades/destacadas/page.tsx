@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { PropertyCard } from "@/components/ui/property-card";
 
-export const metadata: Metadata = { title: "Propiedades destacadas | De Paola Propiedades" };
+export const metadata: Metadata = { title: "Propiedades destacadas", description: "Una selección curada de propiedades en Zona Norte." };
+export const revalidate = 60;
 
 export default async function DestacadasPage() {
   const properties = await prisma.property.findMany({

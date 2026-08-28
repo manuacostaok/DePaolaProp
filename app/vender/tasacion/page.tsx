@@ -3,7 +3,7 @@ import { PropertyType } from "@prisma/client";
 import { getNeighborhoodIdOptions } from "@/lib/search";
 import { TasacionWizard } from "@/components/valuation/tasacion-wizard";
 
-export const metadata: Metadata = { title: "Tasá tu propiedad | De Paola Propiedades" };
+export const metadata: Metadata = { title: "Tasá tu propiedad", description: "Estimación orientativa gratis y sin compromiso, o tasación profesional con un agente." };
 
 export default async function TasacionPage({
   searchParams,

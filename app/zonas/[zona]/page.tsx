@@ -15,8 +15,8 @@ async function getNeighborhood(slug: string) {
 export async function generateMetadata({ params }: { params: Promise<{ zona: string }> }): Promise<Metadata> {
   const { zona } = await params;
   const neighborhood = await getNeighborhood(zona);
-  if (!neighborhood) return { title: "Zona no encontrada | De Paola Propiedades" };
-  return { title: `${neighborhood.name}, Zona Norte | De Paola Propiedades`, description: neighborhood.description.slice(0, 160) };
+  if (!neighborhood) return { title: "Zona no encontrada" };
+  return { title: `${neighborhood.name}, Zona Norte`, description: neighborhood.description.slice(0, 160) };
 }
 
 export default async function ZonaPage({

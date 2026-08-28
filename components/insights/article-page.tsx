@@ -6,6 +6,8 @@ import { ArticleCard } from "@/components/ui/article-card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { getCategoryCTA, estimateReadingTime } from "@/lib/insights";
+import { JsonLd } from "@/components/seo/json-ld";
+import { SITE_URL } from "@/lib/site-url";
 
 type ArticleWithRelations = Article & { category: Category; neighborhood: Neighborhood | null };
 
@@ -26,6 +28,20 @@ export async function ArticlePage({ article }: { article: ArticleWithRelations }
 
   return (
     <main className="mx-auto max-w-[760px] px-6 py-10 sm:px-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: article.title,
+          description: article.body.slice(0, 160),
+          image: article.coverImageUrl ?? undefined,
+          datePublished: article.publishedAt?.toISOString(),
+          dateModified: article.updatedAt.toISOString(),
+          author: { "@type": "Organization", name: article.authorName ?? "De Paola Propiedades" },
+          publisher: { "@type": "Organization", name: "De Paola Propiedades" },
+          mainEntityOfPage: `${SITE_URL}/insights/${article.slug}`,
+        }}
+      />
       <p className="mb-3 text-sm text-ink-soft">
         <Link href="/insights">Insights</Link> / <Link href={`/insights/${article.category.slug}`}>{article.category.name}</Link>
       </p>

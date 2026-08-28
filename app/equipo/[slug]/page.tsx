@@ -5,6 +5,15 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { PropertyCard } from "@/components/ui/property-card";
 import { buttonVariants } from "@/components/ui/button";
+import { JsonLd } from "@/components/seo/json-ld";
+import { SITE_URL } from "@/lib/site-url";
+
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const agents = await prisma.agent.findMany({ where: { isActive: true }, select: { slug: true } });
+  return agents.map((a) => ({ slug: a.slug }));
+}
 
 async function getAgent(slug: string) {
   return prisma.agent.findUnique({
@@ -22,8 +31,8 @@ async function getAgent(slug: string) {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const agent = await getAgent(slug);
-  if (!agent) return { title: "No encontrado | De Paola Propiedades" };
-  return { title: `${agent.name} | De Paola Propiedades`, description: agent.bio?.slice(0, 160) };
+  if (!agent) return { title: "No encontrado" };
+  return { title: agent.name, description: agent.bio?.slice(0, 160) };
 }
 
 export default async function AgentDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -35,6 +44,19 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ sl
 
   return (
     <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Person",
+          name: agent.name,
+          jobTitle: agent.title ?? undefined,
+          url: `${SITE_URL}/equipo/${agent.slug}`,
+          image: !agent.isPlaceholderPhoto ? agent.photoUrl ?? undefined : undefined,
+          worksFor: { "@type": "RealEstateAgent", name: "De Paola Propiedades" },
+          telephone: agent.phone ?? undefined,
+          email: agent.email ?? undefined,
+        }}
+      />
       <div className="mb-12 grid gap-8 sm:grid-cols-[280px_1fr]">
         {!agent.isPlaceholderPhoto && agent.photoUrl ? (
           <div className="relative aspect-[3/4] overflow-hidden rounded-card">

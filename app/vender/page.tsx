@@ -4,7 +4,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { getNeighborhoodIdOptions } from "@/lib/search";
 import { VenderWizard } from "@/components/leads/vender-wizard";
 
-export const metadata: Metadata = { title: "Vender mi propiedad | De Paola Propiedades" };
+export const metadata: Metadata = { title: "Vender mi propiedad", description: "Vendé tu propiedad en Zona Norte con 20 años de trayectoria." };
+export const revalidate = 3600;
 
 const REASONS = [
   {

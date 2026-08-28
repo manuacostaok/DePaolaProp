@@ -4,7 +4,8 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { ArticleCard } from "@/components/ui/article-card";
 
-export const metadata: Metadata = { title: "Insights | De Paola Propiedades" };
+export const metadata: Metadata = { title: "Insights", description: "Criterio experto sobre Zona Norte — mercado, guías, zonas y más." };
+export const revalidate = 300;
 
 export default async function InsightsPage() {
   const [articles, categories] = await Promise.all([
