@@ -51,6 +51,21 @@ async function seedOfficesAndAgent() {
   });
 }
 
+// Coordenadas aproximadas a nivel de centro de zona (conocimiento general,
+// no geocoding real) — placeholder honesto hasta tener un proveedor de mapas
+// configurado. TODO: reemplazar por geocoding real cuando haya API key.
+export const NEIGHBORHOOD_COORDS: Record<string, { lat: number; lng: number }> = {
+  martinez: { lat: -34.4913, lng: -58.5001 },
+  florida: { lat: -34.527, lng: -58.4919 },
+  "vicente-lopez": { lat: -34.5266, lng: -58.4779 },
+  "villa-martelli": { lat: -34.5375, lng: -58.5064 },
+};
+
+function jitter(base: { lat: number; lng: number }, seedIndex: number) {
+  const offset = ((seedIndex % 7) - 3) * 0.0025;
+  return { lat: base.lat + offset, lng: base.lng - offset };
+}
+
 const NEIGHBORHOODS = [
   {
     slug: "martinez",
@@ -116,7 +131,9 @@ async function seedRealProperties() {
 
   await prisma.property.upsert({
     where: { slug: "casa-5-ambientes-barrio-parque-villa-martelli" },
-    update: {},
+    update: {
+      location: { update: jitter(NEIGHBORHOOD_COORDS["villa-martelli"], 0) },
+    },
     create: {
       slug: "casa-5-ambientes-barrio-parque-villa-martelli",
       title: "Casa con 5 ambientes — Barrio Parque",
@@ -138,6 +155,7 @@ async function seedRealProperties() {
           address: "Méjico al 3100, Villa Martelli",
           isApproximate: false,
           neighborhoodId: villaMartelli.id,
+          ...jitter(NEIGHBORHOOD_COORDS["villa-martelli"], 0),
         },
       },
       images: {
@@ -159,7 +177,9 @@ async function seedRealProperties() {
 
   await prisma.property.upsert({
     where: { slug: "chalet-6-ambientes-martinez" },
-    update: {},
+    update: {
+      location: { update: jitter(NEIGHBORHOOD_COORDS["martinez"], 1) },
+    },
     create: {
       slug: "chalet-6-ambientes-martinez",
       title: "Chalet 6 ambientes",
@@ -181,6 +201,7 @@ async function seedRealProperties() {
           address: "Yapeyú al 400, Martínez",
           isApproximate: false,
           neighborhoodId: martinez.id,
+          ...jitter(NEIGHBORHOOD_COORDS["martinez"], 1),
         },
       },
       images: {
@@ -371,12 +392,15 @@ const SAMPLE_PROPERTIES: Array<{
 async function seedSampleProperties() {
   const agent = await prisma.agent.findUniqueOrThrow({ where: { slug: "tatiana-de-paola" } });
 
-  for (const sample of SAMPLE_PROPERTIES) {
+  for (const [index, sample] of SAMPLE_PROPERTIES.entries()) {
     const neighborhood = await prisma.neighborhood.findUniqueOrThrow({ where: { slug: sample.neighborhoodSlug } });
+    const coords = jitter(NEIGHBORHOOD_COORDS[sample.neighborhoodSlug], index + 2);
 
     await prisma.property.upsert({
       where: { slug: sample.slug },
-      update: {},
+      update: {
+        location: { update: coords },
+      },
       create: {
         slug: sample.slug,
         title: sample.title,
@@ -400,6 +424,7 @@ async function seedSampleProperties() {
             address: sample.address,
             isApproximate: true,
             neighborhoodId: neighborhood.id,
+            ...coords,
           },
         },
         images: {
