@@ -18,8 +18,8 @@
   --color-alert: #b9853a;
   --color-whatsapp: #25d366;
 
-  --font-display: var(--font-fraunces), Georgia, serif;
-  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: var(--font-newsreader), Georgia, serif;
+  --font-sans: var(--font-jost), -apple-system, BlinkMacSystemFont, sans-serif;
 
   --radius-control: 4px;
   --radius-card: 10px;

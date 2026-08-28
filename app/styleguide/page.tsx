@@ -55,13 +55,13 @@ export default function StyleguidePage() {
       </Section>
 
       <Section title="Tipografía">
-        <p className="mb-2 font-display text-4xl text-ink">Fraunces — encabezados</p>
+        <p className="mb-2 font-display text-4xl text-ink">Newsreader — encabezados</p>
         <p className="mb-6 text-ink-soft">
           Casa 5 ambientes en Barrio Parque — usado en h1/h2/h3/h4, peso medium, tracking ajustado.
         </p>
-        <p className="text-lg text-ink">Inter — cuerpo y UI</p>
+        <p className="text-lg text-ink">Jost — cuerpo y UI</p>
         <p className="text-ink-soft">
-          Texto de párrafo, formularios, botones y metadatos usan Inter en distintos pesos (400/500/600/700).
+          Texto de párrafo, formularios, botones y metadatos usan Jost en distintos pesos (300/400/500/700).
         </p>
       </Section>
 

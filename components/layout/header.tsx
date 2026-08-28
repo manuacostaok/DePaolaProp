@@ -50,8 +50,10 @@ export function Header() {
               <div className="overflow-hidden rounded-[8px]">
                 <DpIcon size={40} padding={0.14} />
               </div>
-              <span className="whitespace-nowrap font-display text-[15px] text-brand-dark sm:text-[19px]">
-                De Paola Propiedades
+              <span className="whitespace-nowrap font-sans text-[11.5px] font-semibold uppercase leading-[1.35] tracking-[0.09em] text-brand-dark sm:text-[13px]">
+                De Paola
+                <br />
+                Propiedades
               </span>
             </>
           )}

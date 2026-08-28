@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Newsreader, Jost } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { BottomNav } from "@/components/layout/bottom-nav";
@@ -8,15 +8,20 @@ import { OrganizationSchema } from "@/components/seo/organization-schema";
 import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
 
-const fraunces = Fraunces({
+// Equivalentes gratuitos de Sainte Colombe / Euclid Circular A (de pago,
+// ver reference/STYLE_GUIDE.md) para la estética tipo elliman.com.
+const newsreader = Newsreader({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-newsreader",
+  weight: ["300", "400", "500", "600"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
-const inter = Inter({
+const jost = Jost({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-jost",
+  weight: ["300", "400", "500", "700"],
   display: "swap",
 });
 
@@ -49,7 +54,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${fraunces.variable} ${inter.variable}`}>
+    <html lang="es" className={`${newsreader.variable} ${jost.variable}`}>
       <body>
         <OrganizationSchema />
         <Header />

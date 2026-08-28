@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { PropertyCard } from "@/components/ui/property-card";
 import { ZoneCard } from "@/components/ui/zone-card";
 import { Callout } from "@/components/ui/callout";
+import { Reveal } from "@/components/ui/reveal";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
 import { HEADER_HEIGHT } from "@/lib/layout-constants";
 
@@ -100,22 +101,23 @@ export default async function Home() {
           </Callout>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((property) => (
-              <PropertyCard
-                key={property.id}
-                href={`/propiedades/${property.slug}`}
-                title={property.title}
-                neighborhoodName={property.location.neighborhood.name}
-                price={property.price ? Number(property.price) : null}
-                currency={property.currency}
-                operationType={property.operationType}
-                imageUrl={property.images[0]?.url ?? "/placeholder-property.svg"}
-                imageAlt={property.images[0]?.alt ?? property.title}
-                rooms={property.rooms}
-                bathrooms={property.bathrooms}
-                coveredArea={property.coveredArea}
-                isSample={property.isSample}
-              />
+            {properties.map((property, i) => (
+              <Reveal key={property.id} delayMs={i * 60}>
+                <PropertyCard
+                  href={`/propiedades/${property.slug}`}
+                  title={property.title}
+                  neighborhoodName={property.location.neighborhood.name}
+                  price={property.price ? Number(property.price) : null}
+                  currency={property.currency}
+                  operationType={property.operationType}
+                  imageUrl={property.images[0]?.url ?? "/placeholder-property.svg"}
+                  imageAlt={property.images[0]?.alt ?? property.title}
+                  rooms={property.rooms}
+                  bathrooms={property.bathrooms}
+                  coveredArea={property.coveredArea}
+                  isSample={property.isSample}
+                />
+              </Reveal>
             ))}
           </div>
         </div>
@@ -132,15 +134,16 @@ export default async function Home() {
             información real, no solo con un listado de precios.
           </p>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {neighborhoods.map((neighborhood) => (
-              <ZoneCard
-                key={neighborhood.id}
-                href={`/zonas/${neighborhood.slug}`}
-                name={neighborhood.name}
-                tagline="Ver propiedades y guía del barrio"
-                imageUrl={neighborhoodImage(neighborhood.slug)}
-                imageAlt={neighborhood.name}
-              />
+            {neighborhoods.map((neighborhood, i) => (
+              <Reveal key={neighborhood.id} delayMs={i * 60}>
+                <ZoneCard
+                  href={`/zonas/${neighborhood.slug}`}
+                  name={neighborhood.name}
+                  tagline="Ver propiedades y guía del barrio"
+                  imageUrl={neighborhoodImage(neighborhood.slug)}
+                  imageAlt={neighborhood.name}
+                />
+              </Reveal>
             ))}
           </div>
         </div>
@@ -151,7 +154,7 @@ export default async function Home() {
           <div className="flex flex-wrap items-center justify-between gap-6 rounded-card bg-brand p-8 text-white sm:p-12">
             <div>
               <h2 className="mb-1.5 text-white">¿Cuánto vale tu propiedad?</h2>
-              <p className="m-0 text-[#D7E3DC]">Coordiná una tasación profesional con nuestro equipo, sin costo ni compromiso.</p>
+              <p className="m-0 text-[#D7DEE5]">Coordiná una tasación profesional con nuestro equipo, sin costo ni compromiso.</p>
             </div>
             <Link
               href="/vender/tasacion"

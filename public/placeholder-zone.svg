@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
   <rect width="400" height="500" fill="#00385C" />
   <path d="M0 500 L160 300 L260 380 L400 220 L400 500 Z" fill="#002740" />
-  <text x="24" y="460" font-family="Fraunces, Georgia, serif" font-size="22" fill="#FFFFFF">Zona</text>
+  <text x="24" y="460" font-family="Newsreader, Georgia, serif" font-size="22" fill="#FFFFFF">Zona</text>
 </svg>
