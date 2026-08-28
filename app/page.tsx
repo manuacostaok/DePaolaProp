@@ -5,8 +5,12 @@ import { PropertyCarousel } from "@/components/ui/property-carousel";
 import { ZoneCard } from "@/components/ui/zone-card";
 import { Callout } from "@/components/ui/callout";
 import { Reveal } from "@/components/ui/reveal";
+import { HeroVideo } from "@/components/ui/hero-video";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
 import { HEADER_HEIGHT } from "@/lib/layout-constants";
+
+const HERO_POSTER =
+  "https://static.wixstatic.com/media/c9cb98_b4fa934656eb46c799f51dfb47964edb~mv2_d_3238_1347_s_2.png/v1/fill/w_2400,h_998,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/c9cb98_b4fa934656eb46c799f51dfb47964edb~mv2_d_3238_1347_s_2.png";
 
 // ISR: evita pegarle a Postgres en cada visita a la página más
 // concurrida del sitio (Fase 16 — LCP crítico en Home).
@@ -34,13 +38,10 @@ export default async function Home() {
   return (
     <main>
       <section
-        className="relative flex min-h-[716px] items-end overflow-hidden bg-brand bg-[length:100%_auto] bg-bottom bg-no-repeat"
-        style={{
-          marginTop: -HEADER_HEIGHT,
-          backgroundImage:
-            "url('https://static.wixstatic.com/media/c9cb98_b4fa934656eb46c799f51dfb47964edb~mv2_d_3238_1347_s_2.png/v1/fill/w_2400,h_998,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/c9cb98_b4fa934656eb46c799f51dfb47964edb~mv2_d_3238_1347_s_2.png')",
-        }}
+        className="relative flex min-h-[716px] items-end overflow-hidden bg-brand"
+        style={{ marginTop: -HEADER_HEIGHT }}
       >
+        <HeroVideo posterUrl={HERO_POSTER} className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand from-10% via-brand/55 via-45% to-brand/10" />
         <div className="animate-fade-up relative mx-auto w-full max-w-[1240px] px-6 py-16 sm:px-8">
           <span className="mb-4 block text-[12.5px] font-semibold uppercase tracking-[0.14em] text-brand-tint">
