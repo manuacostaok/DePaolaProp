@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { PropertyCard } from "@/components/ui/property-card";
 import { Callout } from "@/components/ui/callout";
 import { cn } from "@/lib/cn";
+import { useFavorites } from "@/lib/use-favorites";
 import type { PropertyResult } from "@/lib/search";
 
 const PropertyMap = dynamic(() => import("@/components/search/property-map").then((m) => m.PropertyMap), {
@@ -14,6 +15,7 @@ const PropertyMap = dynamic(() => import("@/components/search/property-map").the
 
 export function SearchResults({ results, isFallback }: { results: PropertyResult[]; isFallback: boolean }) {
   const [view, setView] = useState<"lista" | "mapa">("lista");
+  const { isFavorite, toggle } = useFavorites();
 
   return (
     <div>
@@ -67,6 +69,8 @@ export function SearchResults({ results, isFallback }: { results: PropertyResult
               bathrooms={property.bathrooms}
               coveredArea={property.coveredArea}
               isSample={property.isSample}
+              isFavorite={isFavorite(property.id)}
+              onToggleFavorite={() => toggle(property.id)}
             />
           ))}
         </div>

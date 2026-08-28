@@ -114,3 +114,22 @@ export async function getNeighborhoodOptions() {
   const neighborhoods = await prisma.neighborhood.findMany({ orderBy: { name: "asc" } });
   return neighborhoods.map((n) => ({ value: n.slug, label: n.name }));
 }
+
+export async function getSimilarProperties(params: {
+  excludeId: string;
+  neighborhoodId: string;
+  operationType: OperationType;
+}) {
+  const properties = await prisma.property.findMany({
+    where: {
+      id: { not: params.excludeId },
+      status: "ACTIVA",
+      OR: [{ location: { neighborhoodId: params.neighborhoodId } }, { operationType: params.operationType }],
+    },
+    orderBy: [{ isSample: "asc" }, { publishedAt: "desc" }],
+    take: 3,
+    include: PROPERTY_INCLUDE,
+  });
+
+  return properties.map(toResult);
+}
