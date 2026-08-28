@@ -1,27 +1,9 @@
 import { ImageResponse } from "next/og";
+import { DpIcon } from "@/lib/brand-icon";
 
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
 export default function AppleIcon() {
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#24443F",
-          color: "#FAF8F3",
-          fontSize: 120,
-          fontWeight: 700,
-        }}
-      >
-        D
-      </div>
-    ),
-    { ...size },
-  );
+  return new ImageResponse(<DpIcon size={180} padding={0.1} />, { ...size });
 }

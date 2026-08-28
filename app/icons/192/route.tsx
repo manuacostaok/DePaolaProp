@@ -1,24 +1,6 @@
 import { ImageResponse } from "next/og";
+import { DpIcon } from "@/lib/brand-icon";
 
 export async function GET() {
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "#24443F",
-          color: "#FAF8F3",
-          fontSize: 128,
-          fontWeight: 700,
-        }}
-      >
-        D
-      </div>
-    ),
-    { width: 192, height: 192 },
-  );
+  return new ImageResponse(<DpIcon size={192} padding={0.1} />, { width: 192, height: 192 });
 }

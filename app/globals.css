@@ -1,15 +1,18 @@
 @import "tailwindcss";
 
 /* Tokens portados de la Fase 12 / depaola-demo/style.css — no cambiar
-   estos valores sin validar con la muestra aprobada por De Paola. */
+   estos valores sin validar con la muestra aprobada por De Paola.
+   --color-brand y derivados corregidos al azul marino real de
+   depaolapropiedades.com (rgb(0,56,92) confirmado en el sitio en vivo);
+   el verde original de la Fase 12 no correspondía a la marca real. */
 @theme {
   --color-bg: #faf8f3;
   --color-bg-alt: #efe9dc;
   --color-ink: #211f1b;
   --color-ink-soft: #57534a;
-  --color-brand: #24443f;
-  --color-brand-dark: #172c29;
-  --color-brand-tint: #e4ede9;
+  --color-brand: #00385c;
+  --color-brand-dark: #002740;
+  --color-brand-tint: #e1e8ee;
   --color-line: #ded7c6;
   --color-success: #3f7a5c;
   --color-alert: #b9853a;
