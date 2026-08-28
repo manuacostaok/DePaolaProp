@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { buttonVariants } from "@/components/ui/button";
-import { PropertyCard } from "@/components/ui/property-card";
+import { PropertyCarousel } from "@/components/ui/property-carousel";
 import { ZoneCard } from "@/components/ui/zone-card";
 import { Callout } from "@/components/ui/callout";
 import { Reveal } from "@/components/ui/reveal";
@@ -100,26 +100,25 @@ export default async function Home() {
             va a ver la grilla completa una vez cargado el resto del inventario real.
           </Callout>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {properties.map((property, i) => (
-              <Reveal key={property.id} delayMs={i * 60}>
-                <PropertyCard
-                  href={`/propiedades/${property.slug}`}
-                  title={property.title}
-                  neighborhoodName={property.location.neighborhood.name}
-                  price={property.price ? Number(property.price) : null}
-                  currency={property.currency}
-                  operationType={property.operationType}
-                  imageUrl={property.images[0]?.url ?? "/placeholder-property.svg"}
-                  imageAlt={property.images[0]?.alt ?? property.title}
-                  rooms={property.rooms}
-                  bathrooms={property.bathrooms}
-                  coveredArea={property.coveredArea}
-                  isSample={property.isSample}
-                />
-              </Reveal>
-            ))}
-          </div>
+          <Reveal>
+            <PropertyCarousel
+              properties={properties.map((property) => ({
+                id: property.id,
+                href: `/propiedades/${property.slug}`,
+                title: property.title,
+                neighborhoodName: property.location.neighborhood.name,
+                price: property.price ? Number(property.price) : null,
+                currency: property.currency,
+                operationType: property.operationType,
+                imageUrl: property.images[0]?.url ?? "/placeholder-property.svg",
+                imageAlt: property.images[0]?.alt ?? property.title,
+                rooms: property.rooms,
+                bathrooms: property.bathrooms,
+                coveredArea: property.coveredArea,
+                isSample: property.isSample,
+              }))}
+            />
+          </Reveal>
         </div>
       </section>
 

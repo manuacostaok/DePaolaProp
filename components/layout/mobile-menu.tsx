@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { MOBILE_NAV } from "@/lib/nav";
 import { cn } from "@/lib/cn";
+import { Drawer } from "@/components/ui/drawer";
 
 export function MobileMenu({ light = false }: { light?: boolean }) {
   const [open, setOpen] = useState(false);
@@ -12,15 +13,14 @@ export function MobileMenu({ light = false }: { light?: boolean }) {
     <div className="md:hidden">
       <button
         type="button"
-        onClick={() => setOpen((value) => !value)}
-        aria-label={open ? "Cerrar menú" : "Abrir menú"}
-        aria-expanded={open}
+        onClick={() => setOpen(true)}
+        aria-label="Abrir menú"
         className={cn("text-2xl", light ? "text-white" : "text-ink")}
       >
-        {open ? "✕" : "☰"}
+        ☰
       </button>
-      {open && (
-        <nav className="absolute inset-x-0 top-full flex flex-col border-t border-line bg-bg">
+      <Drawer open={open} onOpenChange={setOpen} title="Menú">
+        <nav className="flex flex-col">
           {MOBILE_NAV.map((link) => (
             <Link
               key={link.href}
@@ -32,7 +32,7 @@ export function MobileMenu({ light = false }: { light?: boolean }) {
             </Link>
           ))}
         </nav>
-      )}
+      </Drawer>
     </div>
   );
 }
