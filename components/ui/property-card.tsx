@@ -10,8 +10,8 @@ export interface PropertyCardProps {
   href: string;
   title: string;
   neighborhoodName: string;
-  price: number;
-  currency: "ARS" | "USD";
+  price: number | null;
+  currency: "ARS" | "USD" | null;
   operationType: "VENTA" | "ALQUILER";
   imageUrl: string;
   imageAlt: string;

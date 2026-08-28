@@ -147,8 +147,8 @@ model Property {
   description   String
   operationType OperationType
   propertyType  PropertyType
-  price         Decimal
-  currency      Currency
+  price         Decimal?
+  currency      Currency?
   coveredArea   Float?
   totalArea     Float?
   rooms         Int?
