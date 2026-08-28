@@ -5,6 +5,7 @@ import { logout } from "@/app/admin/login/actions";
 const NAV = [
   { href: "/admin/leads", label: "Leads" },
   { href: "/admin/properties", label: "Propiedades" },
+  { href: "/admin/insights", label: "Insights" },
   { href: "/admin/agents", label: "Agentes", adminOnly: true },
 ];
 

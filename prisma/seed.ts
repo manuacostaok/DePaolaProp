@@ -447,11 +447,115 @@ async function seedSampleProperties() {
   }
 }
 
+const CATEGORIES = [
+  { slug: "mercado", name: "Mercado" },
+  { slug: "inversion", name: "Inversión" },
+  { slug: "guias", name: "Guías" },
+  { slug: "arquitectura", name: "Arquitectura" },
+  { slug: "zona-norte", name: "Zona Norte" },
+  { slug: "lifestyle", name: "Lifestyle" },
+  { slug: "consejos", name: "Consejos" },
+  { slug: "noticias", name: "Noticias" },
+];
+
+async function seedCategories() {
+  for (const category of CATEGORIES) {
+    await prisma.category.upsert({ where: { slug: category.slug }, update: {}, create: category });
+  }
+}
+
+const SAMPLE_ARTICLES: Array<{
+  slug: string;
+  title: string;
+  categorySlug: string;
+  neighborhoodSlug?: string;
+  body: string;
+}> = [
+  {
+    slug: "como-evoluciono-el-precio-del-m2-en-vicente-lopez",
+    title: "Cómo evolucionó el precio del m² en Vicente López",
+    categorySlug: "mercado",
+    neighborhoodSlug: "vicente-lopez",
+    body: "Artículo de ejemplo (isSample) — a reemplazar por contenido real de mercado una vez que existan datos verificados de De Paola (Fase 8). Acá se mostraría la evolución real del precio por metro cuadrado en la zona, sin inventar cifras.",
+  },
+  {
+    slug: "que-zonas-tienen-mejor-relacion-renta-precio",
+    title: "Qué zonas de Zona Norte tienen mejor relación renta/precio",
+    categorySlug: "inversion",
+    body: "Artículo de ejemplo (isSample). Contenido pensado para nutrir el flujo de Invertir con criterio experto, a completar con el análisis real del equipo de De Paola.",
+  },
+  {
+    slug: "guia-para-comprar-tu-primera-propiedad-en-argentina",
+    title: "Guía para comprar tu primera propiedad en Argentina",
+    categorySlug: "guias",
+    body: "Artículo de ejemplo (isSample). Guía paso a paso pensada para SEO long-tail y captación hacia el buscador de propiedades.",
+  },
+  {
+    slug: "estilos-de-construccion-tipicos-de-martinez",
+    title: "Estilos de construcción típicos de Martínez",
+    categorySlug: "arquitectura",
+    neighborhoodSlug: "martinez",
+    body: "Artículo de ejemplo (isSample). Contenido editorial sobre el patrimonio arquitectónico de la zona, a enriquecer con el criterio real del equipo.",
+  },
+  {
+    slug: "los-barrios-con-mas-crecimiento-de-zona-norte",
+    title: "Los barrios con más crecimiento de Zona Norte en el último año",
+    categorySlug: "zona-norte",
+    body: "Artículo de ejemplo (isSample). Contenido hiperlocal a conectar con datos de mercado reales cuando estén disponibles (Fase 8) — por ahora sin cifras inventadas.",
+  },
+  {
+    slug: "mejores-planes-de-fin-de-semana-en-vicente-lopez",
+    title: "Los mejores planes de fin de semana en Vicente López",
+    categorySlug: "lifestyle",
+    neighborhoodSlug: "vicente-lopez",
+    body: "Artículo de ejemplo (isSample). Contenido de marca/engagement, no transaccional — a completar con recomendaciones reales del equipo local.",
+  },
+  {
+    slug: "5-cosas-para-preparar-tu-propiedad-antes-de-tasarla",
+    title: "5 cosas para preparar tu propiedad antes de tasarla",
+    categorySlug: "consejos",
+    body: "Artículo de ejemplo (isSample). Pensado para nutrir el flujo de Vender/Tasación con consejos prácticos y accionables.",
+  },
+  {
+    slug: "de-paola-propiedades-2-0-ya-esta-en-linea",
+    title: "De Paola Propiedades 2.0 ya está en línea",
+    categorySlug: "noticias",
+    body: "Artículo de ejemplo (isSample). Noticia institucional de lanzamiento del sitio propio, en reemplazo de la derivación total a portales externos.",
+  },
+];
+
+async function seedArticles() {
+  for (const article of SAMPLE_ARTICLES) {
+    const category = await prisma.category.findUniqueOrThrow({ where: { slug: article.categorySlug } });
+    const neighborhood = article.neighborhoodSlug
+      ? await prisma.neighborhood.findUnique({ where: { slug: article.neighborhoodSlug } })
+      : null;
+
+    await prisma.article.upsert({
+      where: { slug: article.slug },
+      update: {},
+      create: {
+        slug: article.slug,
+        title: article.title,
+        body: article.body,
+        coverImageUrl: "/placeholder-property.svg",
+        authorName: "Equipo De Paola",
+        isSample: true,
+        publishedAt: new Date(),
+        category: { connect: { id: category.id } },
+        neighborhood: neighborhood ? { connect: { id: neighborhood.id } } : undefined,
+      },
+    });
+  }
+}
+
 async function main() {
   await seedOfficesAndAgent();
   await seedNeighborhoods();
   await seedRealProperties();
   await seedSampleProperties();
+  await seedCategories();
+  await seedArticles();
 }
 
 main()
