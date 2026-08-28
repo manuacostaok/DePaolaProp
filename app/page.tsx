@@ -32,26 +32,26 @@ export default async function Home() {
   return (
     <main>
       <section
-        className="relative flex min-h-[560px] items-end bg-cover bg-center"
+        className="relative flex min-h-[640px] items-end overflow-hidden bg-brand bg-[length:100%_auto] bg-bottom bg-no-repeat"
         style={{
           backgroundImage:
-            "url('https://static.wixstatic.com/media/c9cb98_3e01d1892099477eb7ec2df49fcfc858~mv2.jpg')",
+            "url('https://static.wixstatic.com/media/c9cb98_b4fa934656eb46c799f51dfb47964edb~mv2_d_3238_1347_s_2.png/v1/fill/w_2400,h_998,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/c9cb98_b4fa934656eb46c799f51dfb47964edb~mv2_d_3238_1347_s_2.png')",
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-[rgba(23,30,26,0.72)] via-[rgba(23,30,26,0.28)] to-[rgba(23,30,26,0.12)]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand from-10% via-brand/55 via-45% to-brand/10" />
         <div className="relative mx-auto w-full max-w-[1240px] px-6 py-16 sm:px-8">
-          <span className="mb-4 block text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#DCE7DE]">
+          <span className="mb-4 block text-[12.5px] font-semibold uppercase tracking-[0.14em] text-brand-tint">
             Zona Norte · Buenos Aires
           </span>
           <h1 className="mb-6 max-w-3xl text-[clamp(34px,5vw,64px)] text-white">
             20 años acompañando cada operación inmobiliaria de Zona Norte.
           </h1>
-          <p className="mb-8 max-w-xl text-lg text-[#EDEAE0]">
+          <p className="mb-8 max-w-xl text-lg text-white/85">
             Martínez, Florida, Vicente López y Villa Martelli. Comprá, alquilá o vendé con la inmobiliaria que
             conoce el barrio casa por casa.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Link href="/propiedades" className={buttonVariants()}>
+            <Link href="/propiedades" className={buttonVariants({ variant: "onDark" })}>
               Ver propiedades
             </Link>
             <Link

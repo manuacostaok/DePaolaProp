@@ -12,7 +12,9 @@ export function Header() {
           <div className="overflow-hidden rounded-[8px]">
             <DpIcon size={40} padding={0.14} />
           </div>
-          <span className="font-display text-[19px] text-brand-dark">De Paola</span>
+          <span className="whitespace-nowrap font-display text-[15px] text-brand-dark sm:text-[19px]">
+            De Paola Propiedades
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, forwardRef } from "react";
 import { cn } from "@/lib/cn";
 
-export type ButtonVariant = "primary" | "outline" | "whatsapp" | "ghost";
+export type ButtonVariant = "primary" | "outline" | "whatsapp" | "ghost" | "onDark";
 export type ButtonSize = "md" | "sm";
 
 const base =
@@ -12,6 +12,9 @@ const variants: Record<ButtonVariant, string> = {
   outline: "bg-transparent text-ink border border-ink hover:border-brand hover:text-brand-dark",
   whatsapp: "bg-whatsapp text-white border border-transparent hover:brightness-95",
   ghost: "bg-transparent text-ink-soft border border-transparent hover:text-brand-dark",
+  // Para CTAs sobre fondos oscuros (ej. el hero con foto), donde el
+  // variant "primary" (bg-brand) queda invisible sobre un fondo también navy.
+  onDark: "bg-white text-brand-dark border border-transparent hover:bg-white/90",
 };
 
 const sizes: Record<ButtonSize, string> = {
