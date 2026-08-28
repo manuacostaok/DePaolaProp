@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { MAIN_NAV, SITE, type NavItem } from "@/lib/nav";
-import { DpIcon } from "@/lib/brand-icon";
+import { MAIN_NAV, type NavItem } from "@/lib/nav";
+import { LogoMark } from "@/lib/brand-icon";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { cn } from "@/lib/cn";
 import { HEADER_HEIGHT } from "@/lib/layout-constants";
@@ -84,21 +83,11 @@ export function Header() {
           {showNav && <NavLinks items={LEFT_NAV} transparent={transparent} />}
         </nav>
 
-        <Link href="/" className="col-start-2 flex items-center justify-self-center gap-2.5">
-          {transparent ? (
-            <Image src={SITE.logoUrl} alt={SITE.name} width={220} height={62} className="h-11 w-auto" priority />
-          ) : (
-            <>
-              <div className="overflow-hidden rounded-[8px]">
-                <DpIcon size={40} padding={0.14} />
-              </div>
-              <span className="whitespace-nowrap font-sans text-[11.5px] font-semibold uppercase leading-[1.35] tracking-[0.09em] text-brand-dark sm:text-[13px]">
-                De Paola
-                <br />
-                Propiedades
-              </span>
-            </>
-          )}
+        <Link href="/" className="col-start-2 justify-self-center">
+          <LogoMark
+            className="h-9 sm:h-11"
+            colorClassName={transparent ? "bg-[#F5E7CB]" : "bg-brand-dark"}
+          />
         </Link>
 
         <div className="flex items-center justify-end gap-3">
