@@ -7,6 +7,7 @@ import { Callout } from "@/components/ui/callout";
 import { Reveal } from "@/components/ui/reveal";
 import { HeroVideo } from "@/components/ui/hero-video";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
+import { SITE } from "@/lib/nav";
 
 const HERO_POSTER =
   "https://static.wixstatic.com/media/c9cb98_b4fa934656eb46c799f51dfb47964edb~mv2_d_3238_1347_s_2.png/v1/fill/w_2400,h_998,al_c,q_90,usm_0.66_1.00_0.01,enc_avif,quality_auto/c9cb98_b4fa934656eb46c799f51dfb47964edb~mv2_d_3238_1347_s_2.png";
@@ -142,6 +143,28 @@ export default async function Home() {
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="bg-brand-dark py-16 text-center text-white">
+        <div className="mx-auto max-w-[560px] px-6 sm:px-8">
+          <svg viewBox="0 0 24 24" className="mx-auto mb-5 size-9" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5" />
+            <circle cx="12" cy="12" r="4.2" />
+            <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+          </svg>
+          <h2 className="mb-2 text-white">Seguinos en Instagram</h2>
+          <p className="mb-6 text-[#CCD3D8]">
+            Propiedades nuevas, recorridos y novedades de Zona Norte todos los días en @{SITE.instagramHandle}.
+          </p>
+          <a
+            href={SITE.instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={buttonVariants({ variant: "onDark" })}
+          >
+            Seguir @{SITE.instagramHandle}
+          </a>
         </div>
       </section>
 

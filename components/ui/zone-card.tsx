@@ -22,7 +22,7 @@ export function ZoneCard({ href, name, tagline, imageUrl, imageAlt }: ZoneCardPr
       <div className="absolute inset-0 bg-gradient-to-t from-[rgba(20,26,22,0.82)] via-[rgba(20,26,22,0.15)] to-transparent" />
       <div className="absolute inset-x-6 bottom-6 text-white">
         <h3 className="mb-0.5 text-white">{name}</h3>
-        <span className="text-[13px] text-[#DCE0DA]">{tagline}</span>
+        <span className="text-[13px] text-[#DADEE3]">{tagline}</span>
       </div>
     </Link>
   );

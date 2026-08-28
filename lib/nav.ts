@@ -3,6 +3,8 @@ export const SITE = {
   whatsapp: "+5491128755265",
   legalId: "CMCPSI 6308",
   logoUrl: "https://static.wixstatic.com/media/c9cb98_ae5c5052d1cb4dc7b029b9b84a144a1c~mv2.png",
+  instagramHandle: "depaolapropiedades1",
+  instagramUrl: "https://www.instagram.com/depaolapropiedades1/",
 };
 
 export interface NavLink {
