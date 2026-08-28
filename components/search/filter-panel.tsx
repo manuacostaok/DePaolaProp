@@ -7,6 +7,7 @@ import { getNeighborhoodOptions } from "@/lib/search";
 export interface FilterPanelProps {
   basePath: string;
   showOperacion?: boolean;
+  showZona?: boolean;
   values: {
     operacion?: string;
     zona?: string;
@@ -19,7 +20,7 @@ export interface FilterPanelProps {
   };
 }
 
-export async function FilterPanel({ basePath, showOperacion = false, values }: FilterPanelProps) {
+export async function FilterPanel({ basePath, showOperacion = false, showZona = true, values }: FilterPanelProps) {
   const neighborhoodOptions = await getNeighborhoodOptions();
 
   return (
@@ -40,13 +41,15 @@ export async function FilterPanel({ basePath, showOperacion = false, values }: F
           ]}
         />
       )}
-      <Select
-        name="zona"
-        defaultValue={values.zona ?? ""}
-        placeholder="Zona"
-        className="w-44"
-        options={neighborhoodOptions}
-      />
+      {showZona && (
+        <Select
+          name="zona"
+          defaultValue={values.zona ?? ""}
+          placeholder="Zona"
+          className="w-44"
+          options={neighborhoodOptions}
+        />
+      )}
       <Select
         name="tipo"
         defaultValue={values.tipo ?? ""}

@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { PropertyCard } from "@/components/ui/property-card";
 import { ZoneCard } from "@/components/ui/zone-card";
 import { Callout } from "@/components/ui/callout";
+import { neighborhoodImage } from "@/lib/neighborhood-images";
 
 async function getFeaturedProperties() {
   return prisma.property.findMany({
@@ -131,15 +132,7 @@ export default async function Home() {
                 href={`/zonas/${neighborhood.slug}`}
                 name={neighborhood.name}
                 tagline="Ver propiedades y guía del barrio"
-                imageUrl={
-                  neighborhood.slug === "martinez"
-                    ? "https://static.wixstatic.com/media/c9cb98_2c608b2c29844a18aa9509201ab2c19b~mv2_d_2896_1848_s_2.jpg"
-                    : neighborhood.slug === "vicente-lopez"
-                      ? "https://static.wixstatic.com/media/c9cb98_d63461bb0c4e498fba692a68ed105b0f~mv2_d_2400_1350_s_2.jpg"
-                      : neighborhood.slug === "villa-martelli"
-                        ? "https://static.wixstatic.com/media/c9cb98_faadf4b7b7144845a7287837ea4715dd~mv2_d_8112_3759_s_4_2.jpg"
-                        : "https://static.wixstatic.com/media/c9cb98_93684e9ee93f48d0a0da1ff0dc8aca81f002.jpg"
-                }
+                imageUrl={neighborhoodImage(neighborhood.slug)}
                 imageAlt={neighborhood.name}
               />
             ))}
