@@ -79,36 +79,40 @@ const NEIGHBORHOODS = [
     name: "Martínez",
     imageUrl: "https://static.wixstatic.com/media/c9cb98_2c608b2c29844a18aa9509201ab2c19b~mv2_d_2896_1848_s_2.jpg",
     description:
-      "Martínez combina calles arboladas y casonas de principios de siglo con edificios más nuevos cerca de la estación. Es una de las zonas más buscadas de Zona Norte por familias que priorizan colegios, clubes y buen acceso a la Panamericana y la General Paz.",
+      "Martínez combina calles arboladas y casonas de principios de siglo con edificios más nuevos cerca de la estación. Administrativamente es parte del Partido de San Isidro, y es una de las zonas más buscadas de Zona Norte por familias que priorizan colegios, clubes y buen acceso a la Panamericana y la General Paz.",
     transportContent: "Estación Martínez (línea Mitre), fácil acceso a Av. del Libertador y Panamericana.",
-    schoolsContent: "Zona con alta concentración de colegios bilingües y clubes deportivos — detalle a completar con listado real.",
+    schoolsContent:
+      "Zona con alta concentración de colegios privados: Instituto Fátima (fundado en 1930), Instituto Mallinckrodt (1934), Colegio San José y Colegio República Argentina, entre otros — más de medio centenar de establecimientos entre gestión pública y privada según el relevamiento del distrito.",
   },
   {
     slug: "florida",
     name: "Florida",
     imageUrl: "https://static.wixstatic.com/media/c9cb98_93684e9ee93f48d0a0da1ff0dc8aca81f002.jpg",
     description:
-      "Borrador de ejemplo — a reemplazar por el criterio real de Tatiana De Paola y su equipo (Fase 6). Florida es una zona residencial de Vicente López con buena mezcla de casas y edificios bajos, cercana a la costa y con fácil acceso al centro de Vicente López.",
-    transportContent: "Estación Florida (línea Mitre) y colectivos con acceso directo a CABA — detalle a completar.",
-    schoolsContent: "Oferta de colegios de zona norte a confirmar con el equipo de De Paola.",
+      "Florida es una zona residencial de Vicente López con buena mezcla de casas y edificios bajos. Se consolidó entre las décadas de 1920 y 1950 con la llegada de inmigrantes europeos, y conserva hitos de esa época como la estación Parada Bosch (1912), el Florida Tennis Club (1915) y el Hospital Dr. Bernardo Houssay (1931).",
+    transportContent: "Estación Florida (línea Mitre) y colectivos con acceso directo a CABA por Av. Maipú y Av. del Libertador.",
+    schoolsContent:
+      "Oferta educativa amplia: Instituto La Salle Florida (con presencia desde 1925), Florida Day School (bilingüe, 1925), Instituto Adventista Florida (1913), Colegio Santa Teresita del Niño Jesús (1932) y Colegio Armenio, entre otros colegios públicos y privados de la zona.",
   },
   {
     slug: "vicente-lopez",
     name: "Vicente López",
     imageUrl: "https://static.wixstatic.com/media/c9cb98_d63461bb0c4e498fba692a68ed105b0f~mv2_d_2400_1350_s_2.jpg",
     description:
-      "Borrador de ejemplo — a reemplazar por el criterio real de Tatiana De Paola y su equipo (Fase 6). Partido de referencia en Zona Norte, con vida de barrio, buena conexión con CABA y una franja costera muy valorada.",
-    transportContent: "Estación Vicente López (línea Mitre) y acceso directo a Av. Libertador — detalle a completar.",
-    schoolsContent: "Oferta de colegios de zona norte a confirmar con el equipo de De Paola.",
+      "Partido de referencia en Zona Norte, limita con Florida al oeste, Olivos al norte, el Río de la Plata al este y la Ciudad de Buenos Aires al sur. Tiene vida de barrio, buena conexión con CABA por las avenidas Maipú, Libertador y General Paz, y una franja costera muy valorada.",
+    transportContent: "Estación Vicente López (línea Mitre) y acceso directo a Av. Libertador.",
+    schoolsContent:
+      "Varios colegios de referencia de Zona Norte tienen sede acá: St. Andrew's Scots School, St. Luke's College, St. Gregory's College, Colegio San Mateo y el Michael Ham Memorial College, que funciona hace un siglo en un castillo neogótico obra de Francisco Salamone.",
   },
   {
     slug: "villa-martelli",
     name: "Villa Martelli",
     imageUrl: "https://static.wixstatic.com/media/c9cb98_faadf4b7b7144845a7287837ea4715dd~mv2_d_8112_3759_s_4_2.jpg",
     description:
-      "Borrador de ejemplo — a reemplazar por el criterio real de Tatiana De Paola y su equipo (Fase 6). Barrio con casas de perfil familiar, cercano a Av. Laprida, sede histórica de De Paola Propiedades.",
-    transportContent: "Colectivos con acceso a Av. Laprida y Panamericana — detalle a completar.",
-    schoolsContent: "Oferta de colegios de zona norte a confirmar con el equipo de De Paola.",
+      "Barrio con casas de perfil familiar, cercano a Av. Laprida, sede histórica de De Paola Propiedades. Nació el 6 de mayo de 1910 con la subdivisión de tierras que hasta entonces se dedicaban a la quinta, y tomó su nombre de Cesar Martelli; se reconoció formalmente como barrio el 27 de julio de 1964.",
+    transportContent: "Colectivos con acceso a Av. Laprida y Panamericana.",
+    schoolsContent:
+      "Instituto Fátima (sede en Villa Martelli desde 1964) y el Jardín San Pablo de la Cruz (Hermanas Pasionistas) entre los privados; en gestión pública, la Escuela Primaria N°20 \"Martina Céspedes\" y la Escuela Secundaria N°2 \"Patricias Argentinas\".",
   },
 ];
 

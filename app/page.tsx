@@ -6,6 +6,7 @@ import { ZoneCard } from "@/components/ui/zone-card";
 import { Callout } from "@/components/ui/callout";
 import { Reveal } from "@/components/ui/reveal";
 import { HeroVideo } from "@/components/ui/hero-video";
+import { InstagramGrid } from "@/components/ui/instagram-grid";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
 import { SITE } from "@/lib/nav";
 
@@ -146,25 +147,33 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="bg-brand-dark py-16 text-center text-white">
-        <div className="mx-auto max-w-[560px] px-6 sm:px-8">
-          <svg viewBox="0 0 24 24" className="mx-auto mb-5 size-9" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
-            <rect x="3" y="3" width="18" height="18" rx="5" />
-            <circle cx="12" cy="12" r="4.2" />
-            <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
-          </svg>
-          <h2 className="mb-2 text-white">Seguinos en Instagram</h2>
-          <p className="mb-6 text-[#CCD3D8]">
-            Propiedades nuevas, recorridos y novedades de Zona Norte todos los días en @{SITE.instagramHandle}.
-          </p>
-          <a
-            href={SITE.instagramUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={buttonVariants({ variant: "onDark" })}
-          >
-            Seguir @{SITE.instagramHandle}
-          </a>
+      <section className="bg-brand-dark py-16 text-white">
+        <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
+          <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <svg viewBox="0 0 24 24" className="size-7 shrink-0" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="5" />
+                <circle cx="12" cy="12" r="4.2" />
+                <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
+              </svg>
+              <div>
+                <h2 className="text-white">Seguinos en Instagram</h2>
+                <p className="m-0 text-[13.5px] text-[#CCD3D8]">@{SITE.instagramHandle}</p>
+              </div>
+            </div>
+            <a
+              href={SITE.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonVariants({ variant: "onDark", size: "sm" })}
+            >
+              Seguir en Instagram
+            </a>
+          </div>
+
+          <Reveal>
+            <InstagramGrid />
+          </Reveal>
         </div>
       </section>
 

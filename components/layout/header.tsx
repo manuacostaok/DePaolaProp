@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
@@ -46,17 +46,27 @@ function NavLinks({ items, transparent }: { items: NavItem[]; transparent: boole
   );
 }
 
+const SCROLL_TINT_RAMP_PX = 260;
+
 export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
+  const tintRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isHome) return;
-    // El corte pasa a sólido recién cuando se scrolleó casi una pantalla
-    // completa (el hero mide 100dvh) — mientras tanto la barra de nav
-    // vive abajo del hero, no arriba.
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight - HEADER_HEIGHT * 1.5);
+    // El corte a la barra sólida pasa recién cuando se scrolleó casi una
+    // pantalla completa (el hero mide 100dvh) — pero un degradé oscuro
+    // detrás del logo ya empieza a notarse apenas se scrollea un poco
+    // (como en elliman.com), para que la respuesta no se sienta recién
+    // "al terminar de bajar". El degradé se actualiza directo por CSS
+    // var (no por estado de React) para no re-renderizar en cada pixel.
+    const onScroll = () => {
+      const tint = Math.min(1, window.scrollY / SCROLL_TINT_RAMP_PX);
+      tintRef.current?.style.setProperty("--scroll-tint", String(tint));
+      setScrolled(window.scrollY > window.innerHeight - HEADER_HEIGHT * 1.5);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
@@ -82,6 +92,13 @@ export function Header() {
         )}
         style={{ height: HEADER_HEIGHT }}
       >
+        {transparent && (
+          <div
+            ref={tintRef}
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 to-transparent"
+            style={{ opacity: "var(--scroll-tint, 0)" }}
+          />
+        )}
         <div className="relative mx-auto grid h-full max-w-[1240px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-6 sm:px-8">
           <nav className="hidden items-center gap-7 md:flex" inert={transparent} aria-hidden={transparent}>
             {!transparent && <NavLinks items={LEFT_NAV} transparent={false} />}
