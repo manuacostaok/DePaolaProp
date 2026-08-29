@@ -80,7 +80,7 @@ export function VenderWizard({ neighborhoodOptions }: { neighborhoodOptions: { v
             ]}
           />
           {knowsValue === "no" && (
-            <div className="mt-5 rounded-control border border-dashed border-[#9FB6AC] bg-brand-tint p-4 text-sm text-brand-dark">
+            <div className="mt-5 rounded-control border border-dashed border-[#9FACB6] bg-brand-tint p-4 text-sm text-brand-dark">
               <p className="mb-3">
                 Te llevamos directo a la tasación con la zona y el tipo de propiedad que ya nos dejaste.
               </p>

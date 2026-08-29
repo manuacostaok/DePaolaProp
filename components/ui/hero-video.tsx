@@ -2,11 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 
-// Clips reales de Buenos Aires (Obelisco, Puente de la Mujer en Puerto
-// Madero) con licencia Pexels — libres para uso comercial, sin
-// atribución obligatoria. Fuente: pexels.com/video/obelisco-buenos-aires-19908912
-// y pexels.com/video/sunny-day-on-buenos-aires-bridge-36426975.
-const CLIPS = ["/hero/obelisco.mp4", "/hero/puerto-madero.mp4"];
+// Clips reales de Buenos Aires con licencia Pexels — libres para uso
+// comercial, sin atribución obligatoria. Fuentes:
+// pexels.com/video/obelisco-buenos-aires-19908912
+// pexels.com/video/sunny-day-on-buenos-aires-bridge-36426975 (Puente de la Mujer, Puerto Madero)
+// pexels.com/video/aerial-view-of-buenos-aires-planetarium-park-35565808 (Planetario + Río de la Plata)
+const CLIPS = ["/hero/obelisco.mp4", "/hero/puerto-madero.mp4", "/hero/planetario.mp4"];
 
 export function HeroVideo({ posterUrl, className }: { posterUrl: string; className?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);

@@ -12,7 +12,7 @@ export default async function InvertirPage() {
     <main>
       <section className="bg-brand-dark py-16 text-center text-white">
         <div className="mx-auto max-w-2xl px-6 sm:px-8">
-          <span className="mb-3 block text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#DCE7DE]">
+          <span className="mb-3 block text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#DCDEE7]">
             Quiero invertir
           </span>
           <h1 className="mb-4 text-white">Oportunidades de inversión en Zona Norte</h1>

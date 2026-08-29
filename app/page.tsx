@@ -66,20 +66,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <div className="bg-brand-dark py-3.5 text-[#EFE9DC]">
-        <div className="mx-auto flex max-w-[1240px] flex-wrap items-center justify-center gap-8 px-6 text-[13px] tracking-wide sm:px-8">
-          <span>
-            <strong className="text-white">20 años</strong> de trayectoria
-          </span>
-          <span>
-            <strong className="text-white">2</strong> sucursales en Zona Norte
-          </span>
-          <span>
-            Publicamos en <strong className="text-white">Zonaprop · Argenprop · Mercado Libre · Clarín</strong>
-          </span>
-        </div>
-      </div>
-
       <section className="py-16">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-4">

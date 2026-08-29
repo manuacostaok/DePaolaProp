@@ -45,7 +45,7 @@ export function ComprarWizard({ neighborhoodOptions }: { neighborhoodOptions: { 
           ¡Listo! Un agente de De Paola va a revisar tu búsqueda y contactarte apenas tengamos algo que matchee.
         </p>
         {needsToSell === "si" && (
-          <div className="rounded-control border border-dashed border-[#9FB6AC] bg-brand-tint p-4 text-sm text-brand-dark">
+          <div className="rounded-control border border-dashed border-[#9FACB6] bg-brand-tint p-4 text-sm text-brand-dark">
             <p className="mb-3">¿Sabías que podés arrancar la venta de tu propiedad actual ahora mismo?</p>
             <Link href="/vender" className={buttonVariants({ size: "sm" })}>
               Quiero vender
