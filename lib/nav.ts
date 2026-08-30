@@ -39,14 +39,6 @@ export const MOBILE_NAV: NavLink[] = [
   ...MAIN_NAV.flatMap((item) => [item, ...(item.children ?? [])]),
 ];
 
-export const BOTTOM_NAV: (NavLink & { icon: "home" | "search" | "map" | "heart" | "chat" })[] = [
-  { label: "Inicio", href: "/", icon: "home" },
-  { label: "Buscar", href: "/propiedades", icon: "search" },
-  { label: "Zonas", href: "/zonas", icon: "map" },
-  { label: "Favoritos", href: "/favoritos", icon: "heart" },
-  { label: "Contacto", href: "/contacto", icon: "chat" },
-];
-
 export const FOOTER_COLUMNS: { title: string; links: NavLink[] }[] = [
   {
     title: "Propiedades",

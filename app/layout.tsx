@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Newsreader, Jost } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { BottomNav } from "@/components/layout/bottom-nav";
 import { WhatsAppFloat } from "@/components/layout/whatsapp-float";
 import { OrganizationSchema } from "@/components/seo/organization-schema";
 import { SITE_URL } from "@/lib/site-url";
@@ -60,7 +59,6 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
-        <BottomNav />
         <WhatsAppFloat />
       </body>
     </html>

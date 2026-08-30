@@ -3,11 +3,23 @@
 import { useEffect, useRef, useState } from "react";
 
 // Clips reales de Buenos Aires con licencia Pexels — libres para uso
-// comercial, sin atribución obligatoria. Fuentes:
-// pexels.com/video/obelisco-buenos-aires-19908912
-// pexels.com/video/sunny-day-on-buenos-aires-bridge-36426975 (Puente de la Mujer, Puerto Madero)
-// pexels.com/video/aerial-view-of-buenos-aires-planetarium-park-35565808 (Planetario + Río de la Plata)
-const CLIPS = ["/hero/obelisco.mp4", "/hero/puerto-madero.mp4", "/hero/planetario.mp4"];
+// comercial, sin atribución obligatoria. Perfil más cercano a Zona Norte
+// (costa del río, puentes/puerto sobre el agua, parques) que el set
+// anterior (Obelisco/Puerto Madero/Planetario, más "centro porteño").
+// Fuentes (en el mismo orden que el array, de más liviano a más pesado
+// para que el primer clip — el que carga en el LCP — sea el más chico):
+// pexels.com/video/buenos-aires-aerial-19909620 (skyline y puente al atardecer)
+// pexels.com/video/buenos-aires-aerial-19909622 (distrito financiero, atardecer)
+// pexels.com/video/buenos-aires-aerial-19909615 (puente y puerto sobre el río)
+// pexels.com/video/buenos-aires-aerial-19909623 (parque verde y skyline)
+// pexels.com/video/buenos-aires-aerial-19909618 (costa del río, atardecer, botes)
+const CLIPS = [
+  "/hero/skyline-puente.mp4",
+  "/hero/distrito-financiero.mp4",
+  "/hero/puerto-rio.mp4",
+  "/hero/parque-verde.mp4",
+  "/hero/rio-atardecer.mp4",
+];
 
 export function HeroVideo({ posterUrl, className }: { posterUrl: string; className?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
