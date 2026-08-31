@@ -451,6 +451,62 @@ async function seedSampleProperties() {
   }
 }
 
+// Campus Norte: emprendimiento activo que De Paola comercializa (no es
+// contenido editorial) — ver de-paola-00-pendientes-y-que-pedir.md, punto 5.
+// Contenido tomado del sitio actual (depaolapropiedades.com/campusnorte).
+async function seedCampusNorte() {
+  const villaMartelli = await prisma.neighborhood.findUniqueOrThrow({ where: { slug: "villa-martelli" } });
+  const coords = NEIGHBORHOOD_COORDS["villa-martelli"];
+
+  const development = await prisma.development.upsert({
+    where: { slug: "campus-norte" },
+    update: {},
+    create: {
+      slug: "campus-norte",
+      name: "Campus Norte",
+      tagline: "Viví y trabajá cerca de todo",
+      description:
+        "Campus Norte fue concebido como un hito que cambia la fisonomía del barrio de Villa Martelli, en Vicente López. Con el objetivo de mejorar la calidad de vida de sus residentes, suma grandes espacios verdes, amenities de lujo y unidades amplias y luminosas. Es un programa residencial de 140 unidades de 1, 2 y 3 ambientes (36 a 90 m²), con cocheras opcionales simples, dobles, cubiertas y descubiertas, y un concepto modular: las unidades pueden unificarse con cambios estructurales mínimos para lograr departamentos de mayor superficie a medida del interesado.",
+      totalUnits: 140,
+      unitTypes: "1, 2 y 3 ambientes, de 36 a 90 m²",
+      amenitiesArea: 1200,
+      address: "Cerca del cruce de Av. General Paz y Panamericana, Villa Martelli, Vicente López — a metros del Dot Baires Shopping y Parque Sarmiento.",
+      lat: coords.lat,
+      lng: coords.lng,
+      financing: "Campus Norte cuenta con financiación propia del desarrollador — consultá condiciones y planes de pago con un asesor de De Paola.",
+      externalUrl: "https://www.campusnorte.com.ar",
+      isSample: false,
+      neighborhood: { connect: { id: villaMartelli.id } },
+      office: { connect: { id: "office-villa-martelli" } },
+      images: {
+        create: [
+          {
+            url: "https://static.wixstatic.com/media/c9cb98_efcfe475715a4a5bab90e14bc56e5618f003.jpg",
+            alt: "Vista aérea del proyecto Campus Norte en Villa Martelli",
+            order: 0,
+            isCover: true,
+          },
+        ],
+      },
+      amenities: {
+        create: [
+          { key: "pileta", label: "2 piletas" },
+          { key: "gimnasio", label: "Gimnasio" },
+          { key: "salon", label: "2 salones de fiestas" },
+          { key: "vinoteca", label: "Vinoteca" },
+          { key: "coffee", label: "Coffee / bar" },
+          { key: "parrilla", label: "Sector de parrillas" },
+          { key: "chillout", label: "Zonas chill out" },
+          { key: "conferencias", label: "Sala de conferencias" },
+          { key: "cochera", label: "Cocheras de cortesía" },
+        ],
+      },
+    },
+  });
+
+  return development;
+}
+
 const CATEGORIES = [
   { slug: "mercado", name: "Mercado" },
   { slug: "inversion", name: "Inversión" },
@@ -558,6 +614,7 @@ async function main() {
   await seedNeighborhoods();
   await seedRealProperties();
   await seedSampleProperties();
+  await seedCampusNorte();
   await seedCategories();
   await seedArticles();
 }

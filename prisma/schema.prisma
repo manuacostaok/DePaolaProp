@@ -75,8 +75,9 @@ model Office {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  agents     Agent[]
-  properties Property[]
+  agents       Agent[]
+  properties   Property[]
+  developments Development[]
 }
 
 enum AgentRole {
@@ -133,6 +134,7 @@ model Neighborhood {
   articles          Article[]
   leads             Lead[]
   valuationRequests ValuationRequest[]
+  developments      Development[]
 }
 
 model PropertyLocation {
@@ -212,6 +214,62 @@ model PropertyFeature {
   property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
 }
 
+// Un emprendimiento (ej. Campus Norte) es un proyecto con muchas unidades,
+// amenities compartidas y financiación propia — no es lo mismo que una
+// Property individual, así que se modela aparte en vez de forzarlo dentro
+// de ese modelo (corrección a la Fase 2: se había decidido eliminar Campus
+// Norte de la navegación asumiendo que era contenido institucional, pero es
+// un desarrollo activo que De Paola comercializa — ver
+// de-paola-00-pendientes-y-que-pedir.md, punto 5).
+model Development {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  tagline       String?
+  description   String
+  totalUnits    Int?
+  unitTypes     String?
+  amenitiesArea Float?
+  address       String?
+  lat           Float?
+  lng           Float?
+  financing     String?
+  externalUrl   String?
+  isSample      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  neighborhoodId String
+  neighborhood   Neighborhood @relation(fields: [neighborhoodId], references: [id])
+
+  officeId String?
+  office   Office? @relation(fields: [officeId], references: [id])
+
+  images    DevelopmentImage[]
+  amenities DevelopmentAmenity[]
+  leads     Lead[]
+}
+
+model DevelopmentImage {
+  id      String  @id @default(cuid())
+  url     String
+  alt     String?
+  order   Int     @default(0)
+  isCover Boolean @default(false)
+
+  developmentId String
+  development   Development @relation(fields: [developmentId], references: [id], onDelete: Cascade)
+}
+
+model DevelopmentAmenity {
+  id    String @id @default(cuid())
+  key   String
+  label String
+
+  developmentId String
+  development   Development @relation(fields: [developmentId], references: [id], onDelete: Cascade)
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String?  @unique
@@ -252,6 +310,9 @@ model Lead {
 
   neighborhoodId String?
   neighborhood   Neighborhood? @relation(fields: [neighborhoodId], references: [id])
+
+  developmentId String?
+  development   Development? @relation(fields: [developmentId], references: [id])
 
   agentId String?
   agent   Agent?  @relation(fields: [agentId], references: [id])

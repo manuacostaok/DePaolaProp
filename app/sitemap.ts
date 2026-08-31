@@ -9,6 +9,7 @@ const STATIC_ROUTES = [
   "/propiedades/alquilar",
   "/propiedades/destacadas",
   "/zonas",
+  "/emprendimientos",
   "/vender",
   "/vender/tasacion",
   "/invertir",
@@ -20,9 +21,10 @@ const STATIC_ROUTES = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [properties, neighborhoods, articles, categories, agents] = await Promise.all([
+  const [properties, neighborhoods, developments, articles, categories, agents] = await Promise.all([
     prisma.property.findMany({ where: { status: "ACTIVA" }, select: { slug: true, updatedAt: true } }),
     prisma.neighborhood.findMany({ select: { slug: true, updatedAt: true } }),
+    prisma.development.findMany({ select: { slug: true, updatedAt: true } }),
     prisma.article.findMany({ where: { publishedAt: { not: null } }, select: { slug: true, updatedAt: true } }),
     prisma.category.findMany({ select: { slug: true } }),
     prisma.agent.findMany({ where: { isActive: true }, select: { slug: true, updatedAt: true } }),
@@ -48,6 +50,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  const developmentEntries: MetadataRoute.Sitemap = developments.map((d) => ({
+    url: `${SITE_URL}/emprendimientos/${d.slug}`,
+    lastModified: d.updatedAt,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
   const articleEntries: MetadataRoute.Sitemap = articles.map((a) => ({
     url: `${SITE_URL}/insights/${a.slug}`,
     lastModified: a.updatedAt,
@@ -68,5 +77,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [...staticEntries, ...propertyEntries, ...zoneEntries, ...articleEntries, ...categoryEntries, ...agentEntries];
+  return [...staticEntries, ...propertyEntries, ...zoneEntries, ...developmentEntries, ...articleEntries, ...categoryEntries, ...agentEntries];
 }

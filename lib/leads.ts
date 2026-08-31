@@ -9,6 +9,8 @@ export interface CreateLeadInput {
   contactPhone: string;
   contactEmail?: string;
   neighborhoodId?: string;
+  developmentId?: string;
+  message?: string;
   filtersJson?: Record<string, unknown>;
 }
 
@@ -22,6 +24,8 @@ export async function createLead(input: CreateLeadInput) {
       contactPhone: input.contactPhone,
       contactEmail: input.contactEmail,
       neighborhoodId: input.neighborhoodId,
+      developmentId: input.developmentId,
+      message: input.message,
       agentId: defaultAgent?.id,
       filtersJson: input.filtersJson as Prisma.InputJsonValue | undefined,
     },

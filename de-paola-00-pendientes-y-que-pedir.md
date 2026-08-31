@@ -37,7 +37,7 @@ Esto es lo más importante del documento: ninguno de estos puntos se puede inven
 
 - Confirmar si van a seguir publicando en los cuatro portales actuales (Zonaprop, Argenprop, Mercado Libre, Clarín Inmuebles) como canal secundario una vez migrado el contenido principal a la plataforma propia (recomendado en Fase 1: sí, como canal, no como destino).
 - Definir si quieren ofrecer alquiler con o sin garantía propietaria como filtro (mencionado en Fase 4) — confirmar si es una práctica que efectivamente manejan.
-- Confirmar el contenido real de las secciones actuales "Campus Norte" y el video de "Sucursales" del sitio Wix (Fase 2 recomendó eliminarlas como secciones y redistribuir su contenido, pero no se auditó en profundidad qué información específica contienen hoy).
+- ~~Confirmar el contenido real de las secciones actuales "Campus Norte" y el video de "Sucursales" del sitio Wix~~ — **"Campus Norte" ya se auditó: es un emprendimiento activo (140 unidades, Villa Martelli), no contenido institucional. Se corrigió la Fase 2 (ver nota ahí) y se construyó como sección propia `/emprendimientos`.** Sigue pendiente auditar el video de "Sucursales".
 
 ---
 

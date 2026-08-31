@@ -26,6 +26,9 @@ depaolapropiedades.com
 │   ├── /zonas/villa-martelli
 │   └── /zonas/[otras-zonas-relevantes]
 │
+├── /emprendimientos                           Índice de emprendimientos (CORRECCIÓN, ver nota abajo)
+│   └── /emprendimientos/campus-norte
+│
 ├── /vender                                    Landing "Quiero vender"
 │   └── /vender/tasacion                       Flujo de tasación online
 │
@@ -85,6 +88,8 @@ Donde había más de un camino posible, se comparan las alternativas antes de re
 ### 2.4 ¿Mantener "Revista Digital" y "Campus Norte" como nombres, o renombrar?
 
 - **Recomendación: renombrar "Revista Digital" a "Insights"** (contenido en HTML indexable, no PDF) y **eliminar "Campus Norte" como sección**, distribuyendo lo que hoy contiene entre `/nosotros`, `/equipo` y `/sucursales` según corresponda una vez que se audite su contenido real. Motivo: en el sitio actual ambos nombres no comunican su función (verificado en la auditoría de Fase 1: "Campus Norte" y "Sucursales" apuntan a URLs que no coinciden con su nombre), y "Insights" es más claro para SEO y para el usuario sobre qué va a encontrar.
+
+  **CORRECCIÓN (post-auditoría, ver pendiente #5 de `de-paola-00-pendientes-y-que-pedir.md`): la mitad de esta recomendación estaba mal.** "Campus Norte" no es contenido institucional genérico como "Sucursales" — es un emprendimiento inmobiliario activo (140 unidades en Villa Martelli, financiación propia, dominio y redes propios) que De Paola comercializa. Se audita el contenido real recién ahora, sin haber validado antes la premisa de que era "contenido de relleno". No se elimina: se construye como sección propia (`/emprendimientos`, modelo `Development` en el schema) con la misma jerarquía que Zonas. La recomendación de renombrar "Revista Digital" → "Insights" sigue vigente sin cambios.
 
 ## 3. NAVEGACIÓN PRINCIPAL (desktop)
 
