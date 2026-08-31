@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 export interface CreateLeadInput {
   type: LeadType;
   contactName: string;
-  contactPhone: string;
+  contactPhone?: string;
   contactEmail?: string;
   neighborhoodId?: string;
   developmentId?: string;

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { createLead } from "@/lib/leads";
+import { splitContactInput } from "@/lib/contact-input";
 import { SITE } from "@/lib/nav";
 
 export function DevelopmentLeadForm({ developmentId, developmentName }: { developmentId: string; developmentName: string }) {
@@ -19,7 +20,7 @@ export function DevelopmentLeadForm({ developmentId, developmentName }: { develo
     await createLead({
       type: "COMPRAR",
       contactName: name,
-      contactPhone: contact,
+      ...splitContactInput(contact),
       developmentId,
       message: message || undefined,
     });

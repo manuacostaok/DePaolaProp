@@ -297,7 +297,10 @@ model Lead {
   type         LeadType
   status       LeadStatus @default(NUEVO)
   contactName  String
-  contactPhone String
+  // Varios formularios piden un único campo "WhatsApp o email" — puede
+  // venir cualquiera de los dos (o ambos, si el flujo los pide por
+  // separado como la tasación), así que ninguno es obligatorio acá.
+  contactPhone String?
   contactEmail String?
   message      String?
   filtersJson  Json?

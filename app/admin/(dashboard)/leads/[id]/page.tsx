@@ -32,7 +32,7 @@ export default async function AdminLeadDetailPage({ params }: { params: Promise<
         <dl className="mb-6 grid grid-cols-2 gap-4 text-sm">
           <div>
             <dt className="text-ink-soft">Teléfono</dt>
-            <dd>{lead.contactPhone}</dd>
+            <dd>{lead.contactPhone ?? "—"}</dd>
           </div>
           <div>
             <dt className="text-ink-soft">Email</dt>

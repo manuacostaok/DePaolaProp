@@ -71,7 +71,7 @@ export default async function AdminLeadsPage({
                   <Link href={`/admin/leads/${lead.id}`} className="font-medium text-ink hover:text-brand-dark">
                     {lead.contactName}
                   </Link>
-                  <p className="text-xs text-ink-soft">{lead.contactPhone}</p>
+                  <p className="text-xs text-ink-soft">{lead.contactPhone ?? lead.contactEmail ?? "—"}</p>
                 </td>
                 <td className="px-4 py-3">
                   <Badge variant="outline">{TYPE_LABELS[lead.type]}</Badge>

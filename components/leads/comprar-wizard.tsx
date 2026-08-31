@@ -9,6 +9,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { StepProgress } from "@/components/leads/step-progress";
 import { PROPERTY_TYPE_OPTIONS, ROOMS_OPTIONS } from "@/lib/property-options";
 import { createLead } from "@/lib/leads";
+import { splitContactInput } from "@/lib/contact-input";
 
 const STEPS = ["Zona y tipo", "Presupuesto", "Contacto"];
 
@@ -30,7 +31,7 @@ export function ComprarWizard({ neighborhoodOptions }: { neighborhoodOptions: { 
     await createLead({
       type: "COMPRAR",
       contactName: name,
-      contactPhone: phone,
+      ...splitContactInput(phone),
       neighborhoodId: neighborhoodId || undefined,
       filtersJson: { propertyType, budgetMin, budgetMax, rooms, needsToSell: needsToSell === "si" },
     });
