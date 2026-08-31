@@ -38,7 +38,13 @@ export default async function Home() {
 
   return (
     <main>
-      <section id="home-hero" className="relative flex min-h-dvh items-end overflow-hidden bg-brand">
+      {/* min-h-svh (no dvh): el header (Header.tsx) sigue el borde inferior real
+          de este hero durante el scroll — con dvh, la altura del viewport (y por
+          lo tanto la del hero) se recalcula sola en mobile cuando la barra de
+          direcciones se oculta/aparece al scrollear, haciendo que esa barra
+          "salte" en medio de la transición. svh usa el viewport chico (con la
+          barra siempre visible), que no cambia durante el scroll. */}
+      <section id="home-hero" className="relative flex min-h-svh items-end overflow-hidden bg-brand">
         <HeroVideo posterUrl={HERO_POSTER} className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand from-10% via-brand/55 via-45% to-brand/10" />
         <div className="animate-fade-up relative mx-auto w-full max-w-[1240px] px-6 pt-16 pb-16 sm:px-8 md:pb-32">

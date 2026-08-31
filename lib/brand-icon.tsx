@@ -22,7 +22,7 @@ export function LogoMark({ className, colorClassName }: { className?: string; co
     <span
       role="img"
       aria-label={SITE.name}
-      className={cn(className, colorClassName)}
+      className={cn(className, colorClassName, "transition-colors duration-300")}
       style={{
         display: "inline-block",
         aspectRatio: `${LOGO_NATURAL_WIDTH} / ${LOGO_NATURAL_HEIGHT}`,

@@ -105,16 +105,20 @@ export function Header() {
         )}
         style={{ height: HEADER_HEIGHT }}
       >
-        {transparent && (
+        {isHome && (
           <div
             ref={tintRef}
-            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 to-transparent"
-            style={{ opacity: "var(--scroll-tint, 0)" }}
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 to-transparent transition-opacity duration-300"
+            style={{ opacity: scrolled ? 0 : "var(--scroll-tint, 0)" }}
           />
         )}
         <div className="relative mx-auto grid h-full max-w-[1240px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-6 sm:px-8">
-          <nav className="hidden items-center gap-7 md:flex" inert={transparent} aria-hidden={transparent}>
-            {!transparent && <NavLinks items={LEFT_NAV} transparent={false} />}
+          <nav
+            className={cn("hidden items-center gap-7 transition-opacity duration-300 md:flex", transparent ? "opacity-0" : "opacity-100")}
+            inert={transparent}
+            aria-hidden={transparent}
+          >
+            <NavLinks items={LEFT_NAV} transparent={false} />
           </nav>
 
           <Link href="/" className="col-start-2 justify-self-center">
@@ -122,27 +126,40 @@ export function Header() {
           </Link>
 
           <div className="flex items-center justify-end gap-3">
-            <nav className="hidden items-center gap-7 md:flex" inert={transparent} aria-hidden={transparent}>
-              {!transparent && <NavLinks items={RIGHT_NAV} transparent={false} />}
+            <nav
+              className={cn("hidden items-center gap-7 transition-opacity duration-300 md:flex", transparent ? "opacity-0" : "opacity-100")}
+              inert={transparent}
+              aria-hidden={transparent}
+            >
+              <NavLinks items={RIGHT_NAV} transparent={false} />
             </nav>
-            <span className="hidden sm:block" inert={transparent} aria-hidden={transparent}>
-              {!transparent && (
-                <Link href="/vender/tasacion" className={buttonVariants({ size: "sm" })}>
-                  Tasá tu propiedad
-                </Link>
-              )}
+            <span
+              className={cn("hidden transition-opacity duration-300 sm:block", transparent ? "opacity-0" : "opacity-100")}
+              inert={transparent}
+              aria-hidden={transparent}
+            >
+              <Link href="/vender/tasacion" className={buttonVariants({ size: "sm" })}>
+                Tasá tu propiedad
+              </Link>
             </span>
-            <div className="md:hidden" inert={transparent} aria-hidden={transparent}>
-              {!transparent && <MobileMenu light={false} />}
+            <div
+              className={cn("transition-opacity duration-300 md:hidden", transparent ? "opacity-0" : "opacity-100")}
+              inert={transparent}
+              aria-hidden={transparent}
+            >
+              <MobileMenu light={false} />
             </div>
           </div>
         </div>
       </header>
 
-      {transparent && (
+      {isHome && (
         <div
           ref={footNavRef}
-          className="fixed inset-x-0 z-50 hidden md:block"
+          className={cn(
+            "fixed inset-x-0 z-50 hidden transition-opacity duration-300 md:block",
+            transparent ? "opacity-100" : "pointer-events-none opacity-0",
+          )}
           style={footTop == null ? { bottom: 0 } : { top: footTop }}
         >
           <div className="mx-auto flex max-w-[1240px] items-center justify-between px-6 py-6 sm:px-8">
