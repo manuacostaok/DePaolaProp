@@ -38,7 +38,7 @@ export default async function Home() {
 
   return (
     <main>
-      <section className="relative flex min-h-dvh items-end overflow-hidden bg-brand">
+      <section id="home-hero" className="relative flex min-h-dvh items-end overflow-hidden bg-brand">
         <HeroVideo posterUrl={HERO_POSTER} className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand from-10% via-brand/55 via-45% to-brand/10" />
         <div className="animate-fade-up relative mx-auto w-full max-w-[1240px] px-6 pt-16 pb-16 sm:px-8 md:pb-32">

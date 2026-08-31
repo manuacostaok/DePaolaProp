@@ -52,20 +52,33 @@ export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
+  const [footTop, setFootTop] = useState<number | null>(null);
   const tintRef = useRef<HTMLDivElement>(null);
+  const footNavRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isHome) return;
-    // El corte a la barra sólida pasa recién cuando se scrolleó casi una
-    // pantalla completa (el hero mide 100dvh) — pero un degradé oscuro
-    // detrás del logo ya empieza a notarse apenas se scrollea un poco
-    // (como en elliman.com), para que la respuesta no se sienta recién
-    // "al terminar de bajar". El degradé se actualiza directo por CSS
-    // var (no por estado de React) para no re-renderizar en cada pixel.
+    // La barra de links vive pegada al pie real del hero (#home-hero, el
+    // <section> de app/page.tsx), no al fondo de la pantalla: sigue la
+    // posición del borde inferior del hero a medida que se scrollea (se
+    // "tapa" con el resto de la página como cualquier otro contenido) y
+    // recién cuando ese borde desaparece bajo la barra sólida de arriba
+    // (es decir, el pie del hero deja de verse) se corta a la barra
+    // sólida de siempre. Un degradé oscuro detrás del logo ya empieza a
+    // notarse apenas se scrollea un poco (como en elliman.com), para que
+    // la respuesta no se sienta recién "al terminar de bajar". El
+    // degradé se actualiza directo por CSS var (no por estado de React)
+    // para no re-renderizar en cada pixel.
+    const heroEl = document.getElementById("home-hero");
+
     const onScroll = () => {
       const tint = Math.min(1, window.scrollY / SCROLL_TINT_RAMP_PX);
       tintRef.current?.style.setProperty("--scroll-tint", String(tint));
-      setScrolled(window.scrollY > window.innerHeight - HEADER_HEIGHT * 1.5);
+
+      const heroBottom = heroEl ? heroEl.getBoundingClientRect().bottom : window.innerHeight - window.scrollY;
+      const footHeight = footNavRef.current?.offsetHeight ?? 0;
+      setFootTop(heroBottom - footHeight);
+      setScrolled(heroBottom <= HEADER_HEIGHT);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -127,7 +140,11 @@ export function Header() {
       </header>
 
       {transparent && (
-        <div className="fixed inset-x-0 bottom-0 z-50 hidden md:block">
+        <div
+          ref={footNavRef}
+          className="fixed inset-x-0 z-50 hidden md:block"
+          style={footTop == null ? { bottom: 0 } : { top: footTop }}
+        >
           <div className="mx-auto flex max-w-[1240px] items-center justify-between px-6 py-6 sm:px-8">
             <nav className="flex items-center gap-7">
               <NavLinks items={LEFT_NAV} transparent />
