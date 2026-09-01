@@ -27,7 +27,7 @@ export const MAIN_NAV: NavItem[] = [
     ],
   },
   { label: "Zonas", href: "/zonas" },
-  { label: "Emprendimientos", href: "/emprendimientos" },
+  { label: "Campus Norte", href: "/emprendimientos" },
   { label: "Vender", href: "/vender" },
   { label: "Invertir", href: "/invertir" },
   { label: "Insights", href: "/insights" },
