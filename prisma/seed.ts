@@ -34,13 +34,14 @@ async function seedOfficesAndAgent() {
     },
   });
 
-  // Contraseña de PRUEBA para poder entrar a /admin ahora — cambiarla antes
-  // de un lanzamiento real (Fase 19). Login: contacto@depaolapropiedades.com
+  // Contraseña de PRUEBA solo para el alta inicial de este agente — si ya
+  // existe (p.ej. porque ya cambiaron la contraseña real en producción),
+  // el seed no debe pisarla en cada corrida, por eso "update: {}" acá.
   const testPasswordHash = await hashPassword("45kzeOAlad9G");
 
   await prisma.agent.upsert({
     where: { slug: "tatiana-de-paola" },
-    update: { role: "ADMINISTRADOR", passwordHash: testPasswordHash },
+    update: {},
     create: {
       slug: "tatiana-de-paola",
       name: "Tatiana De Paola",
