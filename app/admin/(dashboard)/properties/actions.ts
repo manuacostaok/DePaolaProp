@@ -23,6 +23,7 @@ export interface PropertyFormInput {
   hasGarage: boolean;
   isFeatured: boolean;
   isSample: boolean;
+  needsReview: boolean;
   neighborhoodId: string;
   address: string;
   agentId: string;
@@ -71,6 +72,7 @@ export async function createProperty(input: PropertyFormInput) {
       hasGarage: input.hasGarage,
       isFeatured: input.isFeatured,
       isSample: input.isSample,
+      needsReview: input.needsReview,
       publishedAt: new Date(),
       agent: { connect: { id: input.agentId } },
       office: input.officeId ? { connect: { id: input.officeId } } : undefined,
@@ -110,6 +112,7 @@ export async function updateProperty(propertyId: string, input: PropertyFormInpu
       hasGarage: input.hasGarage,
       isFeatured: input.isFeatured,
       isSample: input.isSample,
+      needsReview: input.needsReview,
       agent: { connect: { id: input.agentId } },
       office: input.officeId ? { connect: { id: input.officeId } } : { disconnect: true },
       location: {

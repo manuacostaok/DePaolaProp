@@ -147,6 +147,10 @@ export function PropertyForm({ propertyId, initial, neighborhoodOptions, agentOp
           <input type="checkbox" checked={form.isSample} onChange={(e) => update("isSample", e.target.checked)} />
           Marcar como ejemplo (isSample)
         </label>
+        <label className="flex items-center gap-2 text-sm text-ink">
+          <input type="checkbox" checked={form.needsReview} onChange={(e) => update("needsReview", e.target.checked)} />
+          Pendiente de revisión
+        </label>
       </div>
 
       <Textarea

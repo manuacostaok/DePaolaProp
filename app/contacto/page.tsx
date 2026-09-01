@@ -54,6 +54,7 @@ export default async function ContactoPage() {
               <p className="font-semibold text-ink">{office.name}</p>
               <p className="text-sm text-ink-soft">{office.address}</p>
               {office.phone && <p className="text-sm text-ink-soft">{office.phone}</p>}
+              {office.hours && <p className="text-sm text-ink-soft">{office.hours}</p>}
             </div>
           ))}
           <Link href="/sucursales" className="text-sm underline">

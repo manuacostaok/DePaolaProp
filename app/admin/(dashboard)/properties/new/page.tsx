@@ -20,6 +20,7 @@ const EMPTY: PropertyFormInput = {
   hasGarage: false,
   isFeatured: false,
   isSample: false,
+  needsReview: false,
   neighborhoodId: "",
   address: "",
   agentId: "",

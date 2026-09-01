@@ -18,9 +18,14 @@ export default async function AdminPropertiesPage() {
     <div>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl">Propiedades</h1>
-        <Link href="/admin/properties/new" className={buttonVariants({ size: "sm" })}>
-          Nueva propiedad
-        </Link>
+        <div className="flex gap-3">
+          <Link href="/admin/properties/import" className={buttonVariants({ variant: "outline", size: "sm" })}>
+            Importar CSV
+          </Link>
+          <Link href="/admin/properties/new" className={buttonVariants({ size: "sm" })}>
+            Nueva propiedad
+          </Link>
+        </div>
       </div>
 
       <div className="overflow-x-auto rounded-card border border-line bg-white">
@@ -45,6 +50,11 @@ export default async function AdminPropertiesPage() {
                   {property.isSample && (
                     <Badge variant="dark" className="ml-2">
                       Ejemplo
+                    </Badge>
+                  )}
+                  {property.needsReview && (
+                    <Badge variant="dark" className="ml-2">
+                      A revisar
                     </Badge>
                   )}
                 </td>

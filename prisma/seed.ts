@@ -8,9 +8,15 @@ const prisma = new PrismaClient({ adapter });
 // Datos reales de De Paola Propiedades (brief, sección 5) — no son de ejemplo,
 // por eso se siembran directo acá en vez de quedar hardcodeados en componentes.
 async function seedOfficesAndAgent() {
+  // Fuente: Argenprop. Mismo horario cargado para ambas sucursales por
+  // ahora — a confirmar si difiere entre Florida y Villa Martelli. Se
+  // actualiza explícitamente en el "update" (no "{}") porque estas oficinas
+  // ya existen en la base y necesitan el horario aplicado retroactivamente.
+  const officeHours = "Lunes a viernes de 9:30 a 19:00 hs. Sábados de 9:30 a 13:00 hs.";
+
   await prisma.office.upsert({
     where: { id: "office-villa-martelli" },
-    update: {},
+    update: { hours: officeHours },
     create: {
       id: "office-villa-martelli",
       name: "Villa Martelli",
@@ -18,12 +24,13 @@ async function seedOfficesAndAgent() {
       phone: "4709-1179",
       whatsapp: "+5491128755265",
       email: "contacto@depaolapropiedades.com",
+      hours: officeHours,
     },
   });
 
   await prisma.office.upsert({
     where: { id: "office-florida" },
-    update: {},
+    update: { hours: officeHours },
     create: {
       id: "office-florida",
       name: "Florida",
@@ -31,6 +38,7 @@ async function seedOfficesAndAgent() {
       phone: "4709-6164",
       whatsapp: "+5491128755265",
       email: "contacto@depaolapropiedades.com",
+      hours: officeHours,
     },
   });
 
@@ -459,9 +467,21 @@ async function seedCampusNorte() {
   const villaMartelli = await prisma.neighborhood.findUniqueOrThrow({ where: { slug: "villa-martelli" } });
   const coords = NEIGHBORHOOD_COORDS["villa-martelli"];
 
+  // El desarrollo ya existe en la base — se actualizan explícitamente estos
+  // campos (en vez de "update: {}") porque son datos nuevos que deben
+  // aplicarse a la fila existente: superficie de terreno, puntos de
+  // referencia cercanos, y la corrección que quita "Parque Sarmiento" de la
+  // dirección (ese parque está asociado a otra publicación de De Paola cerca
+  // de Munro/Florida, no a Campus Norte — no queremos publicar un dato de
+  // ubicación que no podamos respaldar).
   const development = await prisma.development.upsert({
     where: { slug: "campus-norte" },
-    update: {},
+    update: {
+      landArea: 8500,
+      address: "Cerca del cruce de Av. General Paz y Panamericana, Villa Martelli, Vicente López — a metros del Dot Baires Shopping.",
+      nearbyLandmarks:
+        "A 700 m del cruce Av. General Paz / Autopista Panamericana. Cerca de Dot Baires Shopping y de empresas como Philips Argentina, Mercado Libre, Georgalos y Pizzini.",
+    },
     create: {
       slug: "campus-norte",
       name: "Campus Norte",
@@ -471,7 +491,10 @@ async function seedCampusNorte() {
       totalUnits: 140,
       unitTypes: "1, 2 y 3 ambientes, de 36 a 90 m²",
       amenitiesArea: 1200,
-      address: "Cerca del cruce de Av. General Paz y Panamericana, Villa Martelli, Vicente López — a metros del Dot Baires Shopping y Parque Sarmiento.",
+      landArea: 8500,
+      address: "Cerca del cruce de Av. General Paz y Panamericana, Villa Martelli, Vicente López — a metros del Dot Baires Shopping.",
+      nearbyLandmarks:
+        "A 700 m del cruce Av. General Paz / Autopista Panamericana. Cerca de Dot Baires Shopping y de empresas como Philips Argentina, Mercado Libre, Georgalos y Pizzini.",
       lat: coords.lat,
       lng: coords.lng,
       financing: "Campus Norte cuenta con financiación propia del desarrollador — consultá condiciones y planes de pago con un asesor de De Paola.",

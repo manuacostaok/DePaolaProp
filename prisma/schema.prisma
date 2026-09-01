@@ -172,6 +172,8 @@ model Property {
   status        PropertyStatus    @default(ACTIVA)
   isFeatured    Boolean           @default(false)
   isSample      Boolean           @default(false)
+  needsReview   Boolean           @default(false)
+  sourceUrl     String?
   publishedAt   DateTime?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
@@ -230,6 +232,8 @@ model Development {
   totalUnits    Int?
   unitTypes     String?
   amenitiesArea Float?
+  landArea      Float?
+  nearbyLandmarks String?
   address       String?
   lat           Float?
   lng           Float?

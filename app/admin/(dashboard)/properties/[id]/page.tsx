@@ -36,6 +36,7 @@ export default async function EditPropertyPage({ params }: { params: Promise<{ i
     hasGarage: property.hasGarage,
     isFeatured: property.isFeatured,
     isSample: property.isSample,
+    needsReview: property.needsReview,
     neighborhoodId: property.location.neighborhoodId,
     address: property.location.address ?? "",
     agentId: property.agentId,

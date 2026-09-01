@@ -23,7 +23,10 @@ export default async function SucursalesPage() {
         {offices.map((office) => (
           <div key={office.id} className="rounded-card border border-line bg-white p-6">
             <h2 className="mb-2">{office.name}</h2>
-            <p className="mb-4 text-ink-soft">{office.address}</p>
+            <div className="mb-4">
+              <p className="text-ink-soft">{office.address}</p>
+              {office.hours && <p className="mt-1 text-sm text-ink-soft">{office.hours}</p>}
+            </div>
             <div className="mb-4 flex h-40 items-center justify-center rounded-control bg-bg-alt text-sm text-ink-soft">
               Mapa de {office.name}
             </div>

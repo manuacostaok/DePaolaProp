@@ -57,6 +57,7 @@ export default async function DevelopmentDetailPage({ params }: { params: Promis
     development.totalUnits != null ? { label: "Unidades", value: String(development.totalUnits) } : null,
     development.unitTypes ? { label: "Tipologías", value: development.unitTypes } : null,
     development.amenitiesArea != null ? { label: "Amenities", value: `${development.amenitiesArea} m²` } : null,
+    development.landArea != null ? { label: "Terreno", value: `${development.landArea} m²` } : null,
   ].filter((fact): fact is { label: string; value: string } => fact !== null);
 
   return (
@@ -131,6 +132,7 @@ export default async function DevelopmentDetailPage({ params }: { params: Promis
           )}
 
           <h2 className="mt-6 mb-2">Ubicación</h2>
+          {development.nearbyLandmarks && <p className="mb-3 text-sm text-ink-soft">{development.nearbyLandmarks}</p>}
           {development.lat != null && development.lng != null ? (
             <LocationMap name={development.name} address={development.address} lat={development.lat} lng={development.lng} />
           ) : (
