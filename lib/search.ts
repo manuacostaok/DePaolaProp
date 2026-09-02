@@ -130,8 +130,12 @@ function buildOrderBy(orden?: string): Prisma.PropertyOrderByWithRelationInput[]
       return [{ currency: { sort: "desc", nulls: "last" } }, { price: { sort: "asc", nulls: "last" } }];
     case "precio_desc":
       return [{ currency: { sort: "desc", nulls: "last" } }, { price: { sort: "desc", nulls: "last" } }];
-    case "superficie":
+    case "superficie_asc":
+      return [{ isSample: "asc" }, { coveredArea: { sort: "asc", nulls: "last" } }];
+    case "superficie_desc":
       return [{ isSample: "asc" }, { coveredArea: { sort: "desc", nulls: "last" } }];
+    case "antiguas":
+      return [{ isSample: "asc" }, { publishedAt: { sort: "asc", nulls: "last" } }];
     default:
       return [{ isSample: "asc" }, { publishedAt: "desc" }];
   }

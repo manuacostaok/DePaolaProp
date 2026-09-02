@@ -1,5 +1,23 @@
 import { test, expect } from "@playwright/test";
 
+test("Chips de filtros aplicados: cada uno saca solo ese filtro puntual", async ({ page }) => {
+  await page.goto("/propiedades?zona=martinez&operacion=venta&cochera=1");
+
+  // El "×" es aria-hidden (decorativo) — el nombre accesible del chip es
+  // solo la etiqueta del filtro.
+  await expect(page.getByRole("link", { name: "Venta", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Martínez", exact: true })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Cochera", exact: true })).toBeVisible();
+
+  const cocheraChip = page.getByRole("link", { name: "Cochera", exact: true });
+  await expect(cocheraChip).toHaveAttribute("href", "/propiedades?zona=martinez&operacion=venta");
+
+  await cocheraChip.click();
+  await expect(page).toHaveURL(/zona=martinez&operacion=venta$/);
+  await expect(page.getByRole("link", { name: "Cochera", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Martínez", exact: true })).toBeVisible();
+});
+
 test("El buscador filtra por zona y operación", async ({ page }) => {
   await page.goto("/propiedades?zona=martinez&operacion=venta");
 
@@ -136,4 +154,44 @@ test("Orden: precio mayor a menor arranca en el USD más caro", async ({ page })
 
   const firstCard = page.locator('main a[href^="/propiedades/"]').first();
   await expect(firstCard).toHaveAttribute("href", "/propiedades/casa-6-ambientes-jardin-martinez");
+});
+
+async function hrefOrder(page: import("@playwright/test").Page) {
+  return page.locator('main a[href^="/propiedades/"]').evaluateAll((els) => els.map((el) => el.getAttribute("href")));
+}
+
+test("Orden: publicaciones más antiguas invierte el orden de más recientes", async ({ page }) => {
+  await page.goto("/propiedades");
+  const recientes = await hrefOrder(page);
+
+  await page.getByLabel("Ordenar por").selectOption("antiguas");
+  await expect(page).toHaveURL(/orden=antiguas/);
+  const antiguas = await hrefOrder(page);
+
+  expect(antiguas[0]).not.toBe(recientes[0]);
+});
+
+test("Orden: mayor/menor superficie usa coveredArea (totalArea está vacío en todo el inventario real)", async ({ page }) => {
+  // casa-6-ambientes-jardin-martinez tiene la mayor superficie cubierta
+  // real (260m²), departamento-1-ambiente-alquiler-vicente-lopez la menor
+  // (32m²) — se compara la posición relativa entre ambas, no la posición
+  // absoluta #1, porque 2 propiedades reales sin superficie cargada
+  // (coveredArea null) empatan y quedan agrupadas antes que las de
+  // ejemplo, sin orden determinístico entre sí.
+  await page.goto("/propiedades");
+
+  await page.getByLabel("Ordenar por").selectOption("superficie_desc");
+  await expect(page).toHaveURL(/orden=superficie_desc/);
+  const desc = await hrefOrder(page);
+  const mayorIdx = desc.indexOf("/propiedades/casa-6-ambientes-jardin-martinez");
+  const menorIdx = desc.indexOf("/propiedades/departamento-1-ambiente-alquiler-vicente-lopez");
+  expect(mayorIdx).toBeGreaterThanOrEqual(0);
+  expect(mayorIdx).toBeLessThan(menorIdx);
+
+  await page.getByLabel("Ordenar por").selectOption("superficie_asc");
+  await expect(page).toHaveURL(/orden=superficie_asc/);
+  const asc = await hrefOrder(page);
+  const mayorIdxAsc = asc.indexOf("/propiedades/casa-6-ambientes-jardin-martinez");
+  const menorIdxAsc = asc.indexOf("/propiedades/departamento-1-ambiente-alquiler-vicente-lopez");
+  expect(menorIdxAsc).toBeLessThan(mayorIdxAsc);
 });

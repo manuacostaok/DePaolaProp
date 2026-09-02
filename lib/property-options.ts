@@ -24,11 +24,25 @@ export const CONDITION_OPTIONS: { value: PropertyCondition; label: string }[] = 
   { value: "A_REFACCIONAR", label: "A refaccionar" },
 ];
 
-export type PropertyOrder = "recientes" | "precio_asc" | "precio_desc" | "superficie";
+export type PropertyOrder =
+  | "recientes"
+  | "antiguas"
+  | "precio_asc"
+  | "precio_desc"
+  | "superficie_asc"
+  | "superficie_desc";
 
+// El competidor (anasimeone.com) separa "superficie total" de "superficie
+// terreno" — Property acá solo distingue coveredArea/totalArea, y
+// totalArea está null en el 100% del inventario activo hoy (verificado
+// contra producción). Ordenar por coveredArea es lo único que hoy separa
+// resultados de verdad; agregar un segundo criterio de superficie sería
+// una opción que no ordena nada con los datos reales actuales.
 export const ORDER_SELECT_OPTIONS: { value: PropertyOrder; label: string }[] = [
-  { value: "recientes", label: "Más recientes" },
-  { value: "precio_asc", label: "Precio: menor a mayor" },
-  { value: "precio_desc", label: "Precio: mayor a menor" },
-  { value: "superficie", label: "Superficie" },
+  { value: "recientes", label: "Publicaciones más recientes" },
+  { value: "antiguas", label: "Publicaciones más antiguas" },
+  { value: "precio_desc", label: "Mayor precio" },
+  { value: "precio_asc", label: "Menor precio" },
+  { value: "superficie_desc", label: "Mayor superficie" },
+  { value: "superficie_asc", label: "Menor superficie" },
 ];

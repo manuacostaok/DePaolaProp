@@ -1,7 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { getNeighborhoodOptions, getFeatureOptions } from "@/lib/search";
+import { PROPERTY_TYPE_LABELS } from "@/lib/property-options";
 import { FilterFields, type FilterFieldsProps } from "@/components/search/filter-fields";
 import { FilterPanelMobile } from "@/components/search/filter-panel-mobile";
+import { FilterChips, type FilterChip } from "@/components/search/filter-chips";
 
 export interface FilterPanelProps {
   basePath: string;
@@ -23,13 +25,64 @@ function countActiveFilters(values: FilterFieldsProps["values"], showOperacion: 
   return count;
 }
 
+function buildChips(
+  values: FilterFieldsProps["values"],
+  showOperacion: boolean,
+  showZona: boolean,
+  neighborhoodOptions: { value: string; label: string }[],
+  featureOptions: { value: string; label: string }[],
+): FilterChip[] {
+  const chips: FilterChip[] = [];
+
+  if (showOperacion && values.operacion) {
+    chips.push({ keysToRemove: ["operacion"], label: values.operacion === "venta" ? "Venta" : "Alquiler" });
+  }
+  if (showZona && values.zona) {
+    const zona = neighborhoodOptions.find((o) => o.value === values.zona);
+    if (zona) chips.push({ keysToRemove: ["zona"], label: zona.label });
+  }
+  if (values.tipo && values.tipo in PROPERTY_TYPE_LABELS) {
+    chips.push({ keysToRemove: ["tipo"], label: PROPERTY_TYPE_LABELS[values.tipo as keyof typeof PROPERTY_TYPE_LABELS] });
+  }
+  if (values.ambientes) {
+    chips.push({ keysToRemove: ["ambientes"], label: `${values.ambientes}+ ambientes` });
+  }
+  if (values.precioMin || values.precioMax) {
+    const moneda = values.moneda ?? "USD";
+    const label =
+      values.precioMin && values.precioMax
+        ? `${moneda} ${values.precioMin} - ${values.precioMax}`
+        : values.precioMin
+          ? `Desde ${moneda} ${values.precioMin}`
+          : `Hasta ${moneda} ${values.precioMax}`;
+    chips.push({ keysToRemove: ["precioMin", "precioMax"], label });
+  }
+  if (values.cochera === "1") {
+    chips.push({ keysToRemove: ["cochera"], label: "Cochera" });
+  }
+  const selectedFeatures = Array.isArray(values.caracteristicas)
+    ? values.caracteristicas
+    : values.caracteristicas
+      ? [values.caracteristicas]
+      : [];
+  for (const value of selectedFeatures) {
+    const feature = featureOptions.find((o) => o.value === value);
+    if (feature) chips.push({ keysToRemove: ["caracteristicas"], value, label: feature.label });
+  }
+
+  return chips;
+}
+
 export async function FilterPanel({ basePath, showOperacion = false, showZona = true, values }: FilterPanelProps) {
   const [neighborhoodOptions, featureOptions] = await Promise.all([getNeighborhoodOptions(), getFeatureOptions()]);
   const activeCount = countActiveFilters(values, showOperacion, showZona);
   const fieldsProps: FilterFieldsProps = { showOperacion, showZona, values, neighborhoodOptions, featureOptions };
+  const chips = buildChips(values, showOperacion, showZona, neighborhoodOptions, featureOptions);
 
   return (
     <>
+      <FilterChips basePath={basePath} chips={chips} />
+
       {/* Desktop: form siempre visible, sin cambios de comportamiento. */}
       <form
         method="get"
