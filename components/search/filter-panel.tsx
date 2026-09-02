@@ -2,7 +2,7 @@ import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { PROPERTY_TYPE_OPTIONS, ROOMS_OPTIONS } from "@/lib/property-options";
-import { getNeighborhoodOptions } from "@/lib/search";
+import { getNeighborhoodOptions, getFeatureOptions } from "@/lib/search";
 
 export interface FilterPanelProps {
   basePath: string;
@@ -17,11 +17,17 @@ export interface FilterPanelProps {
     precioMax?: string;
     ambientes?: string;
     cochera?: string;
+    caracteristicas?: string | string[];
   };
 }
 
 export async function FilterPanel({ basePath, showOperacion = false, showZona = true, values }: FilterPanelProps) {
-  const neighborhoodOptions = await getNeighborhoodOptions();
+  const [neighborhoodOptions, featureOptions] = await Promise.all([getNeighborhoodOptions(), getFeatureOptions()]);
+  const selectedFeatures = Array.isArray(values.caracteristicas)
+    ? values.caracteristicas
+    : values.caracteristicas
+      ? [values.caracteristicas]
+      : [];
 
   return (
     <form
@@ -84,6 +90,25 @@ export async function FilterPanel({ basePath, showOperacion = false, showZona = 
         <input type="checkbox" name="cochera" value="1" defaultChecked={values.cochera === "1"} />
         Cochera
       </label>
+      {featureOptions.length > 0 && (
+        <fieldset className="m-0 flex flex-wrap gap-3 border-0 p-0">
+          <legend className="sr-only">Características</legend>
+          {featureOptions.map((feature) => (
+            <label
+              key={feature.value}
+              className="flex items-center gap-2 rounded-control border border-line px-3.5 py-2.5 text-sm text-ink"
+            >
+              <input
+                type="checkbox"
+                name="caracteristicas"
+                value={feature.value}
+                defaultChecked={selectedFeatures.includes(feature.value)}
+              />
+              {feature.label}
+            </label>
+          ))}
+        </fieldset>
+      )}
       <Button type="submit">Buscar</Button>
       {basePath && (
         <a href={basePath} className="flex items-center text-sm text-ink-soft underline">

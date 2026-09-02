@@ -10,6 +10,18 @@ export interface PropertySearchInput {
   precioMax?: string;
   ambientes?: string;
   cochera?: string;
+  caracteristicas?: string | string[];
+  orden?: string;
+}
+
+// Normaliza para deduplicar variantes de tipeo de la misma característica
+// (ej. "jardín" vs "jardin" cargadas por distintos agentes) sin tocar los
+// datos reales en la base — el filtro sigue matcheando todas las filas.
+function normalizeFeatureKey(key: string) {
+  return key
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase();
 }
 
 export interface PropertyResult {
@@ -79,15 +91,51 @@ function buildWhere(params: PropertySearchInput, fixedOperation?: OperationType)
   const ambientes = params.ambientes ? Number(params.ambientes) : undefined;
   if (ambientes && ambientes > 0) where.rooms = { gte: ambientes };
 
+  const caracteristicas = Array.isArray(params.caracteristicas)
+    ? params.caracteristicas
+    : params.caracteristicas
+      ? [params.caracteristicas]
+      : [];
+  if (caracteristicas.length > 0) {
+    const rawKeys = caracteristicas.flatMap((c) => c.split(","));
+    where.features = { some: { key: { in: rawKeys } } };
+  }
+
   return where;
+}
+
+function buildOrderBy(orden?: string): Prisma.PropertyOrderByWithRelationInput[] {
+  // Ordenar por precio muestra TODO el inventario ordenado (ejemplo o no) —
+  // alguien ordenando por precio quiere ver el universo completo, no que
+  // las propiedades de ejemplo se escondan al final como en el resto del
+  // buscador. Se agrupa por moneda primero: el inventario real mezcla ARS
+  // y USD (ej. el local de Florida en ARS junto al resto en USD) y comparar
+  // esos números directamente daría un orden sin sentido (700.000 ARS no es
+  // "más caro" que USD 520.000). El grupo USD va siempre primero (es la
+  // moneda de casi todo el inventario y la que ya viene preseleccionada en
+  // el filtro de moneda) para que "menor a mayor" no arranque mostrando un
+  // número grande en ARS antes que los USD chicos — confuso aunque sea
+  // técnicamente correcto. Las que todavía no tienen precio cargado
+  // ("Consultar precio") quedan al final de todo, no se pierden.
+  switch (orden) {
+    case "precio_asc":
+      return [{ currency: { sort: "desc", nulls: "last" } }, { price: { sort: "asc", nulls: "last" } }];
+    case "precio_desc":
+      return [{ currency: { sort: "desc", nulls: "last" } }, { price: { sort: "desc", nulls: "last" } }];
+    case "superficie":
+      return [{ isSample: "asc" }, { coveredArea: { sort: "desc", nulls: "last" } }];
+    default:
+      return [{ isSample: "asc" }, { publishedAt: "desc" }];
+  }
 }
 
 export async function searchProperties(params: PropertySearchInput, fixedOperation?: OperationType) {
   const where = buildWhere(params, fixedOperation);
+  const orderBy = buildOrderBy(params.orden);
 
   const properties = await prisma.property.findMany({
     where,
-    orderBy: [{ isSample: "asc" }, { publishedAt: "desc" }],
+    orderBy,
     include: PROPERTY_INCLUDE,
   });
 
@@ -108,6 +156,38 @@ export async function searchProperties(params: PropertySearchInput, fixedOperati
   });
 
   return { results: fallback.map(toResult), isFallback: true };
+}
+
+// Agrupa por key normalizada (ver normalizeFeatureKey) para no mostrar
+// "jardín" y "jardin" como dos checkboxes separados por una diferencia de
+// tipeo — el value junta todas las keys reales con esa forma normalizada,
+// separadas por coma, para que buildWhere matchee todas las filas reales
+// sin tener que tocar los datos en la base.
+//
+// "garage"/"cochera" se excluyen a propósito: son la misma feature cargada
+// con dos keys distintas Y ya existe un checkbox "Cochera" dedicado en el
+// form (ligado al campo hasGarage) — sumarlas acá duplicaría ese control
+// con dos casillas más para el mismo concepto.
+const EXCLUDED_FEATURE_KEYS = new Set(["cochera", "garage"]);
+
+export async function getFeatureOptions() {
+  const features = await prisma.propertyFeature.findMany({ distinct: ["key"], select: { key: true, label: true } });
+
+  const groups = new Map<string, { label: string; rawKeys: string[] }>();
+  for (const feature of features) {
+    const normalized = normalizeFeatureKey(feature.key);
+    if (EXCLUDED_FEATURE_KEYS.has(normalized)) continue;
+    const existing = groups.get(normalized);
+    if (existing) {
+      existing.rawKeys.push(feature.key);
+    } else {
+      groups.set(normalized, { label: feature.label, rawKeys: [feature.key] });
+    }
+  }
+
+  return Array.from(groups.values())
+    .sort((a, b) => a.label.localeCompare(b.label, "es"))
+    .map((group) => ({ value: group.rawKeys.join(","), label: group.label }));
 }
 
 export async function getNeighborhoodOptions() {

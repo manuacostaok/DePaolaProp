@@ -23,3 +23,12 @@ export const CONDITION_OPTIONS: { value: PropertyCondition; label: string }[] = 
   { value: "BUENO", label: "Bueno" },
   { value: "A_REFACCIONAR", label: "A refaccionar" },
 ];
+
+export type PropertyOrder = "recientes" | "precio_asc" | "precio_desc" | "superficie";
+
+export const ORDER_SELECT_OPTIONS: { value: PropertyOrder; label: string }[] = [
+  { value: "recientes", label: "Más recientes" },
+  { value: "precio_asc", label: "Precio: menor a mayor" },
+  { value: "precio_desc", label: "Precio: mayor a menor" },
+  { value: "superficie", label: "Superficie" },
+];

@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { PropertyCard } from "@/components/ui/property-card";
 import { Callout } from "@/components/ui/callout";
+import { Select } from "@/components/ui/select";
 import { cn } from "@/lib/cn";
 import { useFavorites } from "@/lib/use-favorites";
 import { trackEvent } from "@/lib/analytics";
+import { ORDER_SELECT_OPTIONS } from "@/lib/property-options";
 import type { PropertyResult } from "@/lib/search";
 
 const PropertyMap = dynamic(() => import("@/components/search/property-map").then((m) => m.PropertyMap), {
@@ -19,6 +21,18 @@ export function SearchResults({ results, isFallback }: { results: PropertyResult
   const [view, setView] = useState<"lista" | "mapa">("lista");
   const { isFavorite, toggle } = useFavorites();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  function handleOrderChange(orden: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (orden === "recientes") {
+      params.delete("orden");
+    } else {
+      params.set("orden", orden);
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  }
 
   useEffect(() => {
     // El form de filtros es un GET tradicional (sin JS, indexable — Fase 3
@@ -32,24 +46,33 @@ export function SearchResults({ results, isFallback }: { results: PropertyResult
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between gap-4">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <p className="text-sm text-ink-soft">
           {results.length} {results.length === 1 ? "propiedad" : "propiedades"}
         </p>
-        <div className="flex rounded-control border border-line p-1">
-          {(["lista", "mapa"] as const).map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => setView(option)}
-              className={cn(
-                "rounded-[3px] px-4 py-1.5 text-sm font-medium capitalize",
-                view === option ? "bg-brand text-white" : "text-ink-soft",
-              )}
-            >
-              {option}
-            </button>
-          ))}
+        <div className="flex items-center gap-3">
+          <Select
+            aria-label="Ordenar por"
+            className="w-48"
+            defaultValue={searchParams.get("orden") ?? "recientes"}
+            onChange={(e) => handleOrderChange(e.target.value)}
+            options={ORDER_SELECT_OPTIONS}
+          />
+          <div className="flex rounded-control border border-line p-1">
+            {(["lista", "mapa"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setView(option)}
+                className={cn(
+                  "rounded-[3px] px-4 py-1.5 text-sm font-medium capitalize",
+                  view === option ? "bg-brand text-white" : "text-ink-soft",
+                )}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
