@@ -161,12 +161,8 @@ export function Header() {
                 Tasá tu propiedad
               </Link>
             </span>
-            <div
-              className={cn("transition-opacity duration-300 md:hidden", transparent ? "opacity-0" : "opacity-100")}
-              inert={transparent}
-              aria-hidden={transparent}
-            >
-              <MobileMenu light={false} />
+            <div className="md:hidden">
+              <MobileMenu light={transparent} />
             </div>
           </div>
         </div>
