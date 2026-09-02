@@ -12,6 +12,7 @@ import { DevelopmentLeadForm } from "@/components/leads/development-lead-form";
 import { LocationMap } from "@/components/development/location-map";
 import { JsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/site-url";
+import { CONSTRUCTION_STATUS_LABELS } from "@/lib/development-options";
 
 export const revalidate = 300;
 
@@ -101,6 +102,11 @@ export default async function DevelopmentDetailPage({ params }: { params: Promis
           />
 
           <Badge className="mb-2.5">Emprendimiento</Badge>
+          {development.constructionStatus && (
+            <Badge variant="outline" className="mb-2.5 ml-2">
+              {CONSTRUCTION_STATUS_LABELS[development.constructionStatus]}
+            </Badge>
+          )}
           {development.isSample && (
             <Badge variant="dark" className="mb-2.5 ml-2">
               Ejemplo

@@ -68,6 +68,12 @@ enum NewsletterSegment {
   INVERSOR
 }
 
+enum ConstructionStatus {
+  EN_POZO
+  EN_CONSTRUCCION
+  TERMINADO
+}
+
 model Office {
   id        String   @id @default(cuid())
   name      String
@@ -242,6 +248,10 @@ model Development {
   slug          String   @unique
   tagline       String?
   description   String
+  // Opcional a propósito: Campus Norte (el único emprendimiento real hoy)
+  // no tiene este dato cargado — no se inventa un estado de obra sin
+  // confirmarlo con el cliente. El badge/filtro se ocultan cuando es null.
+  constructionStatus ConstructionStatus?
   totalUnits    Int?
   unitTypes     String?
   amenitiesArea Float?

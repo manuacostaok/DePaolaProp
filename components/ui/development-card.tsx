@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ConstructionStatus } from "@prisma/client";
 import { Badge } from "@/components/ui/badge";
+import { CONSTRUCTION_STATUS_LABELS } from "@/lib/development-options";
 
 export interface DevelopmentCardProps {
   href: string;
@@ -11,6 +13,9 @@ export interface DevelopmentCardProps {
   unitTypes: string | null;
   imageUrl: string;
   imageAlt: string;
+  // Opcional: hoy ningún emprendimiento real tiene este dato cargado — el
+  // badge simplemente no aparece hasta que se cargue.
+  constructionStatus?: ConstructionStatus | null;
 }
 
 export function DevelopmentCard({
@@ -22,6 +27,7 @@ export function DevelopmentCard({
   unitTypes,
   imageUrl,
   imageAlt,
+  constructionStatus,
 }: DevelopmentCardProps) {
   const specs = [totalUnits != null ? `${totalUnits} unidades` : null, unitTypes].filter(Boolean);
 
@@ -38,6 +44,11 @@ export function DevelopmentCard({
           />
         </Link>
         <Badge className="pointer-events-none absolute left-3 top-3">Emprendimiento</Badge>
+        {constructionStatus && (
+          <Badge variant="outline" className="pointer-events-none absolute right-3 top-3 bg-white">
+            {CONSTRUCTION_STATUS_LABELS[constructionStatus]}
+          </Badge>
+        )}
       </div>
       <div className="pt-4">
         <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-soft">
