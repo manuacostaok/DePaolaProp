@@ -30,6 +30,17 @@ test("El botón de favorito persiste en localStorage", async ({ page }) => {
   expect(Array.isArray(stored) && stored.length).toBeTruthy();
 });
 
+test("Galería en mobile: todas las fotos son alcanzables (regresión)", async ({ page }) => {
+  // Bug real: en mobile solo se mostraba la foto principal — las demás
+  // tenían "hidden sm:block", invisibles e inalcanzables (sin swipe, sin
+  // forma de verlas). REAL_PROPERTY_SLUG tiene 3 fotos reales sembradas.
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto(`/propiedades/${REAL_PROPERTY_SLUG}`);
+
+  const mobileGallery = page.locator(".overflow-x-auto.snap-x");
+  await expect(mobileGallery.locator("img")).toHaveCount(3);
+});
+
 test("Una propiedad inexistente devuelve 404", async ({ page }) => {
   const response = await page.goto("/propiedades/esta-propiedad-no-existe");
   expect(response?.status()).toBe(404);

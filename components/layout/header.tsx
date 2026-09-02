@@ -168,6 +168,12 @@ export function Header() {
         </div>
       </header>
 
+      {/* hidden md:block es intencional, no un bug de responsive: esta barra
+          es el respaldo de escritorio para los links de nav mientras el
+          header de arriba está transparente sobre el hero. En mobile ese
+          rol lo cumple el drawer (MobileMenu, más arriba en este archivo),
+          que compite por espacio con el resto del hero — no debe mostrarse
+          acá también. */}
       {mounted && isHome && (
         <div
           ref={footNavRef}
