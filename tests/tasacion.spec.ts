@@ -22,8 +22,8 @@ test("Tasación sin comparables suficientes: nunca muestra un número, ofrece ag
   await page.getByLabel("Teléfono / WhatsApp").fill("1100000000");
   await page.getByRole("button", { name: "Ver estimación" }).click();
 
-  await expect(page.getByText("Todavía no tenemos suficientes datos en esta zona")).toBeVisible();
-  await expect(page.getByText(/dentro de las 24hs/)).toBeVisible();
+  await expect(page.getByText(/Ya intentamos darte una estimación automática/)).toBeVisible();
+  await expect(page.getByText(/dentro de las 24-48hs/)).toBeVisible();
   await expect(page.getByText(/USD [\d.]+ – USD/)).toHaveCount(0);
 
   // Ofrece agendar
