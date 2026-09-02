@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { getSession } from "@/lib/session";
+import { requireSession } from "@/lib/session";
 import { CATEGORIES_REQUIRING_ZONE } from "@/lib/insights";
 
 export interface ArticleFormInput {
@@ -27,8 +27,8 @@ function validate(input: ArticleFormInput) {
 
 export async function createArticle(input: ArticleFormInput) {
   validate(input);
-  const session = await getSession();
-  const canPublish = session?.role === "ADMINISTRADOR";
+  const session = await requireSession();
+  const canPublish = session.role === "ADMINISTRADOR";
 
   const article = await prisma.article.create({
     data: {
@@ -49,8 +49,8 @@ export async function createArticle(input: ArticleFormInput) {
 
 export async function updateArticle(articleId: string, input: ArticleFormInput) {
   validate(input);
-  const session = await getSession();
-  const canPublish = session?.role === "ADMINISTRADOR";
+  const session = await requireSession();
+  const canPublish = session.role === "ADMINISTRADOR";
 
   const current = await prisma.article.findUniqueOrThrow({ where: { id: articleId } });
 
@@ -74,6 +74,7 @@ export async function updateArticle(articleId: string, input: ArticleFormInput) 
 }
 
 export async function deleteArticle(articleId: string) {
+  await requireSession();
   await prisma.article.delete({ where: { id: articleId } });
   revalidatePath("/admin/insights");
   redirect("/admin/insights");

@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { AgentRole } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
+import { requireSession } from "@/lib/session";
 
 export interface AgentFormInput {
   name: string;
@@ -20,6 +21,7 @@ export interface AgentFormInput {
 }
 
 export async function createAgent(input: AgentFormInput, password: string) {
+  await requireSession("ADMINISTRADOR");
   const agent = await prisma.agent.create({
     data: {
       name: input.name,
@@ -42,6 +44,7 @@ export async function createAgent(input: AgentFormInput, password: string) {
 }
 
 export async function updateAgent(agentId: string, input: AgentFormInput) {
+  await requireSession("ADMINISTRADOR");
   await prisma.agent.update({
     where: { id: agentId },
     data: {
@@ -63,5 +66,6 @@ export async function updateAgent(agentId: string, input: AgentFormInput) {
 }
 
 export async function resetAgentPassword(agentId: string, newPassword: string) {
+  await requireSession("ADMINISTRADOR");
   await prisma.agent.update({ where: { id: agentId }, data: { passwordHash: await hashPassword(newPassword) } });
 }

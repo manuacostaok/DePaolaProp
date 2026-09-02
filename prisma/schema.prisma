@@ -105,6 +105,13 @@ model Agent {
   passwordHash String?
   isActive     Boolean   @default(true)
 
+  // Rate limiting de /admin/login (Fase 22 del plan de auditoría) — 2
+  // columnas en vez de una tabla LoginAttempt aparte: lockedUntil se lee
+  // del mismo findUnique por email que el login ya hace para obtener
+  // passwordHash, no es una consulta nueva que pueda fallar aparte.
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+
   officeId String?
   office   Office? @relation(fields: [officeId], references: [id])
 

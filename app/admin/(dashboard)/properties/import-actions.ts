@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { OperationType, PropertyType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import { getSession } from "@/lib/session";
+import { requireSession } from "@/lib/session";
 import { parseCsv, csvToRecords } from "@/lib/csv";
 import { PROPERTY_TYPE_LABELS } from "@/lib/property-options";
 
@@ -110,8 +110,7 @@ function parseImageUrls(raw: string): string[] {
 }
 
 export async function importPropertiesFromCsv(csvText: string): Promise<ImportSummary> {
-  const session = await getSession();
-  if (!session) throw new Error("No autorizado.");
+  const session = await requireSession();
 
   const neighborhoods = await prisma.neighborhood.findMany();
   const normalizedNeighborhoods = neighborhoods.map((n) => ({

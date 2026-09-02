@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import { PrismaClient, OperationType, PropertyType, PropertyCondition } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { hashPassword } from "../lib/password";
@@ -42,10 +43,18 @@ async function seedOfficesAndAgent() {
     },
   });
 
-  // Contraseña de PRUEBA solo para el alta inicial de este agente — si ya
-  // existe (p.ej. porque ya cambiaron la contraseña real en producción),
-  // el seed no debe pisarla en cada corrida, por eso "update: {}" acá.
-  const testPasswordHash = await hashPassword("45kzeOAlad9G");
+  // Contraseña solo para el alta INICIAL de este agente (si la cuenta ya
+  // existe, el seed no la pisa — ver "update: {}" abajo). Nunca hardcodeada:
+  // sin SEED_ADMIN_PASSWORD en el entorno, se genera una al azar y se
+  // imprime una sola vez para que quede en un gestor de contraseñas, no en
+  // el código fuente.
+  const seedAdminPassword = process.env.SEED_ADMIN_PASSWORD ?? crypto.randomBytes(18).toString("base64url");
+  if (!process.env.SEED_ADMIN_PASSWORD) {
+    console.warn(
+      `\n⚠️  SEED_ADMIN_PASSWORD no está seteada — se generó una contraseña al azar para el alta inicial:\n   ${seedAdminPassword}\n   Guardala ahora en un gestor de contraseñas; no queda registrada en ningún otro lugar.\n`,
+    );
+  }
+  const testPasswordHash = await hashPassword(seedAdminPassword);
 
   await prisma.agent.upsert({
     where: { slug: "tatiana-de-paola" },

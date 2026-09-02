@@ -53,6 +53,19 @@ export async function getSession(): Promise<SessionPayload | null> {
   }
 }
 
+// Defensa en profundidad: las server actions de /admin dependen del
+// middleware (proxy.ts) para bloquear requests sin sesión, pero eso es una
+// dependencia implícita (una server action importada desde una ruta pública,
+// o un cambio de comportamiento de invocación en una futura versión de Next,
+// rompería la protección sin que sea obvio). Cada acción sensible llama esto
+// explícitamente en vez de confiar solo en el middleware.
+export async function requireSession(role?: AgentRole): Promise<SessionPayload> {
+  const session = await getSession();
+  if (!session) throw new Error("No autorizado.");
+  if (role && session.role !== role) throw new Error("No autorizado.");
+  return session;
+}
+
 export async function verifySessionToken(token: string): Promise<SessionPayload | null> {
   try {
     const { payload } = await jwtVerify(token, getSecretKey());

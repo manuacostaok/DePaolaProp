@@ -1,8 +1,14 @@
 import { test, expect } from "@playwright/test";
 
-// Credenciales de la cuenta de PRUEBA sembrada en prisma/seed.ts.
+// Credenciales de la cuenta admin sembrada en prisma/seed.ts. La contraseña
+// no tiene fallback hardcodeado a propósito — es la cuenta real de
+// producción (mismo DB que dev, ver AGENTS.md), así que ADMIN_TEST_PASSWORD
+// es obligatoria para correr esta suite.
 const ADMIN_EMAIL = process.env.ADMIN_TEST_EMAIL ?? "contacto@depaolapropiedades.com";
-const ADMIN_PASSWORD = process.env.ADMIN_TEST_PASSWORD ?? "45kzeOAlad9G";
+const ADMIN_PASSWORD = process.env.ADMIN_TEST_PASSWORD;
+if (!ADMIN_PASSWORD) {
+  throw new Error("Falta ADMIN_TEST_PASSWORD en el entorno para correr tests/admin.spec.ts.");
+}
 
 test("Rutas /admin sin sesión redirigen a login", async ({ page }) => {
   await page.goto("/admin/leads");

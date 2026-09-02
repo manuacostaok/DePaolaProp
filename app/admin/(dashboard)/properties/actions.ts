@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { OperationType, PropertyType, PropertyCondition, PropertyStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { requireSession } from "@/lib/session";
 
 export interface PropertyFormInput {
   title: string;
@@ -53,6 +54,7 @@ function buildFeatures(featureLabels: string) {
 }
 
 export async function createProperty(input: PropertyFormInput) {
+  await requireSession();
   const property = await prisma.property.create({
     data: {
       title: input.title,
@@ -92,6 +94,7 @@ export async function createProperty(input: PropertyFormInput) {
 }
 
 export async function updateProperty(propertyId: string, input: PropertyFormInput) {
+  await requireSession();
   await prisma.property.update({
     where: { id: propertyId },
     data: {
@@ -138,6 +141,7 @@ export async function updateProperty(propertyId: string, input: PropertyFormInpu
 }
 
 export async function deleteProperty(propertyId: string) {
+  await requireSession();
   await prisma.property.delete({ where: { id: propertyId } });
   revalidatePath("/admin/properties");
   redirect("/admin/properties");
