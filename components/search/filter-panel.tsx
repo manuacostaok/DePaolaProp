@@ -9,18 +9,26 @@ export interface FilterPanelProps {
   basePath: string;
   showOperacion?: boolean;
   showZona?: boolean;
+  showTipo?: boolean;
+  showResidentialFields?: boolean;
   values: FilterFieldsProps["values"];
 }
 
-function countActiveFilters(values: FilterFieldsProps["values"], showOperacion: boolean, showZona: boolean) {
+function countActiveFilters(
+  values: FilterFieldsProps["values"],
+  showOperacion: boolean,
+  showZona: boolean,
+  showTipo: boolean,
+  showResidentialFields: boolean,
+) {
   let count = 0;
   if (showOperacion && values.operacion) count++;
   if (showZona && values.zona) count++;
-  if (values.tipo) count++;
-  if (values.ambientes) count++;
+  if (showTipo && values.tipo) count++;
+  if (showResidentialFields && values.ambientes) count++;
   if (values.precioMin) count++;
   if (values.precioMax) count++;
-  if (values.cochera === "1") count++;
+  if (showResidentialFields && values.cochera === "1") count++;
   count += Array.isArray(values.caracteristicas) ? values.caracteristicas.length : values.caracteristicas ? 1 : 0;
   return count;
 }
@@ -29,6 +37,8 @@ function buildChips(
   values: FilterFieldsProps["values"],
   showOperacion: boolean,
   showZona: boolean,
+  showTipo: boolean,
+  showResidentialFields: boolean,
   neighborhoodOptions: { value: string; label: string }[],
   featureOptions: { value: string; label: string }[],
 ): FilterChip[] {
@@ -41,10 +51,10 @@ function buildChips(
     const zona = neighborhoodOptions.find((o) => o.value === values.zona);
     if (zona) chips.push({ keysToRemove: ["zona"], label: zona.label });
   }
-  if (values.tipo && values.tipo in PROPERTY_TYPE_LABELS) {
+  if (showTipo && values.tipo && values.tipo in PROPERTY_TYPE_LABELS) {
     chips.push({ keysToRemove: ["tipo"], label: PROPERTY_TYPE_LABELS[values.tipo as keyof typeof PROPERTY_TYPE_LABELS] });
   }
-  if (values.ambientes) {
+  if (showResidentialFields && values.ambientes) {
     chips.push({ keysToRemove: ["ambientes"], label: `${values.ambientes}+ ambientes` });
   }
   if (values.precioMin || values.precioMax) {
@@ -57,7 +67,7 @@ function buildChips(
           : `Hasta ${moneda} ${values.precioMax}`;
     chips.push({ keysToRemove: ["precioMin", "precioMax"], label });
   }
-  if (values.cochera === "1") {
+  if (showResidentialFields && values.cochera === "1") {
     chips.push({ keysToRemove: ["cochera"], label: "Cochera" });
   }
   const selectedFeatures = Array.isArray(values.caracteristicas)
@@ -73,11 +83,26 @@ function buildChips(
   return chips;
 }
 
-export async function FilterPanel({ basePath, showOperacion = false, showZona = true, values }: FilterPanelProps) {
+export async function FilterPanel({
+  basePath,
+  showOperacion = false,
+  showZona = true,
+  showTipo = true,
+  showResidentialFields = true,
+  values,
+}: FilterPanelProps) {
   const [neighborhoodOptions, featureOptions] = await Promise.all([getNeighborhoodOptions(), getFeatureOptions()]);
-  const activeCount = countActiveFilters(values, showOperacion, showZona);
-  const fieldsProps: FilterFieldsProps = { showOperacion, showZona, values, neighborhoodOptions, featureOptions };
-  const chips = buildChips(values, showOperacion, showZona, neighborhoodOptions, featureOptions);
+  const activeCount = countActiveFilters(values, showOperacion, showZona, showTipo, showResidentialFields);
+  const fieldsProps: FilterFieldsProps = {
+    showOperacion,
+    showZona,
+    showTipo,
+    showResidentialFields,
+    values,
+    neighborhoodOptions,
+    featureOptions,
+  };
+  const chips = buildChips(values, showOperacion, showZona, showTipo, showResidentialFields, neighborhoodOptions, featureOptions);
 
   return (
     <>

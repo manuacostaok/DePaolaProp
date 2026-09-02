@@ -15,6 +15,24 @@ export const PROPERTY_TYPE_OPTIONS = Object.entries(PROPERTY_TYPE_LABELS).map(([
   label,
 }));
 
+// Vocabulario sugerido para cargar características de un galpón/depósito
+// desde /admin (el campo ahí es texto libre separado por coma, no
+// checkboxes — ver components/admin/property-form.tsx). No son opciones
+// fijas del filtro de búsqueda: ese sigue siendo 100% dinámico desde
+// PropertyFeature real (lib/search.ts#getFeatureOptions) para no mostrar
+// checkboxes de características que ninguna propiedad real tiene todavía.
+export const INDUSTRIAL_FEATURE_SUGGESTIONS = [
+  "Portón levadizo",
+  "Portón corredizo",
+  "Playa de maniobras",
+  "Energía trifásica",
+  "Oficinas administrativas",
+  "Techos altos",
+  "Piso de hormigón",
+  "Puente grúa",
+  "Montacargas",
+];
+
 export const ROOMS_OPTIONS = [1, 2, 3, 4, 5].map((n) => ({ value: String(n), label: `${n}+ ambientes` }));
 
 export const CONDITION_OPTIONS: { value: PropertyCondition; label: string }[] = [

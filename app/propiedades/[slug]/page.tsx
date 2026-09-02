@@ -130,9 +130,19 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
                 <strong className="block text-ink">{property.coveredArea} m²</strong>Cubiertos
               </div>
             )}
-            <div>
-              <strong className="block text-ink">{property.hasGarage ? "Sí" : "No"}</strong>Cochera
-            </div>
+            {property.totalArea != null && (
+              <div>
+                <strong className="block text-ink">{property.totalArea} m²</strong>Totales
+              </div>
+            )}
+            {/* Cochera no aplica de la misma forma a un galpón (playa de
+                maniobras, no cochera residencial) — se oculta para ese tipo
+                en vez de mostrar "No" sin sentido de negocio. */}
+            {property.propertyType !== "GALPON" && (
+              <div>
+                <strong className="block text-ink">{property.hasGarage ? "Sí" : "No"}</strong>Cochera
+              </div>
+            )}
           </div>
 
           {property.features.length > 0 && (

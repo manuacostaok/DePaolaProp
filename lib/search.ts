@@ -75,7 +75,7 @@ function toResult(property: Prisma.PropertyGetPayload<{ include: typeof PROPERTY
   };
 }
 
-function buildWhere(params: PropertySearchInput, fixedOperation?: OperationType): Prisma.PropertyWhereInput {
+function buildWhere(params: PropertySearchInput, fixedOperation?: OperationType, fixedTipo?: PropertyType): Prisma.PropertyWhereInput {
   const where: Prisma.PropertyWhereInput = { status: "ACTIVA" };
 
   const operacion = fixedOperation ?? (params.operacion === "venta" ? "VENTA" : params.operacion === "alquiler" ? "ALQUILER" : undefined);
@@ -83,7 +83,8 @@ function buildWhere(params: PropertySearchInput, fixedOperation?: OperationType)
 
   if (params.zona) where.location = { neighborhood: { slug: params.zona } };
 
-  if (params.tipo && params.tipo in PropertyType) where.propertyType = params.tipo as PropertyType;
+  const tipo = fixedTipo ?? (params.tipo && params.tipo in PropertyType ? (params.tipo as PropertyType) : undefined);
+  if (tipo) where.propertyType = tipo;
 
   if (params.cochera === "1") where.hasGarage = true;
 
@@ -141,8 +142,8 @@ function buildOrderBy(orden?: string): Prisma.PropertyOrderByWithRelationInput[]
   }
 }
 
-export async function searchProperties(params: PropertySearchInput, fixedOperation?: OperationType) {
-  const where = buildWhere(params, fixedOperation);
+export async function searchProperties(params: PropertySearchInput, fixedOperation?: OperationType, fixedTipo?: PropertyType) {
+  const where = buildWhere(params, fixedOperation, fixedTipo);
   const orderBy = buildOrderBy(params.orden);
 
   const properties = await prisma.property.findMany({
@@ -155,10 +156,13 @@ export async function searchProperties(params: PropertySearchInput, fixedOperati
     return { results: properties.map(toResult), isFallback: false };
   }
 
-  // Sin resultados exactos: mostramos propiedades similares (misma operación,
-  // sin el resto de los filtros) en vez de una grilla vacía.
+  // Sin resultados exactos: mostramos propiedades similares (misma operación
+  // y mismo tipo fijo si lo hay, sin el resto de los filtros) en vez de una
+  // grilla vacía — en /propiedades/galpones el fallback sigue mostrando
+  // otros galpones, no propiedades de cualquier tipo.
   const fallbackWhere: Prisma.PropertyWhereInput = { status: "ACTIVA" };
   if (where.operationType) fallbackWhere.operationType = where.operationType;
+  if (where.propertyType) fallbackWhere.propertyType = where.propertyType;
 
   const fallback = await prisma.property.findMany({
     where: fallbackWhere,

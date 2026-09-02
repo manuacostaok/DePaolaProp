@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { PROPERTY_TYPE_OPTIONS, CONDITION_OPTIONS } from "@/lib/property-options";
+import { PROPERTY_TYPE_OPTIONS, CONDITION_OPTIONS, INDUSTRIAL_FEATURE_SUGGESTIONS } from "@/lib/property-options";
 import { createProperty, updateProperty, deleteProperty, type PropertyFormInput } from "@/app/admin/(dashboard)/properties/actions";
 
 export interface PropertyFormProps {
@@ -162,7 +162,13 @@ export function PropertyForm({ propertyId, initial, neighborhoodOptions, agentOp
 
       <div>
         <label className="mb-1.5 block text-sm font-medium text-ink">Características (separadas por coma)</label>
-        <Input value={form.featureLabels} onChange={(e) => update("featureLabels", e.target.value)} placeholder="Pileta, Jardín, Garage" />
+        <Input
+          value={form.featureLabels}
+          onChange={(e) => update("featureLabels", e.target.value)}
+          placeholder={
+            form.propertyType === "GALPON" ? INDUSTRIAL_FEATURE_SUGGESTIONS.slice(0, 3).join(", ") : "Pileta, Jardín, Garage"
+          }
+        />
       </div>
 
       <div className="flex items-center justify-between">
