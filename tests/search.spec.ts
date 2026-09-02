@@ -10,6 +10,30 @@ test("El buscador filtra por zona y operación", async ({ page }) => {
   await expect(page.getByText(/^3 propiedades$/)).toBeVisible();
 });
 
+test("Panel de filtros en mobile: colapsado por defecto, muestra cuántos filtros están activos", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/propiedades?zona=martinez&operacion=venta");
+
+  // El form completo (7+ campos) no debe estar visible de entrada en mobile.
+  await expect(page.locator("select[name=zona]")).toBeHidden();
+
+  const trigger = page.getByRole("button", { name: "Filtros (2)" });
+  await expect(trigger).toBeVisible();
+
+  await trigger.click();
+  await expect(page.getByRole("heading", { name: "Filtros" })).toBeVisible();
+  // El drawer trae los mismos valores de la URL, no un form en blanco.
+  await expect(page.locator('[role="dialog"] select[name=zona]')).toHaveValue("martinez");
+  await expect(page.locator('[role="dialog"] select[name=operacion]')).toHaveValue("venta");
+});
+
+test("Panel de filtros en desktop: sigue mostrando el form completo, sin el botón colapsado", async ({ page }) => {
+  await page.goto("/propiedades");
+
+  await expect(page.locator("select[name=zona]")).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Filtros/ })).toBeHidden();
+});
+
 test("Sin resultados exactos muestra propiedades similares, no una grilla vacía", async ({ page }) => {
   await page.goto("/propiedades?tipo=TERRENO");
 
