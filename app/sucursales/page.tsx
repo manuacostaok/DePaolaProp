@@ -7,6 +7,7 @@ import { SITE } from "@/lib/nav";
 export const metadata: Metadata = {
   title: "Sucursales",
   description: "Encontrá la sucursal de De Paola Propiedades más cercana en Zona Norte.",
+  alternates: { canonical: "/sucursales" },
 };
 
 export const revalidate = 3600;

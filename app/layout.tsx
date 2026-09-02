@@ -31,6 +31,10 @@ export const metadata: Metadata = {
     template: "%s | De Paola Propiedades",
   },
   description: "Inmobiliaria en Zona Norte, Buenos Aires — Martínez, Florida, Vicente López y Villa Martelli. 20 años de trayectoria.",
+  // Fallback para Home (app/page.tsx no define metadata propio, hereda
+  // todo este objeto) — el resto de las páginas define su propio
+  // `alternates.canonical` y lo pisa.
+  alternates: { canonical: "/" },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

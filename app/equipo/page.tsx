@@ -3,7 +3,11 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { AgentCard } from "@/components/ui/agent-card";
 
-export const metadata: Metadata = { title: "Nuestro equipo", description: "Conocé al equipo de De Paola Propiedades en Zona Norte." };
+export const metadata: Metadata = {
+  title: "Nuestro equipo",
+  description: "Conocé al equipo de De Paola Propiedades en Zona Norte.",
+  alternates: { canonical: "/equipo" },
+};
 
 export default async function EquipoPage({
   searchParams,

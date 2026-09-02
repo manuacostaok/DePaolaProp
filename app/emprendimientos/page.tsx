@@ -5,6 +5,7 @@ import { DevelopmentCard } from "@/components/ui/development-card";
 export const metadata: Metadata = {
   title: "Emprendimientos",
   description: "Proyectos inmobiliarios de De Paola en Zona Norte, Buenos Aires.",
+  alternates: { canonical: "/emprendimientos" },
 };
 export const revalidate = 300;
 

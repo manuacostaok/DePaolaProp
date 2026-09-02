@@ -4,6 +4,7 @@ import { FavoritesGrid } from "@/components/favoritos/favorites-grid";
 export const metadata: Metadata = {
   title: "Favoritos",
   description: "Las propiedades que guardaste para revisar más tarde.",
+  alternates: { canonical: "/favoritos" },
 };
 
 export default function FavoritosPage() {

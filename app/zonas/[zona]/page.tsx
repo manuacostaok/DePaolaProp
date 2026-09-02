@@ -7,6 +7,8 @@ import { FilterPanel } from "@/components/search/filter-panel";
 import { SearchResults } from "@/components/search/search-results";
 import { Callout } from "@/components/ui/callout";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
+import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
+import { SITE_URL } from "@/lib/site-url";
 
 async function getNeighborhood(slug: string) {
   return prisma.neighborhood.findUnique({ where: { slug } });
@@ -16,7 +18,11 @@ export async function generateMetadata({ params }: { params: Promise<{ zona: str
   const { zona } = await params;
   const neighborhood = await getNeighborhood(zona);
   if (!neighborhood) return { title: "Zona no encontrada" };
-  return { title: `${neighborhood.name}, Zona Norte`, description: neighborhood.description.slice(0, 160) };
+  return {
+    title: `${neighborhood.name}, Zona Norte`,
+    description: neighborhood.description.slice(0, 160),
+    alternates: { canonical: `/zonas/${neighborhood.slug}` },
+  };
 }
 
 export default async function ZonaPage({
@@ -49,6 +55,14 @@ export default async function ZonaPage({
       </section>
 
       <div className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
+        <BreadcrumbJsonLd
+          siteUrl={SITE_URL}
+          items={[
+            { name: "Inicio", href: "/" },
+            { name: "Zonas", href: "/zonas" },
+            { name: neighborhood.name, href: `/zonas/${neighborhood.slug}` },
+          ]}
+        />
         <p className="mb-6 text-sm text-ink-soft">
           <Link href="/">Inicio</Link> / <Link href="/zonas">Zonas</Link> / {neighborhood.name}
         </p>
@@ -75,6 +89,13 @@ export default async function ZonaPage({
               <>
                 <h2 className="mt-6 mb-2">Colegios</h2>
                 <p>{neighborhood.schoolsContent}</p>
+              </>
+            )}
+
+            {neighborhood.lifestyleContent && (
+              <>
+                <h2 className="mt-6 mb-2">Estilo de vida</h2>
+                <p>{neighborhood.lifestyleContent}</p>
               </>
             )}
 

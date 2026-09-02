@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const agent = await getAgent(slug);
   if (!agent) return { title: "No encontrado" };
-  return { title: agent.name, description: agent.bio?.slice(0, 160) };
+  return { title: agent.name, description: agent.bio?.slice(0, 160), alternates: { canonical: `/equipo/${slug}` } };
 }
 
 export default async function AgentDetailPage({ params }: { params: Promise<{ slug: string }> }) {

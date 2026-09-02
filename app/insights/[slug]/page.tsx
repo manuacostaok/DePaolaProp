@@ -33,12 +33,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!resolved) return { title: "No encontrado" };
 
   if (resolved.kind === "category") {
-    return { title: `${resolved.category.name} — Insights` };
+    return { title: `${resolved.category.name} — Insights`, alternates: { canonical: `/insights/${slug}` } };
   }
   const description = resolved.article.body.slice(0, 160);
   return {
     title: `${resolved.article.title} — Insights`,
     description,
+    alternates: { canonical: `/insights/${slug}` },
     openGraph: { title: resolved.article.title, description, images: resolved.article.coverImageUrl ? [resolved.article.coverImageUrl] : undefined },
   };
 }

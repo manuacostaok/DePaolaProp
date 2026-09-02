@@ -7,6 +7,7 @@ import { SITE } from "@/lib/nav";
 export const metadata: Metadata = {
   title: "Contacto",
   description: "Contactá a De Paola Propiedades por WhatsApp, teléfono, email o en cualquiera de nuestras sucursales en Zona Norte.",
+  alternates: { canonical: "/contacto" },
 };
 
 export const revalidate = 3600;

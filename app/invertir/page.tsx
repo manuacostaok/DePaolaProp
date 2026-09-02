@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { getNeighborhoodIdOptions } from "@/lib/search";
 import { InvertirWizard } from "@/components/leads/invertir-wizard";
 
-export const metadata: Metadata = { title: "Invertir en Zona Norte", description: "Oportunidades de renta, reventa y desarrollo en Zona Norte, Buenos Aires." };
+export const metadata: Metadata = {
+  title: "Invertir en Zona Norte",
+  description: "Oportunidades de renta, reventa y desarrollo en Zona Norte, Buenos Aires.",
+  alternates: { canonical: "/invertir" },
+};
 export const revalidate = 3600;
 
 export default async function InvertirPage() {

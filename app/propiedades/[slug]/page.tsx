@@ -9,7 +9,7 @@ import { ActionPanel } from "@/components/property/action-panel";
 import { LocationMap } from "@/components/property/location-map";
 import { PropertyCard } from "@/components/ui/property-card";
 import { Badge } from "@/components/ui/badge";
-import { JsonLd } from "@/components/seo/json-ld";
+import { JsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/site-url";
 
 export const revalidate = 60;
@@ -43,6 +43,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title,
     description,
+    alternates: { canonical: `/propiedades/${slug}` },
     openGraph: { title, description, images: image ? [image] : undefined },
   };
 }
@@ -82,6 +83,14 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
             ? { offers: { "@type": "Offer", price, priceCurrency: property.currency, availability: "https://schema.org/InStock" } }
             : {}),
         }}
+      />
+      <BreadcrumbJsonLd
+        siteUrl={SITE_URL}
+        items={[
+          { name: "Inicio", href: "/" },
+          { name: "Propiedades", href: "/propiedades" },
+          { name: property.title, href: `/propiedades/${property.slug}` },
+        ]}
       />
       <p className="mb-4 text-sm text-ink-soft">
         <Link href="/">Inicio</Link> / <Link href="/propiedades">Propiedades</Link> / {property.title}

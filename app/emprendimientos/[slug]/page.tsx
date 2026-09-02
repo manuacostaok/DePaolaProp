@@ -10,7 +10,7 @@ import { Gallery } from "@/components/property/gallery";
 import { LeadModal } from "@/components/leads/lead-modal";
 import { DevelopmentLeadForm } from "@/components/leads/development-lead-form";
 import { LocationMap } from "@/components/development/location-map";
-import { JsonLd } from "@/components/seo/json-ld";
+import { JsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/site-url";
 
 export const revalidate = 300;
@@ -44,6 +44,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title,
     description,
+    alternates: { canonical: `/emprendimientos/${slug}` },
     openGraph: { title, description, images: image ? [image] : undefined },
   };
 }
@@ -79,6 +80,14 @@ export default async function DevelopmentDetailPage({ params }: { params: Promis
             addressCountry: "AR",
           },
         }}
+      />
+      <BreadcrumbJsonLd
+        siteUrl={SITE_URL}
+        items={[
+          { name: "Inicio", href: "/" },
+          { name: "Emprendimientos", href: "/emprendimientos" },
+          { name: development.name, href: `/emprendimientos/${development.slug}` },
+        ]}
       />
       <p className="mb-4 text-sm text-ink-soft">
         <Link href="/">Inicio</Link> / <Link href="/emprendimientos">Emprendimientos</Link> / {development.name}

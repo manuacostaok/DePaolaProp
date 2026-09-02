@@ -3,7 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { ZoneCard } from "@/components/ui/zone-card";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
 
-export const metadata: Metadata = { title: "Zonas", description: "Martínez, Florida, Vicente López y Villa Martelli — conocé cada zona de Zona Norte." };
+export const metadata: Metadata = {
+  title: "Zonas",
+  description: "Martínez, Florida, Vicente López y Villa Martelli — conocé cada zona de Zona Norte.",
+  alternates: { canonical: "/zonas" },
+};
 export const revalidate = 300;
 
 export default async function ZonasPage() {

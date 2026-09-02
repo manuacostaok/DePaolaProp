@@ -4,10 +4,13 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { AgentCard } from "@/components/ui/agent-card";
 import { Callout } from "@/components/ui/callout";
+import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
+import { SITE_URL } from "@/lib/site-url";
 
 export const metadata: Metadata = {
   title: "Sobre Nosotros",
   description: "Defendemos y preservamos el valor de tu propiedad — conocé a De Paola Propiedades y a Tatiana De Paola.",
+  alternates: { canonical: "/nosotros" },
 };
 
 export const revalidate = 3600;
@@ -20,6 +23,7 @@ export default async function NosotrosPage() {
     <main>
       <section className="pb-0 pt-10">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
+          <BreadcrumbJsonLd siteUrl={SITE_URL} items={[{ name: "Inicio", href: "/" }, { name: "Nosotros", href: "/nosotros" }]} />
           <p className="mb-3 text-sm text-ink-soft">
             <Link href="/">Inicio</Link> / Nosotros
           </p>

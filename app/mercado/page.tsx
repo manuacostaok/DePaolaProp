@@ -7,6 +7,7 @@ import { PROPERTY_TYPE_LABELS } from "@/lib/property-options";
 export const metadata: Metadata = {
   title: "Mercado",
   description: "Oferta activa de De Paola en Zona Norte, agrupada por zona y tipo de propiedad, más análisis y contenido editorial.",
+  alternates: { canonical: "/mercado" },
 };
 export const revalidate = 300;
 
