@@ -11,23 +11,31 @@ function uniqueEmail(prefix: string) {
 }
 
 // La base de test ES la de producción (DATABASE_URL es la misma en local y
-// en Vercel) — los suscriptores de prueba se identifican con el prefijo
-// "playwright-" y se borran al final para no dejar basura en la tabla real.
-test.afterAll(async () => {
+// en Vercel) — cada test borra SOLO el/los emails que él mismo creó, nunca
+// un DELETE por prefijo en un afterAll: con fullyParallel:true (ver
+// playwright.config.ts) los tests de este archivo se reparten entre varios
+// workers, y afterAll corre una vez POR WORKER, no una vez al final de
+// todo — un worker que termina antes podía borrar por prefijo la fila que
+// OTRO worker acababa de precargar para "mismo email", haciendo que la
+// segunda inserción pareciera nueva en vez de duplicada (bug real que
+// causó exactamente esa falla intermitente antes de este fix).
+async function deleteSubscriber(email: string) {
   const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
   const prisma = new PrismaClient({ adapter });
-  await prisma.newsletterSubscriber.deleteMany({ where: { email: { startsWith: "playwright-" } } });
+  await prisma.newsletterSubscriber.deleteMany({ where: { email } });
   await prisma.$disconnect();
-});
+}
 
 test("Newsletter: submit exitoso con segmento elegido guarda el registro y muestra confirmación", async ({ page }) => {
+  const email = uniqueEmail("comprar");
   await page.goto("/insights");
 
   await page.getByRole("radio", { name: "Comprar" }).click();
-  await page.getByLabel("Email").fill(uniqueEmail("comprar"));
+  await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Suscribirme" }).click();
 
   await expect(page.getByText("¡Listo! Te vamos a escribir con contenido de comprar.")).toBeVisible();
+  await deleteSubscriber(email);
 });
 
 test("Newsletter: submit sin elegir segmento muestra error de validación", async ({ page }) => {
@@ -51,28 +59,24 @@ test("Newsletter: email inválido muestra error inline sin borrar el segmento ya
 });
 
 test("Newsletter: mismo email dos veces muestra 'ya está suscripto'", async ({ page }) => {
-  await page.goto("/insights");
+  // Precarga la fila directo en la base (no vía UI): repetir un round-trip
+  // real de submit dentro del mismo test resultó ser inestable bajo carga
+  // pesada en paralelo con el resto de la suite. Precargar aísla lo que
+  // este test realmente quiere probar: que el server action detecta el
+  // email ya existente.
   const email = uniqueEmail("dup");
-
-  await page.getByRole("radio", { name: "Invertir" }).click();
-  await page.getByLabel("Email").fill(email);
-  await page.getByRole("button", { name: "Suscribirme" }).click();
-  await expect(page.getByText(/¡Listo!/)).toBeVisible();
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+  const prisma = new PrismaClient({ adapter });
+  await prisma.newsletterSubscriber.create({ data: { email, segment: "INVERSOR" } });
+  await prisma.$disconnect();
 
   await page.goto("/insights");
-  // Barrera explícita: confirma que es el form fresco (estado "idle") antes
-  // de interactuar, no la confirmación que dejó la primera vuelta — bajo
-  // carga en paralelo, page.goto puede resolver antes de que la navegación
-  // reemplace el DOM anterior.
-  await expect(page.getByRole("button", { name: "Suscribirme" })).toBeVisible();
   await page.getByRole("radio", { name: "Invertir" }).click();
   await page.getByLabel("Email").fill(email);
   await page.getByRole("button", { name: "Suscribirme" }).click();
-  // Timeout más generoso: este test hace 2 round-trips reales al server
-  // action + Postgres en la misma corrida, y bajo carga en paralelo con el
-  // resto de la suite el segundo puede tardar más que el default de 5s sin
-  // que sea un bug real (confirmado: 100% estable corriendo en aislado).
-  await expect(page.getByText("Ese email ya está suscripto.")).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText("Ese email ya está suscripto.")).toBeVisible();
+
+  await deleteSubscriber(email);
 });
 
 test("Newsletter: el grupo de segmento se navega con flechas del teclado", async ({ page }) => {

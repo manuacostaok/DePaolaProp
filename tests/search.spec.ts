@@ -24,6 +24,29 @@ test("Toggle a vista de mapa muestra el mapa con pines", async ({ page }) => {
   await expect(page.locator(".leaflet-marker-icon").first()).toBeVisible();
 });
 
+test("Clustering: zoom bajo agrupa los pines en un clúster navy, click expande", async ({ page }) => {
+  // El inventario real (11 propiedades) está lo bastante disperso en Zona
+  // Norte como para no clusterizar solo a zoom normal — en vez de depender
+  // de coordenadas reales exactas (frágil, cambia si se carga una
+  // propiedad nueva), se fuerza el zoom al mínimo: a esa escala CUALQUIER
+  // conjunto de puntos de Zona Norte cae en el mismo radio de clúster.
+  await page.goto("/propiedades");
+  await page.getByRole("button", { name: "mapa", exact: true }).click();
+  await expect(page.locator(".leaflet-container")).toBeVisible();
+
+  const zoomOut = page.locator(".leaflet-control-zoom-out");
+  for (let i = 0; i < 10; i++) {
+    await zoomOut.click();
+  }
+
+  const cluster = page.locator(".marker-cluster").first();
+  await expect(cluster).toBeVisible();
+  await expect(cluster.locator("div")).toHaveCSS("background-color", "rgb(0, 56, 92)");
+
+  await cluster.click();
+  await expect(page.locator(".leaflet-marker-icon").first()).toBeVisible();
+});
+
 test("Comprar y Alquilar preseteados no muestran el filtro de operación", async ({ page }) => {
   await page.goto("/propiedades/comprar");
   await expect(page.locator("select[name=operacion]")).toHaveCount(0);

@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import { searchProperties, PropertySearchInput } from "@/lib/search";
+import { searchProperties, getNeighborhoodCenter, PropertySearchInput } from "@/lib/search";
 import { FilterPanel } from "@/components/search/filter-panel";
 import { SearchResults } from "@/components/search/search-results";
 import { Callout } from "@/components/ui/callout";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
 import { BreadcrumbJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/site-url";
+import { ZonaMapLoader } from "@/components/map/zona-map-loader";
 
 async function getNeighborhood(slug: string) {
   return prisma.neighborhood.findUnique({ where: { slug } });
@@ -37,7 +38,10 @@ export default async function ZonaPage({
   if (!neighborhood) notFound();
 
   const query = await searchParams;
-  const { results, isFallback } = await searchProperties({ ...query, zona });
+  const [{ results, isFallback }, center] = await Promise.all([
+    searchProperties({ ...query, zona }),
+    getNeighborhoodCenter(neighborhood.id),
+  ]);
 
   return (
     <main>
@@ -106,9 +110,13 @@ export default async function ZonaPage({
               </>
             )}
           </div>
-          <div className="flex h-72 items-center justify-center rounded-card bg-bg-alt text-sm text-ink-soft lg:h-full">
-            Mapa de {neighborhood.name}
-          </div>
+          {center ? (
+            <ZonaMapLoader center={center} properties={results} />
+          ) : (
+            <div className="flex h-72 items-center justify-center rounded-card bg-bg-alt text-sm text-ink-soft lg:h-full">
+              Mapa de {neighborhood.name} no disponible
+            </div>
+          )}
         </div>
 
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">

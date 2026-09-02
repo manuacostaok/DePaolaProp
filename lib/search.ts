@@ -190,6 +190,29 @@ export async function getFeatureOptions() {
     .map((group) => ({ value: group.rawKeys.join(","), label: group.label }));
 }
 
+// El modelo Neighborhood no tiene lat/lng propio (solo PropertyLocation lo
+// tiene, por propiedad) — el "centro" de la zona se deriva como el
+// promedio de las coordenadas de sus propiedades activas con ubicación
+// cargada. Si ninguna tiene coordenadas, devuelve null (la página muestra
+// el fallback "Mapa no disponible" que ya existía).
+export async function getNeighborhoodCenter(neighborhoodId: string): Promise<[number, number] | null> {
+  const locations = await prisma.propertyLocation.findMany({
+    where: { neighborhoodId, property: { status: "ACTIVA" }, lat: { not: null }, lng: { not: null } },
+    select: { lat: true, lng: true },
+  });
+
+  if (locations.length === 0) return null;
+
+  let latSum = 0;
+  let lngSum = 0;
+  for (const loc of locations) {
+    latSum += loc.lat ?? 0;
+    lngSum += loc.lng ?? 0;
+  }
+
+  return [latSum / locations.length, lngSum / locations.length];
+}
+
 export async function getNeighborhoodOptions() {
   const neighborhoods = await prisma.neighborhood.findMany({ orderBy: { name: "asc" } });
   return neighborhoods.map((n) => ({ value: n.slug, label: n.name }));
