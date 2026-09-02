@@ -62,6 +62,12 @@ enum LeadStatus {
   CERRADO
 }
 
+enum NewsletterSegment {
+  COMPRADOR
+  VENDEDOR
+  INVERSOR
+}
+
 model Office {
   id        String   @id @default(cuid())
   name      String
@@ -417,4 +423,14 @@ model Article {
 
   neighborhoodId String?
   neighborhood   Neighborhood? @relation(fields: [neighborhoodId], references: [id])
+}
+
+// Tabla separada de Lead a propósito: un suscriptor de newsletter no es un
+// contacto comercial (no infla el embudo de la Fase 20) — es alguien que
+// solo pidió recibir contenido segmentado.
+model NewsletterSubscriber {
+  id        String            @id @default(cuid())
+  email     String            @unique
+  segment   NewsletterSegment
+  createdAt DateTime          @default(now())
 }

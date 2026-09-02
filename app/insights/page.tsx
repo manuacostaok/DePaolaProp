@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { ArticleCard } from "@/components/ui/article-card";
+import { NewsletterForm } from "@/components/insights/newsletter-form";
 
 export const metadata: Metadata = {
   title: "Insights",
@@ -66,6 +67,10 @@ export default async function InsightsPage() {
       )}
 
       {articles.length === 0 && <p className="py-16 text-center text-ink-soft">Todavía no hay artículos publicados.</p>}
+
+      <div className="mt-12 max-w-xl">
+        <NewsletterForm />
+      </div>
     </main>
   );
 }
