@@ -105,6 +105,7 @@ export function SearchResults({ results, isFallback }: { results: PropertyResult
               bathrooms={property.bathrooms}
               coveredArea={property.coveredArea}
               isSample={property.isSample}
+              agent={property.agent}
               isFavorite={isFavorite(property.id)}
               onToggleFavorite={() => {
                 if (!isFavorite(property.id)) trackEvent("favorite_property", { propertyId: property.id });

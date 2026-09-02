@@ -6,6 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/cn";
 
+export interface PropertyCardAgent {
+  name: string;
+  slug: string;
+  photoUrl: string | null;
+  isPlaceholderPhoto: boolean;
+}
+
 export interface PropertyCardProps {
   href: string;
   title: string;
@@ -21,6 +28,10 @@ export interface PropertyCardProps {
   isSample?: boolean;
   isFavorite?: boolean;
   onToggleFavorite?: () => void;
+  // Opcional: se omite en contextos donde ya es redundante (ej. la propia
+  // página de perfil del agente, donde todas sus propiedades son de la
+  // misma persona).
+  agent?: PropertyCardAgent;
 }
 
 export function PropertyCard({
@@ -38,6 +49,7 @@ export function PropertyCard({
   isSample = false,
   isFavorite = false,
   onToggleFavorite,
+  agent,
 }: PropertyCardProps) {
   const specs = [
     rooms != null ? `${rooms} amb.` : null,
@@ -90,6 +102,24 @@ export function PropertyCard({
         <p className="mb-2 font-display text-[21px] text-brand-dark">{formatPrice(price, currency)}</p>
         {specs.length > 0 && (
           <p className="text-[12.5px] uppercase tracking-wide text-ink-soft">{specs.join(" · ")}</p>
+        )}
+        {agent && (
+          <Link href={`/equipo/${agent.slug}`} className="mt-3 flex items-center gap-2">
+            {!agent.isPlaceholderPhoto && agent.photoUrl ? (
+              <span className="relative size-6 shrink-0 overflow-hidden rounded-full">
+                <Image src={agent.photoUrl} alt={agent.name} fill className="object-cover" />
+              </span>
+            ) : (
+              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-brand-tint text-[10px] font-semibold text-brand-dark">
+                {agent.name
+                  .split(" ")
+                  .map((part) => part[0])
+                  .slice(0, 2)
+                  .join("")}
+              </span>
+            )}
+            <span className="text-[12px] text-ink-soft">{agent.name}</span>
+          </Link>
         )}
       </div>
     </div>

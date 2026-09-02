@@ -40,11 +40,13 @@ export interface PropertyResult {
   isSample: boolean;
   lat: number | null;
   lng: number | null;
+  agent: { name: string; slug: string; photoUrl: string | null; isPlaceholderPhoto: boolean };
 }
 
 const PROPERTY_INCLUDE = {
   location: { include: { neighborhood: true } },
   images: { orderBy: { order: "asc" as const }, take: 1 },
+  agent: { select: { name: true, slug: true, photoUrl: true, isPlaceholderPhoto: true } },
 };
 
 function toResult(property: Prisma.PropertyGetPayload<{ include: typeof PROPERTY_INCLUDE }>): PropertyResult {
@@ -64,6 +66,12 @@ function toResult(property: Prisma.PropertyGetPayload<{ include: typeof PROPERTY
     isSample: property.isSample,
     lat: property.location.lat,
     lng: property.location.lng,
+    agent: {
+      name: property.agent.name,
+      slug: property.agent.slug,
+      photoUrl: property.agent.photoUrl,
+      isPlaceholderPhoto: property.agent.isPlaceholderPhoto,
+    },
   };
 }
 

@@ -58,6 +58,7 @@ export function FavoritesGrid() {
             bathrooms={property.bathrooms}
             coveredArea={property.coveredArea}
             isSample={property.isSample}
+            agent={property.agent}
             isFavorite={isFavorite(property.id)}
             onToggleFavorite={() => toggle(property.id)}
           />

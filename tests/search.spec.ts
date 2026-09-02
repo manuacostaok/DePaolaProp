@@ -10,6 +10,16 @@ test("El buscador filtra por zona y operación", async ({ page }) => {
   await expect(page.getByText(/^3 propiedades$/)).toBeVisible();
 });
 
+test("Cada card de propiedad muestra el agente asignado (dato real, no fabricado)", async ({ page }) => {
+  // Todas las propiedades reales tienen agentId obligatorio en el schema —
+  // hoy todas apuntan a Tatiana De Paola (única agente activa cargada).
+  await page.goto("/propiedades");
+
+  const agentLink = page.getByRole("link", { name: "Tatiana De Paola" }).first();
+  await expect(agentLink).toBeVisible();
+  await expect(agentLink).toHaveAttribute("href", "/equipo/tatiana-de-paola");
+});
+
 test("Panel de filtros en mobile: colapsado por defecto, muestra cuántos filtros están activos", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/propiedades?zona=martinez&operacion=venta");

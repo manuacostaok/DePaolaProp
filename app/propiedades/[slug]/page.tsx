@@ -168,6 +168,12 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
                   isSample: property.isSample,
                   lat: property.location.lat,
                   lng: property.location.lng,
+                  agent: {
+                    name: property.agent.name,
+                    slug: property.agent.slug,
+                    photoUrl: property.agent.photoUrl,
+                    isPlaceholderPhoto: property.agent.isPlaceholderPhoto,
+                  },
                 },
               ]}
             />
@@ -211,6 +217,7 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
                 bathrooms={item.bathrooms}
                 coveredArea={item.coveredArea}
                 isSample={item.isSample}
+                agent={item.agent}
               />
             ))}
           </div>

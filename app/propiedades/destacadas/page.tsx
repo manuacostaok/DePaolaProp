@@ -16,6 +16,7 @@ export default async function DestacadasPage() {
     include: {
       location: { include: { neighborhood: true } },
       images: { orderBy: { order: "asc" }, take: 1 },
+      agent: { select: { name: true, slug: true, photoUrl: true, isPlaceholderPhoto: true } },
     },
   });
 
@@ -43,6 +44,7 @@ export default async function DestacadasPage() {
               bathrooms={property.bathrooms}
               coveredArea={property.coveredArea}
               isSample={property.isSample}
+              agent={property.agent}
             />
           ))}
         </div>
