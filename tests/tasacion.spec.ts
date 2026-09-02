@@ -1,6 +1,19 @@
 import { test, expect } from "@playwright/test";
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { uniquePhone } from "./helpers/test-contacts";
+
+// onDelete: Cascade en ValuationRequest/Appointment se encarga de los
+// registros relacionados al borrar el Lead.
+async function deleteLeadByContact(contact: string) {
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+  const prisma = new PrismaClient({ adapter });
+  await prisma.lead.deleteMany({ where: { contactPhone: contact } });
+  await prisma.$disconnect();
+}
 
 test("Tasación sin comparables suficientes: nunca muestra un número, ofrece agendar", async ({ page }) => {
+  const phone = uniquePhone();
   await page.goto("/vender/tasacion");
 
   // Paso 1 — Ubicación
@@ -19,7 +32,7 @@ test("Tasación sin comparables suficientes: nunca muestra un número, ofrece ag
 
   // Paso 4 — Contacto
   await page.getByLabel("Nombre").fill("Test Playwright");
-  await page.getByLabel("Teléfono / WhatsApp").fill("1100000000");
+  await page.getByLabel("Teléfono / WhatsApp").fill(phone);
   await page.getByRole("button", { name: "Ver estimación" }).click();
 
   await expect(page.getByText(/Ya intentamos darte una estimación automática/)).toBeVisible();
@@ -32,6 +45,8 @@ test("Tasación sin comparables suficientes: nunca muestra un número, ofrece ag
   await page.getByRole("button", { name: "Agendar visita" }).click();
 
   await expect(page.getByText(/Coordinamos tu tasación/)).toBeVisible();
+
+  await deleteLeadByContact(phone);
 });
 
 test("La tasación nunca menciona la palabra IA en la interfaz", async ({ page }) => {

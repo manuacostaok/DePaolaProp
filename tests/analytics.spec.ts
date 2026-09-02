@@ -1,4 +1,14 @@
 import { test, expect, type Page } from "@playwright/test";
+import { PrismaClient } from "@prisma/client";
+import { PrismaPg } from "@prisma/adapter-pg";
+import { uniquePhone } from "./helpers/test-contacts";
+
+async function deleteLeadByContact(contact: string) {
+  const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+  const prisma = new PrismaClient({ adapter });
+  await prisma.lead.deleteMany({ where: { OR: [{ contactPhone: contact }, { contactEmail: contact }] } });
+  await prisma.$disconnect();
+}
 
 // Mockea window.gtag ANTES de que cargue cualquier script de la página —
 // GA4 real nunca está presente en tests (no hay NEXT_PUBLIC_GA_MEASUREMENT_ID
@@ -65,6 +75,7 @@ test("whatsapp_click y contact_click se disparan desde la ficha de propiedad", a
 });
 
 test("valuation_start y valuation_submit se disparan en el wizard de tasación", async ({ page }) => {
+  const phone = `+549${uniquePhone()}`;
   await mockGtag(page);
   await page.goto("/vender/tasacion");
   await page.waitForFunction(
@@ -83,7 +94,7 @@ test("valuation_start y valuation_submit se disparan en el wizard de tasación",
   await page.getByLabel("Cochera").selectOption({ index: 1 });
   await page.getByRole("button", { name: "Siguiente" }).click();
   await page.getByLabel("Nombre").fill("Test Playwright");
-  await page.getByLabel("Teléfono / WhatsApp").fill("+5491100000000");
+  await page.getByLabel("Teléfono / WhatsApp").fill(phone);
   await page.getByRole("button", { name: "Ver estimación" }).click();
   await page.waitForFunction(
     () => (window as unknown as { __gtagCalls: unknown[][] }).__gtagCalls?.some((c) => c[1] === "valuation_submit"),
@@ -92,9 +103,12 @@ test("valuation_start y valuation_submit se disparan en el wizard de tasación",
   calls = await getGtagCalls(page);
   expect(calls.some((c) => c[1] === "valuation_submit")).toBe(true);
   expect(calls.some((c) => c[1] === "lead_created")).toBe(true);
+
+  await deleteLeadByContact(phone);
 });
 
 test("lead_created se dispara al completar el flujo de Comprar", async ({ page }) => {
+  const phone = uniquePhone();
   await mockGtag(page);
   await page.goto("/propiedades/comprar");
   await page.getByRole("button", { name: "Quiero que me avisen" }).click();
@@ -105,11 +119,13 @@ test("lead_created se dispara al completar el flujo de Comprar", async ({ page }
   await modal.locator("input[type=number]").first().fill("200000");
   await modal.getByRole("button", { name: "Siguiente" }).click();
   await modal.getByLabel("Nombre").fill("Test Playwright");
-  await modal.getByLabel("WhatsApp o email").fill("1100000000");
+  await modal.getByLabel("WhatsApp o email").fill(phone);
   await modal.getByLabel(/vender una propiedad/).selectOption("no");
   await modal.getByRole("button", { name: "Enviar" }).click();
   await expect(modal.getByText(/Un agente de De Paola va a revisar tu búsqueda/)).toBeVisible();
 
   const calls = await getGtagCalls(page);
   expect(calls.some((c) => c[1] === "lead_created")).toBe(true);
+
+  await deleteLeadByContact(phone);
 });
