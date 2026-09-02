@@ -122,6 +122,21 @@ export async function getNeighborhoodIdOptions() {
   return neighborhoods.map((n) => ({ value: n.id, label: n.name }));
 }
 
+// Usado por /favoritos: los IDs guardados viven en localStorage (cliente),
+// así que la página necesita pedir los datos reales por ID en vez de por
+// filtros de búsqueda — mismo mapeo (toResult/PROPERTY_INCLUDE) que el resto
+// del buscador, para no divergir en qué campos trae cada card.
+export async function getPropertiesByIds(ids: string[]) {
+  if (ids.length === 0) return [];
+
+  const properties = await prisma.property.findMany({
+    where: { id: { in: ids } },
+    include: PROPERTY_INCLUDE,
+  });
+
+  return properties.map(toResult);
+}
+
 export async function getSimilarProperties(params: {
   excludeId: string;
   neighborhoodId: string;

@@ -47,6 +47,7 @@ export const FOOTER_COLUMNS: { title: string; links: NavLink[] }[] = [
       { label: "Comprar", href: "/propiedades/comprar" },
       { label: "Alquilar", href: "/propiedades/alquilar" },
       { label: "Zonas", href: "/zonas" },
+      { label: "Favoritos", href: "/favoritos" },
     ],
   },
   {

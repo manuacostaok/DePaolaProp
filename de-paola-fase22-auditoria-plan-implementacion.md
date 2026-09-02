@@ -148,6 +148,8 @@ Se pidió el HTML crudo de `https://de-paola-prop.vercel.app/` 5 veces seguidas 
 - `tests/mercado.spec.ts` (nuevo): `/mercado` devuelve 200, muestra al menos la sección de oferta activa (aunque esté vacía, no debe romper) y no muestra ningún precio promedio salvo que `hasMarketData` sea real en el futuro.
 - Regresión: `tests/home.spec.ts` y el resto de la suite E2E deben seguir en verde después del fix de hidratación (correr la suite completa, no solo los tests nuevos — un fix en `header.tsx` toca cada página).
 
+**FASE 2 — ✅ COMPLETA (2026-09-02).** 2.1/2.2 diagnosticados y corregidos (ver arriba). 2.3 `/favoritos` construido (`app/favoritos/page.tsx` + `components/favoritos/favorites-grid.tsx` + `app/favoritos/actions.ts` + `lib/search.ts#getPropertiesByIds`, reusando `PropertyCard`/`useFavorites` como especificaba el plan; se agregó también un link en el footer ya que no había ninguna forma de llegar a la página desde la navegación). 2.4 `/mercado` construido (`app/mercado/page.tsx`) con oferta activa agrupada por zona (conteos reales, sin precios promedio inventados) + artículos de la categoría "mercado" de Insights (ya existía, no hubo que crearla). Suite completa en verde (25/25, incluye 4 tests nuevos), lint y build limpios.
+
 ---
 
 ### FASE 3 — SEO / calidad técnica
