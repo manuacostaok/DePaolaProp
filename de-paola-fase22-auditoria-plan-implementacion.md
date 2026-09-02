@@ -4,6 +4,16 @@
 
 ---
 
+## ESTADO DE IMPLEMENTACIÓN (actualizado 2026-09-02, corrido de forma autónoma durante la noche)
+
+**Fases 1, 2 y 3 completas, verificadas en producción real y pusheadas a `main`.** Commits `1dc34f5` → `ecd7c5a`. Cada fase corrió su propia ronda de `tsc`/lint/build/Playwright antes de commitear; la suite completa terminó en 30/30 tests verdes.
+
+- **Fase 1 (Seguridad):** contraseña real rotada en producción (nueva, guardada solo en un gestor de contraseñas — no quedó en ningún archivo); hardcodes sacados de `seed.ts`/tests; `requireSession()` agregado a las 6 server actions admin; rate limiting en `/admin/login` con columnas atómicas en `Agent` (se encontró y corrigió una condición de carrera real durante el testing con Playwright).
+- **Fase 2 (Bugs críticos):** error de hidratación #418 diagnosticado con evidencia real (HTML crudo de Vercel pedido 5 veces, siempre en estado "sólido" bajo ISR) y corregido en `header.tsx`; confirmado en el deploy real (5/5 recargas limpias, antes 2/2 con error). `/favoritos` y `/mercado` construidos y verificados en producción.
+- **Fase 3 (SEO):** `canonical` en las 22 páginas; `error.tsx`/`global-error.tsx` con marca; `BreadcrumbList` en JSON-LD. Un `loading.tsx` global se implementó y se **revirtió** al encontrar que rompía el status 404 de páginas inexistentes (soft-404) — documentado en detalle en la sección de Fase 3. Se confirmó que `lifestyleContent` (que la auditoría creía ya cargado) en realidad es `null` para las 4 zonas — no se inventó contenido para llenarlo.
+
+**No se avanzó a Fase 4 en adelante** porque necesitan decisión de negocio o acceso que este agente no tiene: Fase 4 (Analytics) necesita un ID real de GA4 y acceso a Search Console; Fase 5 agrega un modelo nuevo de Prisma (`NewsletterSubscriber`) y toca superficie de UX más amplia — es un buen punto natural para que lo revises antes de seguir. El resto del documento de abajo es el plan original sin cambios.
+
 ## 0. Decisiones de alcance ya tomadas con el usuario
 
 Antes de escribir el plan se resolvieron 4 decisiones arquitectónicas que la auditoría dejaba abiertas (todas con AskUserQuestion, todas eligieron la opción recomendada):
