@@ -298,7 +298,7 @@ function NoComparablesResult({ leadId }: { leadId: string }) {
     <div className="rounded-card border border-line bg-white p-8">
       <Callout>
         Todavía no tenemos suficientes datos en esta zona para una estimación automática. Un especialista de De
-        Paola te contacta con una tasación profesional.
+        Paola te contacta dentro de las 24hs con una tasación profesional.
       </Callout>
 
       {scheduled ? (
