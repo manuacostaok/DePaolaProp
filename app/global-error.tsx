@@ -8,6 +8,19 @@ import { useEffect } from "react";
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
     console.error(error);
+    // Ver el mismo comentario en app/error.tsx: esto corre en el cliente,
+    // así que el console.error de arriba no llega a los logs de Vercel —
+    // este POST sí (best-effort, nunca bloquea el fallback).
+    fetch("/api/log-error", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: error.message,
+        digest: error.digest,
+        stack: error.stack,
+        url: window.location.href,
+      }),
+    }).catch(() => {});
   }, [error]);
 
   return (

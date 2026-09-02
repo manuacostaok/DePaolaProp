@@ -6,10 +6,21 @@ import { Button, buttonVariants } from "@/components/ui/button";
 
 export default function Error({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => {
-    // TODO: mandar a un servicio de monitoreo (Sentry o similar) cuando se
-    // conecte en la Fase 6 del plan — por ahora al menos queda en los logs
-    // de Vercel, que hoy es la única forma de enterarse de un error real.
     console.error(error);
+    // console.error de arriba solo llega a la consola del navegador del
+    // usuario — nunca a los logs de Vercel (corren en el cliente). Este
+    // POST manda el error al server para que SÍ quede en los Runtime Logs.
+    // Best-effort: si falla el POST, no hay nada más que hacer acá.
+    fetch("/api/log-error", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: error.message,
+        digest: error.digest,
+        stack: error.stack,
+        url: window.location.href,
+      }),
+    }).catch(() => {});
   }, [error]);
 
   return (
