@@ -10,6 +10,7 @@ import { LocationMap } from "@/components/property/location-map";
 import { PropertyCard } from "@/components/ui/property-card";
 import { Badge } from "@/components/ui/badge";
 import { JsonLd, BreadcrumbJsonLd } from "@/components/seo/json-ld";
+import { TrackOnMount } from "@/components/analytics/track-on-mount";
 import { SITE_URL } from "@/lib/site-url";
 
 export const revalidate = 60;
@@ -63,6 +64,7 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
 
   return (
     <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
+      <TrackOnMount event="property_view" params={{ propertyId: property.id, slug: property.slug }} />
       <JsonLd
         data={{
           "@context": "https://schema.org",

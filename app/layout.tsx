@@ -1,11 +1,18 @@
 import type { Metadata, Viewport } from "next";
 import { Newsreader, Jost } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { WhatsAppFloat } from "@/components/layout/whatsapp-float";
 import { OrganizationSchema } from "@/components/seo/organization-schema";
 import { SITE_URL } from "@/lib/site-url";
 import "./globals.css";
+
+// Fase 20/22 del plan — sin NEXT_PUBLIC_GA_MEASUREMENT_ID seteada, no se
+// renderiza nada (nunca un script roto con un ID vacío). El ID real
+// todavía no existe — lo carga quien tenga acceso a la cuenta de GA4 de
+// De Paola (variable ya documentada en .env.example desde antes).
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
 // Equivalentes gratuitos de Sainte Colombe / Euclid Circular A (de pago,
 // ver reference/STYLE_GUIDE.md) para la estética tipo elliman.com.
@@ -64,6 +71,7 @@ export default function RootLayout({
         {children}
         <Footer />
         <WhatsAppFloat />
+        {GA_MEASUREMENT_ID && <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />}
       </body>
     </html>
   );

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PropertyType, PropertyCondition } from "@prisma/client";
 import { Select } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Callout } from "@/components/ui/callout";
 import { PROPERTY_TYPE_OPTIONS, CONDITION_OPTIONS } from "@/lib/property-options";
+import { trackEvent } from "@/lib/analytics";
 import { submitValuation, scheduleValuationAppointment, type ValuationSubmission } from "@/app/vender/tasacion/actions";
 
 type FormState = {
@@ -64,6 +65,10 @@ export function TasacionWizard({
   });
   const [result, setResult] = useState<ResultState>({ status: "idle" });
 
+  useEffect(() => {
+    trackEvent("valuation_start");
+  }, []);
+
   function update<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
@@ -91,6 +96,8 @@ export function TasacionWizard({
 
     try {
       const response = await submitValuation(payload);
+      trackEvent("valuation_submit", { hasEnoughComparables: response.hasEnoughComparables });
+      trackEvent("lead_created", { leadId: response.leadId, type: "TASAR" });
 
       if (response.hasEnoughComparables && response.estimatedMin != null && response.estimatedMax != null) {
         setResult({ status: "range", leadId: response.leadId, min: response.estimatedMin, max: response.estimatedMax });
@@ -282,6 +289,7 @@ function NoComparablesResult({ leadId }: { leadId: string }) {
   async function handleSchedule() {
     setSubmitting(true);
     await scheduleValuationAppointment({ leadId, preferredDate: date, preferredTimeSlot: slot });
+    trackEvent("visit_request", { leadId, type: "tasacion" });
     setSubmitting(false);
     setScheduled(true);
   }

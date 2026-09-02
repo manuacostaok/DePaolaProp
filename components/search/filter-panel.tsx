@@ -32,6 +32,7 @@ export async function FilterPanel({ basePath, showOperacion = false, showZona = 
       {showOperacion && (
         <Select
           name="operacion"
+          aria-label="Operación"
           defaultValue={values.operacion ?? ""}
           placeholder="Operación"
           className="w-44"
@@ -44,6 +45,7 @@ export async function FilterPanel({ basePath, showOperacion = false, showZona = 
       {showZona && (
         <Select
           name="zona"
+          aria-label="Zona"
           defaultValue={values.zona ?? ""}
           placeholder="Zona"
           className="w-44"
@@ -52,6 +54,7 @@ export async function FilterPanel({ basePath, showOperacion = false, showZona = 
       )}
       <Select
         name="tipo"
+        aria-label="Tipo de propiedad"
         defaultValue={values.tipo ?? ""}
         placeholder="Tipo"
         className="w-44"
@@ -59,6 +62,7 @@ export async function FilterPanel({ basePath, showOperacion = false, showZona = 
       />
       <Select
         name="ambientes"
+        aria-label="Ambientes"
         defaultValue={values.ambientes ?? ""}
         placeholder="Ambientes"
         className="w-40"
@@ -66,6 +70,7 @@ export async function FilterPanel({ basePath, showOperacion = false, showZona = 
       />
       <Select
         name="moneda"
+        aria-label="Moneda"
         defaultValue={values.moneda ?? "USD"}
         className="w-28"
         options={[

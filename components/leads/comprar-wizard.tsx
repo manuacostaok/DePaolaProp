@@ -10,6 +10,7 @@ import { StepProgress } from "@/components/leads/step-progress";
 import { PROPERTY_TYPE_OPTIONS, ROOMS_OPTIONS } from "@/lib/property-options";
 import { createLead } from "@/lib/leads";
 import { splitContactInput } from "@/lib/contact-input";
+import { trackEvent } from "@/lib/analytics";
 
 const STEPS = ["Zona y tipo", "Presupuesto", "Contacto"];
 
@@ -28,13 +29,14 @@ export function ComprarWizard({ neighborhoodOptions }: { neighborhoodOptions: { 
 
   async function handleSubmit() {
     setSubmitting(true);
-    await createLead({
+    const { leadId } = await createLead({
       type: "COMPRAR",
       contactName: name,
       ...splitContactInput(phone),
       neighborhoodId: neighborhoodId || undefined,
       filtersJson: { propertyType, budgetMin, budgetMax, rooms, needsToSell: needsToSell === "si" },
     });
+    trackEvent("lead_created", { leadId, type: "COMPRAR" });
     setSubmitting(false);
     setDone(true);
   }

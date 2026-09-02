@@ -7,6 +7,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { StepProgress } from "@/components/leads/step-progress";
 import { createLead } from "@/lib/leads";
 import { splitContactInput } from "@/lib/contact-input";
+import { trackEvent } from "@/lib/analytics";
 import { SITE } from "@/lib/nav";
 
 const STEPS = ["Inversión", "Zona", "Contacto"];
@@ -30,13 +31,14 @@ export function InvertirWizard({ neighborhoodOptions }: { neighborhoodOptions: {
 
   async function handleSubmit() {
     setSubmitting(true);
-    await createLead({
+    const { leadId } = await createLead({
       type: "INVERTIR",
       contactName: name,
       ...splitContactInput(contact),
       neighborhoodId: neighborhoodId || undefined,
       filtersJson: { investmentType, budgetMin, budgetMax },
     });
+    trackEvent("lead_created", { leadId, type: "INVERTIR" });
     setSubmitting(false);
     setDone(true);
   }

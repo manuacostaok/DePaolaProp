@@ -17,9 +17,9 @@ export async function Footer() {
 
           {FOOTER_COLUMNS.map((column) => (
             <div key={column.title}>
-              <h4 className="mb-4 font-sans text-[13px] font-semibold uppercase tracking-wider text-white">
+              <h3 className="mb-4 font-sans text-[13px] font-semibold uppercase tracking-wider text-white">
                 {column.title}
-              </h4>
+              </h3>
               {column.links.map((link) => (
                 <Link key={link.href} href={link.href} className="mb-2.5 block text-sm text-[#CCD3D8] hover:text-white">
                   {link.label}
@@ -29,7 +29,7 @@ export async function Footer() {
           ))}
 
           <div>
-            <h4 className="mb-4 font-sans text-[13px] font-semibold uppercase tracking-wider text-white">Contacto</h4>
+            <h3 className="mb-4 font-sans text-[13px] font-semibold uppercase tracking-wider text-white">Contacto</h3>
             {offices.map((office) => (
               <Link
                 key={office.id}

@@ -46,7 +46,7 @@ export function PropertyCard({
   ].filter(Boolean);
 
   return (
-    <div className={cn("group", isSample && "opacity-[0.55]")}>
+    <div className="group">
       <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-bg-alt">
         <Link href={href} className="absolute inset-0 block">
           <Image
@@ -54,7 +54,10 @@ export function PropertyCard({
             alt={imageAlt}
             fill
             sizes="(min-width: 768px) 33vw, 100vw"
-            className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+            className={cn(
+              "object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]",
+              isSample && "opacity-[0.55]",
+            )}
           />
         </Link>
         <Badge className="pointer-events-none absolute left-3 top-3">

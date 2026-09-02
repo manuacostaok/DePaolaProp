@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import { PropertyCard } from "@/components/ui/property-card";
 import { Callout } from "@/components/ui/callout";
 import { cn } from "@/lib/cn";
 import { useFavorites } from "@/lib/use-favorites";
+import { trackEvent } from "@/lib/analytics";
 import type { PropertyResult } from "@/lib/search";
 
 const PropertyMap = dynamic(() => import("@/components/search/property-map").then((m) => m.PropertyMap), {
@@ -16,6 +18,17 @@ const PropertyMap = dynamic(() => import("@/components/search/property-map").the
 export function SearchResults({ results, isFallback }: { results: PropertyResult[]; isFallback: boolean }) {
   const [view, setView] = useState<"lista" | "mapa">("lista");
   const { isFavorite, toggle } = useFavorites();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    // El form de filtros es un GET tradicional (sin JS, indexable — Fase 3
+    // original) — no hay una acción "aplicar filtro" separada de "ver
+    // resultados", así que property_search se dispara acá, con los
+    // filtros activos como parámetros, cada vez que cambia la URL.
+    const params = Object.fromEntries(searchParams.entries());
+    trackEvent("property_search", { ...params, resultCount: results.length });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo re-disparar cuando cambian los params de búsqueda reales, no en cada render
+  }, [searchParams.toString()]);
 
   return (
     <div>
@@ -70,7 +83,10 @@ export function SearchResults({ results, isFallback }: { results: PropertyResult
               coveredArea={property.coveredArea}
               isSample={property.isSample}
               isFavorite={isFavorite(property.id)}
-              onToggleFavorite={() => toggle(property.id)}
+              onToggleFavorite={() => {
+                if (!isFavorite(property.id)) trackEvent("favorite_property", { propertyId: property.id });
+                toggle(property.id);
+              }}
             />
           ))}
         </div>

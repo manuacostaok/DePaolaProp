@@ -4,6 +4,7 @@ import Image from "next/image";
 import { buttonVariants } from "@/components/ui/button";
 import { formatPrice } from "@/lib/format";
 import { useFavorites } from "@/lib/use-favorites";
+import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 
 export interface ActionPanelProps {
@@ -45,7 +46,10 @@ export function ActionPanel({
         <p className="font-display text-[26px] text-brand-dark">{formatPrice(price, currency)}</p>
         <button
           type="button"
-          onClick={() => toggle(propertyId)}
+          onClick={() => {
+            if (!favorite) trackEvent("favorite_property", { propertyId });
+            toggle(propertyId);
+          }}
           aria-pressed={favorite}
           aria-label={favorite ? "Quitar de favoritos" : "Guardar en favoritos"}
           className={cn("text-2xl leading-none", favorite ? "text-alert" : "text-ink-soft")}
@@ -55,13 +59,23 @@ export function ActionPanel({
       </div>
       {price == null && <p className="mb-4 text-[13.5px] text-ink-soft">Cotización a confirmar con el agente.</p>}
 
-      <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={cn(buttonVariants({ variant: "whatsapp" }), "mb-2.5 w-full")}>
+      <a
+        href={whatsappHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => trackEvent("whatsapp_click", { propertyId })}
+        className={cn(buttonVariants({ variant: "whatsapp" }), "mb-2.5 w-full")}
+      >
         Consultar por WhatsApp
       </a>
       <a href="/contacto" className={cn(buttonVariants({ variant: "outline" }), "mb-2.5 w-full")}>
         Solicitar visita
       </a>
-      <a href={emailHref} className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
+      <a
+        href={emailHref}
+        onClick={() => trackEvent("contact_click", { propertyId, channel: "email" })}
+        className={cn(buttonVariants({ variant: "outline" }), "w-full")}
+      >
         Consultar por email
       </a>
 

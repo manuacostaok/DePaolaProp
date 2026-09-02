@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { createLead } from "@/lib/leads";
 import { splitContactInput } from "@/lib/contact-input";
+import { trackEvent } from "@/lib/analytics";
 import { SITE } from "@/lib/nav";
 
 export function DevelopmentLeadForm({ developmentId, developmentName }: { developmentId: string; developmentName: string }) {
@@ -17,13 +18,14 @@ export function DevelopmentLeadForm({ developmentId, developmentName }: { develo
 
   async function handleSubmit() {
     setSubmitting(true);
-    await createLead({
+    const { leadId } = await createLead({
       type: "COMPRAR",
       contactName: name,
       ...splitContactInput(contact),
       developmentId,
       message: message || undefined,
     });
+    trackEvent("lead_created", { leadId, type: "COMPRAR", developmentId });
     setSubmitting(false);
     setDone(true);
   }

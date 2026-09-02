@@ -9,6 +9,7 @@ import { StepProgress } from "@/components/leads/step-progress";
 import { PROPERTY_TYPE_OPTIONS, ROOMS_OPTIONS } from "@/lib/property-options";
 import { createLead } from "@/lib/leads";
 import { splitContactInput } from "@/lib/contact-input";
+import { trackEvent } from "@/lib/analytics";
 
 const STEPS = ["Zona y tipo", "Presupuesto", "Contacto"];
 
@@ -27,13 +28,14 @@ export function AlquilarWizard({ neighborhoodOptions }: { neighborhoodOptions: {
 
   async function handleSubmit() {
     setSubmitting(true);
-    await createLead({
+    const { leadId } = await createLead({
       type: "ALQUILAR",
       contactName: name,
       ...splitContactInput(phone),
       neighborhoodId: neighborhoodId || undefined,
       filtersJson: { propertyType, budgetMin, budgetMax, rooms, guarantee },
     });
+    trackEvent("lead_created", { leadId, type: "ALQUILAR" });
     setSubmitting(false);
     setDone(true);
   }

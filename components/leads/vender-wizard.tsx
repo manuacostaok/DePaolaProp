@@ -9,6 +9,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { StepProgress } from "@/components/leads/step-progress";
 import { PROPERTY_TYPE_OPTIONS } from "@/lib/property-options";
 import { createLead } from "@/lib/leads";
+import { trackEvent } from "@/lib/analytics";
 
 const STEPS = ["Propiedad", "¿Sabés el valor?", "Contacto"];
 
@@ -25,13 +26,14 @@ export function VenderWizard({ neighborhoodOptions }: { neighborhoodOptions: { v
 
   async function handleSubmit() {
     setSubmitting(true);
-    await createLead({
+    const { leadId } = await createLead({
       type: "VENDER",
       contactName: name,
       contactPhone: phone,
       neighborhoodId: neighborhoodId || undefined,
       filtersJson: { propertyType, availability },
     });
+    trackEvent("lead_created", { leadId, type: "VENDER" });
     setSubmitting(false);
     setDone(true);
   }
