@@ -56,6 +56,25 @@ export function Header() {
   const tintRef = useRef<HTMLDivElement>(null);
   const footNavRef = useRef<HTMLDivElement>(null);
 
+  // Home vive bajo ISR (revalidate=60): el HTML que Vercel sirve para "/"
+  // puede quedar cacheado desde un render donde este header (Client
+  // Component compartido en el layout raíz) no vio el pathname real de la
+  // request — confirmado pidiendo el HTML crudo varias veces: siempre
+  // vuelve con el header en su estado "sólido", nunca transparente. El
+  // cliente, ya en el browser real, sí calcula isHome=true y difiere de
+  // eso — dispara error de hidratación #418 en cada carga de Home. Mismo
+  // patrón defensivo que HeroVideo: el primer render (server Y primer
+  // paint del cliente) siempre coincide con lo que el cache realmente
+  // sirve, y recién en el efecto post-mount se corrige al valor real.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect --
+       mismo patrón que HeroVideo: a propósito corre solo client-side,
+       después del primer paint, para no desalinear el HTML de SSR/ISR. */
+    setMounted(true);
+    /* eslint-enable react-hooks/set-state-in-effect */
+  }, []);
+
   useEffect(() => {
     if (!isHome) return;
     // La barra de links vive pegada al pie real del hero (#home-hero, el
@@ -94,7 +113,7 @@ export function Header() {
   // hero (que ocupa toda la pantalla) — recién al scrollear esa barra pasa
   // a ser la barra sólida de arriba. En el resto de las páginas la barra
   // de arriba siempre está sólida con todo visible.
-  const transparent = isHome && !scrolled;
+  const transparent = mounted && isHome && !scrolled;
 
   return (
     <>
@@ -105,7 +124,7 @@ export function Header() {
         )}
         style={{ height: HEADER_HEIGHT }}
       >
-        {isHome && (
+        {mounted && isHome && (
           <div
             ref={tintRef}
             className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 to-transparent transition-opacity duration-300"
@@ -153,7 +172,7 @@ export function Header() {
         </div>
       </header>
 
-      {isHome && (
+      {mounted && isHome && (
         <div
           ref={footNavRef}
           className={cn(
