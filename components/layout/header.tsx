@@ -47,6 +47,15 @@ function NavLinks({ items, transparent }: { items: NavItem[]; transparent: boole
 }
 
 const SCROLL_TINT_RAMP_PX = 260;
+// Margen de histéresis para el cambio transparente/sólido: sin esto, un
+// scroll táctil en mobile que oscila unos pocos píxeles justo en el punto
+// de cruce (momentum, rebote elástico de iOS) hace que `scrolled` cambie
+// de true a false varias veces por segundo, reiniciando a mitad de camino
+// las 4 transiciones CSS (fondo, tinte, nav, logo) — eso es el "bug" real
+// reportado en mobile, no las transiciones en sí. Con el margen, una vez
+// sólido hace falta volver a subir HYSTERESIS_PX de más para volver a
+// transparente, absorbiendo esa jitter sin agregar demora perceptible.
+const SCROLL_HYSTERESIS_PX = 24;
 
 export function Header() {
   const pathname = usePathname();
@@ -89,20 +98,33 @@ export function Header() {
     // degradé se actualiza directo por CSS var (no por estado de React)
     // para no re-renderizar en cada pixel.
     const heroEl = document.getElementById("home-hero");
+    let rafId: number | null = null;
 
-    const onScroll = () => {
+    const measure = () => {
+      rafId = null;
       const tint = Math.min(1, window.scrollY / SCROLL_TINT_RAMP_PX);
       tintRef.current?.style.setProperty("--scroll-tint", String(tint));
 
       const heroBottom = heroEl ? heroEl.getBoundingClientRect().bottom : window.innerHeight - window.scrollY;
       const footHeight = footNavRef.current?.offsetHeight ?? 0;
       setFootTop(heroBottom - footHeight);
-      setScrolled(heroBottom <= HEADER_HEIGHT);
+      // Histéresis: una vez sólido, solo vuelve a transparente si el borde
+      // del hero sube más allá del margen — absorbe la jitter del scroll
+      // táctil en vez de parpadear en cada pixel de oscilación.
+      setScrolled((prev) => (prev ? heroBottom > HEADER_HEIGHT + SCROLL_HYSTERESIS_PX : heroBottom <= HEADER_HEIGHT));
+    };
+    // rAF-throttled: en mobile el evento scroll puede disparar más rápido
+    // que un frame de pintado — sin esto, React procesa un setState por
+    // cada evento en vez de uno por frame, otra fuente real de jank.
+    const onScroll = () => {
+      if (rafId != null) return;
+      rafId = requestAnimationFrame(measure);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll, { passive: true });
     return () => {
+      if (rafId != null) cancelAnimationFrame(rafId);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
@@ -141,7 +163,7 @@ export function Header() {
           </nav>
 
           <Link href="/" className="col-start-2 justify-self-center">
-            <LogoMark className="h-9 sm:h-11" colorClassName={transparent ? "bg-[#F5E7CB]" : "bg-brand-dark"} />
+            <LogoMark className="h-10 sm:h-11" colorClassName={transparent ? "bg-[#F5E7CB]" : "bg-brand-dark"} />
           </Link>
 
           <div className="flex items-center justify-end gap-3">
