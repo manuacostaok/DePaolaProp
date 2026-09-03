@@ -102,10 +102,25 @@ export function Header() {
 
     const measure = () => {
       rafId = null;
+      const heroBottom = heroEl ? heroEl.getBoundingClientRect().bottom : window.innerHeight - window.scrollY;
+
+      // Pasado este punto el header ya está sólido y la barra de pie del
+      // hero (footNav) quedó con opacity-0 + pointer-events-none — seguir
+      // recalculando su posición y el degradé en cada frame de scroll
+      // durante el resto de la página (que puede ser mucho más larga que
+      // el hero) es puro trabajo desperdiciado: reinicia un setState, y
+      // por lo tanto un re-render del header, en cada frame mientras se
+      // scrollea, lo que se ve como parpadeo/jank durante todo el scroll.
+      // Una vez acá no hace falta más que sostener scrolled=true (no-op:
+      // setScrolled con el mismo valor no re-renderiza).
+      if (heroBottom < -HEADER_HEIGHT) {
+        setScrolled(true);
+        return;
+      }
+
       const tint = Math.min(1, window.scrollY / SCROLL_TINT_RAMP_PX);
       tintRef.current?.style.setProperty("--scroll-tint", String(tint));
 
-      const heroBottom = heroEl ? heroEl.getBoundingClientRect().bottom : window.innerHeight - window.scrollY;
       const footHeight = footNavRef.current?.offsetHeight ?? 0;
       setFootTop(heroBottom - footHeight);
       // Histéresis: una vez sólido, solo vuelve a transparente si el borde
