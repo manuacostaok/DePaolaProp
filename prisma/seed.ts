@@ -15,9 +15,17 @@ async function seedOfficesAndAgent() {
   // ya existen en la base y necesitan el horario aplicado retroactivamente.
   const officeHours = "Lunes a viernes de 9:30 a 19:00 hs. Sábados de 9:30 a 13:00 hs.";
 
+  // Coordenadas geocodificadas contra Nominatim/OpenStreetMap (mismo
+  // proveedor que ya usan los mapas del sitio, ver components/map/base-map.tsx)
+  // — aproximan la cuadra/intersección real de cada dirección, no quedó
+  // point-of-interest exacto para el número de puerta en OSM. Se actualizan
+  // explícitamente en el "update" porque ambas oficinas ya existen en la base.
+  const villaMartelliCoords = { lat: -34.5457681, lng: -58.4994963 };
+  const floridaCoords = { lat: -34.5361446, lng: -58.5086259 };
+
   await prisma.office.upsert({
     where: { id: "office-villa-martelli" },
-    update: { hours: officeHours },
+    update: { hours: officeHours, ...villaMartelliCoords },
     create: {
       id: "office-villa-martelli",
       name: "Villa Martelli",
@@ -26,12 +34,13 @@ async function seedOfficesAndAgent() {
       whatsapp: "+5491128755265",
       email: "contacto@depaolapropiedades.com",
       hours: officeHours,
+      ...villaMartelliCoords,
     },
   });
 
   await prisma.office.upsert({
     where: { id: "office-florida" },
-    update: { hours: officeHours },
+    update: { hours: officeHours, ...floridaCoords },
     create: {
       id: "office-florida",
       name: "Florida",
@@ -40,6 +49,7 @@ async function seedOfficesAndAgent() {
       whatsapp: "+5491128755265",
       email: "contacto@depaolapropiedades.com",
       hours: officeHours,
+      ...floridaCoords,
     },
   });
 

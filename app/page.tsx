@@ -216,10 +216,14 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 02 — Zonas: mosaico, no grilla pareja — el primer barrio lidera
-          en un tile grande, el resto lo acompaña más chico. La cantidad
-          de propiedades reemplaza el tagline genérico ("guía del barrio"
-          ya está a un click en la página de cada zona). */}
+      {/* 02 — Zonas: un banner protagonista a todo el ancho + el resto en
+          una fila pareja abajo. La versión anterior mezclaba un tile de 2
+          columnas con chicos de 1 en una grilla de 3 — con 4 barrios eso
+          dejaba un hueco vacío en la segunda fila (2 tiles de 1 col en
+          una grilla de 3). Separar el destacado de la fila pareja evita
+          el hueco sin importar cuántos barrios haya. La cantidad de
+          propiedades reemplaza el tagline genérico ("guía del barrio" ya
+          está a un click en la página de cada zona). */}
       <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
@@ -230,24 +234,44 @@ export default async function Home() {
               description="No solo mostramos lo que está en venta: te contamos cómo se vive en cada zona, para que elijas con información real."
             />
           </Reveal>
-          <div className="grid gap-6 lg:grid-cols-3">
-            {neighborhoods.map((neighborhood, i) => {
-              const count = neighborhoodCounts.get(neighborhood.id) ?? 0;
-              const tagline = count > 0 ? `${count} ${count === 1 ? "propiedad disponible" : "propiedades disponibles"}` : "Ver guía del barrio";
-              return (
-                <Reveal key={neighborhood.id} delayMs={i * 60} className={i === 0 ? "lg:col-span-2" : undefined}>
-                  <ZoneCard
-                    href={`/zonas/${neighborhood.slug}`}
-                    name={neighborhood.name}
-                    tagline={tagline}
-                    imageUrl={neighborhoodImage(neighborhood.slug)}
-                    imageAlt={neighborhood.name}
-                    size={i === 0 ? "large" : "default"}
-                  />
-                </Reveal>
-              );
-            })}
-          </div>
+          {(() => {
+            const [featuredZone, ...otherZones] = neighborhoods;
+            const zoneTagline = (id: string) => {
+              const count = neighborhoodCounts.get(id) ?? 0;
+              return count > 0 ? `${count} ${count === 1 ? "propiedad disponible" : "propiedades disponibles"}` : "Ver guía del barrio";
+            };
+            return (
+              <>
+                {featuredZone && (
+                  <Reveal className="mb-6 block">
+                    <ZoneCard
+                      href={`/zonas/${featuredZone.slug}`}
+                      name={featuredZone.name}
+                      tagline={zoneTagline(featuredZone.id)}
+                      imageUrl={neighborhoodImage(featuredZone.slug)}
+                      imageAlt={featuredZone.name}
+                      size="large"
+                    />
+                  </Reveal>
+                )}
+                {otherZones.length > 0 && (
+                  <div className="grid gap-6 sm:grid-cols-3">
+                    {otherZones.map((neighborhood, i) => (
+                      <Reveal key={neighborhood.id} delayMs={i * 60}>
+                        <ZoneCard
+                          href={`/zonas/${neighborhood.slug}`}
+                          name={neighborhood.name}
+                          tagline={zoneTagline(neighborhood.id)}
+                          imageUrl={neighborhoodImage(neighborhood.slug)}
+                          imageAlt={neighborhood.name}
+                        />
+                      </Reveal>
+                    ))}
+                  </div>
+                )}
+              </>
+            );
+          })()}
         </div>
       </section>
 
