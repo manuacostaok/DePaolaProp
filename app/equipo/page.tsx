@@ -46,19 +46,40 @@ export default async function EquipoPage({
         ))}
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-3 lg:grid-cols-4">
-        {agents.map((agent) => (
-          <AgentCard
-            key={agent.id}
-            href={`/equipo/${agent.slug}`}
-            name={agent.name}
-            title={agent.title}
-            photoUrl={agent.photoUrl}
-            isPlaceholderPhoto={agent.isPlaceholderPhoto}
-          />
-        ))}
-        {agents.length === 0 && <p className="col-span-full py-16 text-center text-ink-soft">No hay agentes para esta zona todavía.</p>}
-      </div>
+      {/* Con el equipo todavía chico (menos de 3 agentes activos), una
+          grilla de 3-4 columnas deja la única card colgada a la izquierda
+          con huecos vacíos al lado — se centra en fila en su lugar. Con 3
+          o más queda la grilla pareja de siempre. */}
+      {agents.length === 0 ? (
+        <p className="py-16 text-center text-ink-soft">No hay agentes para esta zona todavía.</p>
+      ) : agents.length >= 3 ? (
+        <div className="grid gap-6 sm:grid-cols-3 lg:grid-cols-4">
+          {agents.map((agent) => (
+            <AgentCard
+              key={agent.id}
+              href={`/equipo/${agent.slug}`}
+              name={agent.name}
+              title={agent.title}
+              photoUrl={agent.photoUrl}
+              isPlaceholderPhoto={agent.isPlaceholderPhoto}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-wrap justify-center gap-6">
+          {agents.map((agent) => (
+            <div key={agent.id} className="w-full max-w-[240px]">
+              <AgentCard
+                href={`/equipo/${agent.slug}`}
+                name={agent.name}
+                title={agent.title}
+                photoUrl={agent.photoUrl}
+                isPlaceholderPhoto={agent.isPlaceholderPhoto}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </main>
   );
 }

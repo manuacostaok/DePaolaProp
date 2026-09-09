@@ -28,7 +28,9 @@ async function getFeaturedProperties() {
   return prisma.property.findMany({
     where: { status: "ACTIVA" },
     orderBy: [{ isSample: "asc" }, { publishedAt: "desc" }],
-    take: 6,
+    // 5 = 1 destacada + 4 secundarias, para llenar exacto una fila de
+    // lg:grid-cols-4 sin dejar huecos (con 6 sobraba 1 en la segunda fila).
+    take: 5,
     include: {
       location: { include: { neighborhood: true } },
       images: { orderBy: { order: "asc" }, take: 1 },
@@ -190,7 +192,11 @@ export default async function Home() {
             </Reveal>
           )}
 
-          {secondaryProperties.length > 0 && (
+          {/* Con el inventario real completo (take: 5 arriba) esto siempre
+              llena exacto una fila de 4 — pero si el stock de ACTIVA baja
+              de 4 en algún momento, se centra en fila en vez de dejar
+              huecos a la derecha, mismo criterio que Agentes/Editorial. */}
+          {secondaryProperties.length >= 4 ? (
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {secondaryProperties.map((property, i) => (
                 <Reveal key={property.id} delayMs={i * 60}>
@@ -212,6 +218,30 @@ export default async function Home() {
                 </Reveal>
               ))}
             </div>
+          ) : (
+            secondaryProperties.length > 0 && (
+              <div className="flex flex-wrap justify-center gap-6">
+                {secondaryProperties.map((property, i) => (
+                  <Reveal key={property.id} delayMs={i * 60} className="w-full max-w-[280px]">
+                    <PropertyCard
+                      href={`/propiedades/${property.slug}`}
+                      title={property.title}
+                      neighborhoodName={property.location.neighborhood.name}
+                      price={property.price ? Number(property.price) : null}
+                      currency={property.currency}
+                      operationType={property.operationType}
+                      imageUrl={property.images[0]?.url ?? "/placeholder-property.svg"}
+                      imageAlt={property.images[0]?.alt ?? property.title}
+                      rooms={property.rooms}
+                      bathrooms={property.bathrooms}
+                      coveredArea={property.coveredArea}
+                      isSample={property.isSample}
+                      agent={property.agent}
+                    />
+                  </Reveal>
+                ))}
+              </div>
+            )
           )}
         </div>
       </section>
@@ -315,19 +345,39 @@ export default async function Home() {
                 action={<TextLink href="/equipo">Ver todo el equipo</TextLink>}
               />
             </Reveal>
-            <div className="grid gap-8 sm:grid-cols-3">
-              {agents.map((agent, i) => (
-                <Reveal key={agent.id} delayMs={i * 60}>
-                  <AgentCard
-                    href={`/equipo/${agent.slug}`}
-                    name={agent.name}
-                    title={agent.title}
-                    photoUrl={agent.photoUrl}
-                    isPlaceholderPhoto={agent.isPlaceholderPhoto}
-                  />
-                </Reveal>
-              ))}
-            </div>
+            {/* El equipo real hoy tiene un solo agente cargado — un grid de
+                3 columnas con 1 item deja dos huecos vacíos. Con menos de
+                3, se centra en fila (flex) en vez de "colgar" a la
+                izquierda; con 3 o más queda la grilla pareja de siempre. */}
+            {agents.length >= 3 ? (
+              <div className="grid gap-8 sm:grid-cols-3">
+                {agents.map((agent, i) => (
+                  <Reveal key={agent.id} delayMs={i * 60}>
+                    <AgentCard
+                      href={`/equipo/${agent.slug}`}
+                      name={agent.name}
+                      title={agent.title}
+                      photoUrl={agent.photoUrl}
+                      isPlaceholderPhoto={agent.isPlaceholderPhoto}
+                    />
+                  </Reveal>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-wrap justify-center gap-8">
+                {agents.map((agent, i) => (
+                  <Reveal key={agent.id} delayMs={i * 60} className="w-full max-w-[260px]">
+                    <AgentCard
+                      href={`/equipo/${agent.slug}`}
+                      name={agent.name}
+                      title={agent.title}
+                      photoUrl={agent.photoUrl}
+                      isPlaceholderPhoto={agent.isPlaceholderPhoto}
+                    />
+                  </Reveal>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       )}
@@ -344,20 +394,40 @@ export default async function Home() {
                 action={<TextLink href="/insights">Ver todos los artículos</TextLink>}
               />
             </Reveal>
-            <div className="grid gap-8 sm:grid-cols-3">
-              {articles.map((article, i) => (
-                <Reveal key={article.id} delayMs={i * 60}>
-                  <ArticleCard
-                    href={`/insights/${article.slug}`}
-                    title={article.title}
-                    categoryName={article.category.name}
-                    imageUrl={article.coverImageUrl ?? "/placeholder-property.svg"}
-                    imageAlt={article.title}
-                    publishedAt={article.publishedAt?.toLocaleDateString("es-AR")}
-                  />
-                </Reveal>
-              ))}
-            </div>
+            {/* Mismo criterio que Agentes: con 3+ artículos la grilla pareja
+                de siempre, con menos se centra en fila para no dejar
+                huecos. */}
+            {articles.length >= 3 ? (
+              <div className="grid gap-8 sm:grid-cols-3">
+                {articles.map((article, i) => (
+                  <Reveal key={article.id} delayMs={i * 60}>
+                    <ArticleCard
+                      href={`/insights/${article.slug}`}
+                      title={article.title}
+                      categoryName={article.category.name}
+                      imageUrl={article.coverImageUrl ?? "/placeholder-property.svg"}
+                      imageAlt={article.title}
+                      publishedAt={article.publishedAt?.toLocaleDateString("es-AR")}
+                    />
+                  </Reveal>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-wrap justify-center gap-8">
+                {articles.map((article, i) => (
+                  <Reveal key={article.id} delayMs={i * 60} className="w-full max-w-[320px]">
+                    <ArticleCard
+                      href={`/insights/${article.slug}`}
+                      title={article.title}
+                      categoryName={article.category.name}
+                      imageUrl={article.coverImageUrl ?? "/placeholder-property.svg"}
+                      imageAlt={article.title}
+                      publishedAt={article.publishedAt?.toLocaleDateString("es-AR")}
+                    />
+                  </Reveal>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       )}
