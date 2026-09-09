@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { buttonVariants } from "@/components/ui/button";
-import { PropertyCarousel } from "@/components/ui/property-carousel";
+import { PropertyCard } from "@/components/ui/property-card";
+import { FeaturedProperty } from "@/components/ui/featured-property";
 import { ZoneCard } from "@/components/ui/zone-card";
 import { AgentCard } from "@/components/ui/agent-card";
 import { ArticleCard } from "@/components/ui/article-card";
+import { ArchitectureMark } from "@/components/ui/architecture-mark";
 import { Callout } from "@/components/ui/callout";
 import { Reveal } from "@/components/ui/reveal";
 import { HeroIntro } from "@/components/ui/hero-intro";
@@ -39,6 +41,15 @@ async function getNeighborhoods() {
   return prisma.neighborhood.findMany({ orderBy: { name: "asc" } });
 }
 
+async function getNeighborhoodPropertyCounts() {
+  const counts = await prisma.propertyLocation.groupBy({
+    by: ["neighborhoodId"],
+    where: { property: { status: "ACTIVA" } },
+    _count: { _all: true },
+  });
+  return new Map(counts.map((c) => [c.neighborhoodId, c._count._all]));
+}
+
 async function getFeaturedAgents() {
   return prisma.agent.findMany({ where: { isActive: true }, orderBy: { createdAt: "asc" }, take: 3 });
 }
@@ -53,12 +64,15 @@ async function getLatestArticles() {
 }
 
 export default async function Home() {
-  const [properties, neighborhoods, agents, articles] = await Promise.all([
+  const [properties, neighborhoods, neighborhoodCounts, agents, articles] = await Promise.all([
     getFeaturedProperties(),
     getNeighborhoods(),
+    getNeighborhoodPropertyCounts(),
     getFeaturedAgents(),
     getLatestArticles(),
   ]);
+
+  const [featuredProperty, ...secondaryProperties] = properties;
 
   return (
     <main>
@@ -72,19 +86,20 @@ export default async function Home() {
         <HeroVideo posterUrl={HERO_POSTER} className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand from-10% via-brand/55 via-45% to-brand/10" />
         {/* Composición asimétrica: el titular lidera a la izquierda con
-            aire negativo real; la cifra de la derecha (desktop only) da
-            contrapeso sin competir por atención — DESIGN.md Etapa 2. */}
+            aire negativo real; la cifra "20" de la derecha (desktop only)
+            es el único lugar del Hero donde aparece ese dato — el
+            contenido principal no lo repite, ver DESIGN.md Etapa 2. */}
         <div className="relative mx-auto grid w-full max-w-[1240px] gap-x-10 gap-y-12 px-6 pt-16 pb-16 sm:px-8 md:pb-32 lg:grid-cols-[1fr_auto] lg:items-end">
           <HeroIntro className="max-w-3xl">
             <span className="mb-5 block text-[12.5px] font-medium uppercase tracking-[0.14em] text-brand-tint">
               Zona Norte · Buenos Aires
             </span>
             <h1 className="mb-7 text-balance text-[clamp(36px,6vw,72px)] leading-[1.05] text-white">
-              20 años acompañando cada operación inmobiliaria de Zona Norte.
+              Cada casa tiene un barrio detrás. Nosotros lo conocemos primero.
             </h1>
             <p className="mb-9 max-w-lg text-lg text-white/85">
-              Martínez, Florida, Vicente López y Villa Martelli. Comprá, alquilá o vendé con la inmobiliaria que
-              conoce el barrio casa por casa.
+              Martínez, Florida, Vicente López y Villa Martelli — comprá, alquilá o vendé con una mirada que va más
+              allá del metro cuadrado.
             </p>
             <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
               <Link href="/propiedades" className={buttonVariants({ variant: "onDark" })}>
@@ -110,35 +125,39 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 01 — Identidad */}
-      <section className="py-20 sm:py-28">
-        <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
-          <Reveal>
-            <ChapterHeading index="01" eyebrow="Quiénes somos" title="Conocemos cada casa de Zona Norte, no solo el mercado" />
-          </Reveal>
-          <Reveal>
-            <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-start">
-              <p className="max-w-[58ch] text-[18px] leading-relaxed text-ink">
-                De Paola Propiedades trabaja hace 20 años en los mismos cuatro barrios. Esa cercanía es la
-                diferencia entre listar una propiedad y entender por qué alguien elige vivir ahí — qué calle es más
-                tranquila, qué colegio queda cerca, cómo se mueve el precio cuadra por cuadra.
+      {/* 01 — Identidad. Único momento full-bleed de la Home fuera del
+          Hero: la marca de arquitectura (firma visual propia, ver
+          ArchitectureMark) ocupa el borde real del viewport en vez de
+          quedar contenida en el grid de 1240px como el resto de las
+          secciones — esa asimetría es intencional, marca el quiebre de
+          ritmo justo después del Hero. */}
+      <section className="overflow-hidden bg-bg">
+        <div className="grid lg:grid-cols-2 lg:items-stretch">
+          <div className="flex flex-col justify-center px-6 py-20 sm:px-8 sm:py-28 lg:py-32 lg:pr-16 lg:pl-[max(1.5rem,calc((100vw-1240px)/2+1.5rem))]">
+            <Reveal>
+              <ChapterHeading
+                index="01"
+                eyebrow="Quiénes somos"
+                title="Conocemos cada casa de Zona Norte, no solo el mercado"
+                className="mb-8"
+              />
+            </Reveal>
+            <Reveal>
+              <p className="max-w-[52ch] text-[18px] leading-relaxed text-ink">
+                Trabajamos hace veinte años en los mismos cuatro barrios. Esa cercanía es la diferencia entre listar
+                una propiedad y entender por qué alguien elige vivir ahí — qué calle es más tranquila, qué colegio
+                queda cerca, cómo se mueve el precio cuadra por cuadra.
               </p>
-              <div className="flex gap-10 sm:gap-14">
-                <div>
-                  <p className="font-display text-[48px] leading-none text-brand-dark">20</p>
-                  <p className="mt-2 text-[13px] text-ink-soft">Años en Zona Norte</p>
-                </div>
-                <div>
-                  <p className="font-display text-[48px] leading-none text-brand-dark">4</p>
-                  <p className="mt-2 text-[13px] text-ink-soft">Barrios, sin excepción</p>
-                </div>
-              </div>
-            </div>
-          </Reveal>
+            </Reveal>
+          </div>
+          <div className="relative min-h-[280px] bg-brand-dark sm:min-h-[360px] lg:min-h-0">
+            <ArchitectureMark className="absolute inset-0 size-full p-10 text-white/45 sm:p-14 lg:p-16" />
+          </div>
         </div>
       </section>
 
-      {/* 02 — Propiedades */}
+      {/* 02 — Propiedades: una protagonista (foto grande, texto superpuesto)
+          + secundarias en grilla chica — no seis cards idénticas. */}
       <section className="bg-bg-alt py-20 sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
@@ -159,52 +178,81 @@ export default async function Home() {
             va a ver la grilla completa una vez cargado el resto del inventario real.
           </Callout>
 
-          <Reveal>
-            <PropertyCarousel
-              properties={properties.map((property) => ({
-                id: property.id,
-                href: `/propiedades/${property.slug}`,
-                title: property.title,
-                neighborhoodName: property.location.neighborhood.name,
-                price: property.price ? Number(property.price) : null,
-                currency: property.currency,
-                operationType: property.operationType,
-                imageUrl: property.images[0]?.url ?? "/placeholder-property.svg",
-                imageAlt: property.images[0]?.alt ?? property.title,
-                rooms: property.rooms,
-                bathrooms: property.bathrooms,
-                coveredArea: property.coveredArea,
-                isSample: property.isSample,
-                agent: property.agent,
-              }))}
-            />
-          </Reveal>
+          {featuredProperty && (
+            <Reveal className="mb-10 block">
+              <FeaturedProperty
+                href={`/propiedades/${featuredProperty.slug}`}
+                title={featuredProperty.title}
+                neighborhoodName={featuredProperty.location.neighborhood.name}
+                price={featuredProperty.price ? Number(featuredProperty.price) : null}
+                currency={featuredProperty.currency}
+                operationType={featuredProperty.operationType}
+                imageUrl={featuredProperty.images[0]?.url ?? "/placeholder-property.svg"}
+                imageAlt={featuredProperty.images[0]?.alt ?? featuredProperty.title}
+                rooms={featuredProperty.rooms}
+                bathrooms={featuredProperty.bathrooms}
+                coveredArea={featuredProperty.coveredArea}
+              />
+            </Reveal>
+          )}
+
+          {secondaryProperties.length > 0 && (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {secondaryProperties.map((property, i) => (
+                <Reveal key={property.id} delayMs={i * 60}>
+                  <PropertyCard
+                    href={`/propiedades/${property.slug}`}
+                    title={property.title}
+                    neighborhoodName={property.location.neighborhood.name}
+                    price={property.price ? Number(property.price) : null}
+                    currency={property.currency}
+                    operationType={property.operationType}
+                    imageUrl={property.images[0]?.url ?? "/placeholder-property.svg"}
+                    imageAlt={property.images[0]?.alt ?? property.title}
+                    rooms={property.rooms}
+                    bathrooms={property.bathrooms}
+                    coveredArea={property.coveredArea}
+                    isSample={property.isSample}
+                    agent={property.agent}
+                  />
+                </Reveal>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* 03 — Zonas */}
+      {/* 03 — Zonas: mosaico, no grilla pareja — el primer barrio lidera
+          en un tile grande, el resto lo acompaña más chico. La cantidad
+          de propiedades reemplaza el tagline genérico ("guía del barrio"
+          ya está a un click en la página de cada zona). */}
       <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
               index="03"
               eyebrow="Zona Norte"
-              title="Conocé cada barrio antes de decidir"
-              description="No solo mostramos lo que está en venta: te contamos cómo se vive en cada zona, para que elijas con información real, no solo con un listado de precios."
+              title="Explorá el barrio, no solo el listado"
+              description="No solo mostramos lo que está en venta: te contamos cómo se vive en cada zona, para que elijas con información real."
             />
           </Reveal>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {neighborhoods.map((neighborhood, i) => (
-              <Reveal key={neighborhood.id} delayMs={i * 60}>
-                <ZoneCard
-                  href={`/zonas/${neighborhood.slug}`}
-                  name={neighborhood.name}
-                  tagline="Ver propiedades y guía del barrio"
-                  imageUrl={neighborhoodImage(neighborhood.slug)}
-                  imageAlt={neighborhood.name}
-                />
-              </Reveal>
-            ))}
+          <div className="grid gap-6 lg:grid-cols-3">
+            {neighborhoods.map((neighborhood, i) => {
+              const count = neighborhoodCounts.get(neighborhood.id) ?? 0;
+              const tagline = count > 0 ? `${count} ${count === 1 ? "propiedad disponible" : "propiedades disponibles"}` : "Ver guía del barrio";
+              return (
+                <Reveal key={neighborhood.id} delayMs={i * 60} className={i === 0 ? "lg:col-span-2" : undefined}>
+                  <ZoneCard
+                    href={`/zonas/${neighborhood.slug}`}
+                    name={neighborhood.name}
+                    tagline={tagline}
+                    imageUrl={neighborhoodImage(neighborhood.slug)}
+                    imageAlt={neighborhood.name}
+                    size={i === 0 ? "large" : "default"}
+                  />
+                </Reveal>
+              );
+            })}
           </div>
         </div>
       </section>

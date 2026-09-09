@@ -85,6 +85,21 @@ export function Header() {
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
+  // El primer flip sólido→transparente (disparado por `mounted`, no por
+  // scroll) no debe animarse: si arranca con las mismas transition-* que
+  // el resto, en producción quedaban ~300-700ms de header sólido visible
+  // sobre el hero antes de decidir su estado real — se leía como una
+  // navbar mal posicionada, no como parte del Hero. transitionsReady se
+  // activa recién un frame después de montar, así ese primer cambio se
+  // aplica de forma instantánea (sin flash) y el scroll real sigue
+  // animando suave como antes.
+  const [transitionsReady, setTransitionsReady] = useState(false);
+  useEffect(() => {
+    if (!mounted) return;
+    const raf = requestAnimationFrame(() => setTransitionsReady(true));
+    return () => cancelAnimationFrame(raf);
+  }, [mounted]);
+
   useEffect(() => {
     if (!isHome) return;
     // La barra de links vive pegada al pie real del hero (#home-hero, el
@@ -182,7 +197,8 @@ export function Header() {
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
+          "fixed inset-x-0 top-0 z-50",
+          transitionsReady && "transition-colors duration-300",
           transparent ? "border-b border-transparent bg-transparent" : "border-b border-line bg-bg",
         )}
         style={{ height: HEADER_HEIGHT }}
@@ -190,13 +206,20 @@ export function Header() {
         {mounted && isHome && (
           <div
             ref={tintRef}
-            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 to-transparent transition-opacity duration-300"
+            className={cn(
+              "pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 to-transparent",
+              transitionsReady && "transition-opacity duration-300",
+            )}
             style={{ opacity: scrolled ? 0 : "var(--scroll-tint, 0)" }}
           />
         )}
         <div className="relative mx-auto grid h-full max-w-[1240px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-6 sm:px-8">
           <nav
-            className={cn("hidden items-center gap-7 transition-opacity duration-300 md:flex", transparent ? "opacity-0" : "opacity-100")}
+            className={cn(
+              "hidden items-center gap-7 md:flex",
+              transitionsReady && "transition-opacity duration-300",
+              transparent ? "opacity-0" : "opacity-100",
+            )}
             inert={transparent}
             aria-hidden={transparent}
           >
@@ -204,19 +227,27 @@ export function Header() {
           </nav>
 
           <Link href="/" className="col-start-2 justify-self-center">
-            <LogoMark className="h-10 sm:h-11" colorClassName={transparent ? "bg-[#F5E7CB]" : "bg-brand-dark"} />
+            <LogoMark className="h-12 sm:h-16" colorClassName={transparent ? "bg-[#F5E7CB]" : "bg-brand-dark"} />
           </Link>
 
           <div className="flex items-center justify-end gap-3">
             <nav
-              className={cn("hidden items-center gap-7 transition-opacity duration-300 md:flex", transparent ? "opacity-0" : "opacity-100")}
+              className={cn(
+                "hidden items-center gap-7 md:flex",
+                transitionsReady && "transition-opacity duration-300",
+                transparent ? "opacity-0" : "opacity-100",
+              )}
               inert={transparent}
               aria-hidden={transparent}
             >
               <NavLinks items={RIGHT_NAV} transparent={false} />
             </nav>
             <span
-              className={cn("hidden transition-opacity duration-300 sm:block", transparent ? "opacity-0" : "opacity-100")}
+              className={cn(
+                "hidden sm:block",
+                transitionsReady && "transition-opacity duration-300",
+                transparent ? "opacity-0" : "opacity-100",
+              )}
               inert={transparent}
               aria-hidden={transparent}
             >
@@ -241,7 +272,8 @@ export function Header() {
         <div
           ref={footNavRef}
           className={cn(
-            "fixed inset-x-0 z-50 hidden transition-opacity duration-300 md:block",
+            "fixed inset-x-0 z-50 hidden md:block",
+            transitionsReady && "transition-opacity duration-300",
             transparent ? "opacity-100" : "pointer-events-none opacity-0",
           )}
           style={footTop == null ? { bottom: 0 } : { top: footTop }}
