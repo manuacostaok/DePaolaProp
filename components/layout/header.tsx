@@ -52,7 +52,7 @@ const SCROLL_TINT_RAMP_PX = 260;
 // scroll táctil en mobile que oscila unos pocos píxeles justo en el punto
 // de cruce (momentum, rebote elástico de iOS) hace que `scrolled` cambie
 // de true a false varias veces por segundo, reiniciando a mitad de camino
-// las 4 transiciones CSS (fondo, tinte, nav, logo) — eso es el "bug" real
+// las transiciones CSS (fondo, tinte, logo) — eso es el "bug" real
 // reportado en mobile, no las transiciones en sí. Con el margen, una vez
 // sólido hace falta volver a subir HYSTERESIS_PX de más para volver a
 // transparente, absorbiendo esa jitter sin agregar demora perceptible.
@@ -62,9 +62,7 @@ export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [scrolled, setScrolled] = useState(false);
-  const [footTop, setFootTop] = useState<number | null>(null);
   const tintRef = useRef<HTMLDivElement>(null);
-  const footNavRef = useRef<HTMLDivElement>(null);
 
   // Home vive bajo ISR (revalidate=60): el HTML que Vercel sirve para "/"
   // puede quedar cacheado desde un render donde este header (Client
@@ -102,17 +100,11 @@ export function Header() {
 
   useEffect(() => {
     if (!isHome) return;
-    // La barra de links vive pegada al pie real del hero (#home-hero, el
-    // <section> de app/page.tsx), no al fondo de la pantalla: sigue la
-    // posición del borde inferior del hero a medida que se scrollea (se
-    // "tapa" con el resto de la página como cualquier otro contenido) y
-    // recién cuando ese borde desaparece bajo la barra sólida de arriba
-    // (es decir, el pie del hero deja de verse) se corta a la barra
-    // sólida de siempre. Un degradé oscuro detrás del logo ya empieza a
-    // notarse apenas se scrollea un poco (como en elliman.com), para que
-    // la respuesta no se sienta recién "al terminar de bajar". El
-    // degradé se actualiza directo por CSS var (no por estado de React)
-    // para no re-renderizar en cada pixel.
+    // Un degradé oscuro detrás del header ya empieza a notarse apenas se
+    // scrollea un poco (como en elliman.com), para que la respuesta no se
+    // sienta recién "al terminar de bajar". El degradé se actualiza directo
+    // por CSS var (no por estado de React) para no re-renderizar en cada
+    // pixel.
     const heroEl = document.getElementById("home-hero");
     let rafId: number | null = null;
 
@@ -131,15 +123,14 @@ export function Header() {
       // dependencia circular.
       const heroBottom = heroEl ? heroEl.getBoundingClientRect().height - window.scrollY : window.innerHeight - window.scrollY;
 
-      // Pasado este punto el header ya está sólido y la barra de pie del
-      // hero (footNav) quedó con opacity-0 + pointer-events-none — seguir
-      // recalculando su posición y el degradé en cada frame de scroll
-      // durante el resto de la página (que puede ser mucho más larga que
-      // el hero) es puro trabajo desperdiciado: reinicia un setState, y
-      // por lo tanto un re-render del header, en cada frame mientras se
-      // scrollea, lo que se ve como parpadeo/jank durante todo el scroll.
-      // Una vez acá no hace falta más que sostener scrolled=true (no-op:
-      // setScrolled con el mismo valor no re-renderiza).
+      // Pasado este punto el header ya está sólido — seguir recalculando
+      // el degradé en cada frame de scroll durante el resto de la página
+      // (que puede ser mucho más larga que el hero) es puro trabajo
+      // desperdiciado: reinicia un setState, y por lo tanto un re-render
+      // del header, en cada frame mientras se scrollea, lo que se ve como
+      // parpadeo/jank durante todo el scroll. Una vez acá no hace falta
+      // más que sostener scrolled=true (no-op: setScrolled con el mismo
+      // valor no re-renderiza).
       if (heroBottom < -HEADER_HEIGHT) {
         flushSync(() => setScrolled(true));
         return;
@@ -148,16 +139,14 @@ export function Header() {
       const tint = Math.min(1, window.scrollY / SCROLL_TINT_RAMP_PX);
       tintRef.current?.style.setProperty("--scroll-tint", String(tint));
 
-      const footHeight = footNavRef.current?.offsetHeight ?? 0;
-      // flushSync: sin esto, el className del <header> (del que depende el
-      // spacer de más abajo) puede quedar aplicado recién 1-2 frames
-      // después de este cálculo — un re-render diferido de React, no un
-      // problema de la lógica en sí. Eso deja una ventana en la que un
-      // scroll rápido siguiente todavía ve el estado viejo, lo que se leía
-      // como una transición de más en tests/home.spec.ts. Forzar el commit
-      // acá adentro del mismo callback de rAF elimina esa ventana.
+      // flushSync: sin esto, el className del <header> puede quedar
+      // aplicado recién 1-2 frames después de este cálculo — un re-render
+      // diferido de React, no un problema de la lógica en sí. Eso deja una
+      // ventana en la que un scroll rápido siguiente todavía ve el estado
+      // viejo, lo que se leía como una transición de más en
+      // tests/home.spec.ts. Forzar el commit acá adentro del mismo
+      // callback de rAF elimina esa ventana.
       flushSync(() => {
-        setFootTop(heroBottom - footHeight);
         // Histéresis: una vez sólido, solo vuelve a transparente si el borde
         // del hero sube más allá del margen — absorbe la jitter del scroll
         // táctil en vez de parpadear en cada pixel de oscilación.
@@ -186,11 +175,9 @@ export function Header() {
     };
   }, [isHome]);
 
-  // En home, arriba de todo solo se ve el logo centrado flotando sobre el
-  // hero, y los links de navegación viven en una barra aparte al pie del
-  // hero (que ocupa toda la pantalla) — recién al scrollear esa barra pasa
-  // a ser la barra sólida de arriba. En el resto de las páginas la barra
-  // de arriba siempre está sólida con todo visible.
+  // Un solo navbar, siempre arriba: sobre el hero de Home es transparente
+  // (nav + logo en color claro, degradé de contraste detrás) y al pasar el
+  // hero pasa a sólido — ya no hay una barra aparte al pie del hero.
   const transparent = mounted && isHome && !scrolled;
 
   return (
@@ -214,16 +201,8 @@ export function Header() {
           />
         )}
         <div className="relative mx-auto grid h-full max-w-[1240px] grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-6 sm:px-8">
-          <nav
-            className={cn(
-              "hidden items-center gap-7 md:flex",
-              transitionsReady && "transition-opacity duration-300",
-              transparent ? "opacity-0" : "opacity-100",
-            )}
-            inert={transparent}
-            aria-hidden={transparent}
-          >
-            <NavLinks items={LEFT_NAV} transparent={false} />
+          <nav className="hidden items-center gap-7 md:flex">
+            <NavLinks items={LEFT_NAV} transparent={transparent} />
           </nav>
 
           <Link href="/" className="col-start-2 justify-self-center">
@@ -231,27 +210,11 @@ export function Header() {
           </Link>
 
           <div className="flex items-center justify-end gap-3">
-            <nav
-              className={cn(
-                "hidden items-center gap-7 md:flex",
-                transitionsReady && "transition-opacity duration-300",
-                transparent ? "opacity-0" : "opacity-100",
-              )}
-              inert={transparent}
-              aria-hidden={transparent}
-            >
-              <NavLinks items={RIGHT_NAV} transparent={false} />
+            <nav className="hidden items-center gap-7 md:flex">
+              <NavLinks items={RIGHT_NAV} transparent={transparent} />
             </nav>
-            <span
-              className={cn(
-                "hidden sm:block",
-                transitionsReady && "transition-opacity duration-300",
-                transparent ? "opacity-0" : "opacity-100",
-              )}
-              inert={transparent}
-              aria-hidden={transparent}
-            >
-              <Link href="/vender/tasacion" className={buttonVariants({ size: "sm" })}>
+            <span className="hidden sm:block">
+              <Link href="/vender/tasacion" className={buttonVariants({ size: "sm", variant: transparent ? "onDark" : "primary" })}>
                 Tasá tu propiedad
               </Link>
             </span>
@@ -261,38 +224,6 @@ export function Header() {
           </div>
         </div>
       </header>
-
-      {/* hidden md:block es intencional, no un bug de responsive: esta barra
-          es el respaldo de escritorio para los links de nav mientras el
-          header de arriba está transparente sobre el hero. En mobile ese
-          rol lo cumple el drawer (MobileMenu, más arriba en este archivo),
-          que compite por espacio con el resto del hero — no debe mostrarse
-          acá también. */}
-      {mounted && isHome && (
-        <div
-          ref={footNavRef}
-          className={cn(
-            "fixed inset-x-0 z-50 hidden md:block",
-            transitionsReady && "transition-opacity duration-300",
-            transparent ? "opacity-100" : "pointer-events-none opacity-0",
-          )}
-          style={footTop == null ? { bottom: 0 } : { top: footTop }}
-        >
-          <div className="mx-auto flex max-w-[1240px] items-center justify-between px-6 py-6 sm:px-8">
-            <nav className="flex items-center gap-7">
-              <NavLinks items={LEFT_NAV} transparent />
-            </nav>
-            <div className="flex items-center gap-7">
-              <nav className="flex items-center gap-7">
-                <NavLinks items={RIGHT_NAV} transparent />
-              </nav>
-              <Link href="/vender/tasacion" className={buttonVariants({ size: "sm", variant: "onDark" })}>
-                Tasá tu propiedad
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
 
       <div style={{ height: transparent ? 0 : HEADER_HEIGHT }} />
     </>
