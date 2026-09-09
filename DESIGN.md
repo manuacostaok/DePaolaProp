@@ -142,7 +142,7 @@ Grid de 12 columnas desktop / 8 tablet / 4 mobile, gutters mínimo 24px desktop 
 - **Approach:** intentional — cada animación tiene un trigger claro (montaje una vez, scroll una vez), nunca decorativa ni en loop.
 - **Easing:** entrada de hero `outExpo` (550ms, stagger 70ms por elemento — `HeroIntro`, `components/ui/hero-intro.tsx`); reveal al scroll `outCubic` (600ms, translateY 14px — `Reveal`, `components/ui/reveal.tsx`); drawers/overlays `cubic-bezier(.455,.03,.515,.955)` (curva de marca propia, ver `app/globals.css`).
 - **Duration:** micro(150ms, hover de botones/inputs) short(250ms) medium(550–600ms, entradas de hero/reveal) long(400–700ms, drawers).
-- **The one authored moment (riesgo #3, aceptado):** zoom sutil de imagen en cards de propiedad al hover, con la curva de marca (`.455,.03,.515,.955`) en vez de un `ease` genérico — distingue las cards de cualquier competidor que use `ease` o `ease-in-out` por defecto. Pendiente de implementar en `components/property/`.
+- **The one authored moment (riesgo #3, implementado):** zoom sutil de imagen en cards de propiedad al hover — `duration-[430ms] ease-brand group-hover:scale-[1.08]` en `components/ui/property-card.tsx`, con `--ease-brand` (`cubic-bezier(.455,.03,.515,.955)`) como token en `app/globals.css`. Valores acordados en vivo vía prototipo de `/design-html` (comparación lado a lado con el `ease-out` genérico anterior).
 - **Regla dura:** buscador y ficha de propiedad no llevan motion decorativo — ninguna de las animaciones de esta sección aplica ahí.
 
 ## Decisions Log
@@ -152,3 +152,4 @@ Grid de 12 columnas desktop / 8 tablet / 4 mobile, gutters mínimo 24px desktop 
 | 2026-09-09 | Newsreader se mantiene pese a estar en la lista de fuentes sobreusadas del catálogo 2026 | Ya licenciada, cargada y aprobada por el cliente; diferenciación se juega en composición y motion, no en tipografía — revisar si el cliente pide cambio |
 | 2026-09-09 | Riesgo aceptado: full-bleed en hero de Home/zona, contenido normal en buscador/ficha | Refuerza "editorial" en páginas de descubrimiento sin arriesgar conversión en páginas de decisión |
 | 2026-09-09 | Riesgo aceptado: motion propio en cards de propiedad (curva de marca en hover de imagen) | Complementa el hero animado (`HeroIntro`) y el `Reveal` ya implementados con anime.js sin duplicar su rol |
+| 2026-09-09 | Riesgo #3 implementado: `duration-[430ms] ease-brand scale-[1.08]` en `property-card.tsx`, token `--ease-brand` sumado a `app/globals.css` | Valores acordados por el usuario comparando lado a lado con el `duration-300 ease-out` anterior en un prototipo de `/design-html` |

@@ -67,7 +67,9 @@ export function PropertyCard({
             fill
             sizes="(min-width: 768px) 33vw, 100vw"
             className={cn(
-              "object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]",
+              // Curva de marca en vez de ease-out genérico — DESIGN.md "Riesgo #3 aceptado",
+              // valor acordado en el prototipo de /design-html (430ms, escala 1.08).
+              "object-cover transition-transform duration-[430ms] ease-brand group-hover:scale-[1.08]",
               isSample && "opacity-[0.55]",
             )}
           />
