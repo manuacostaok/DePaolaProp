@@ -126,7 +126,12 @@ export function Header() {
       // Histéresis: una vez sólido, solo vuelve a transparente si el borde
       // del hero sube más allá del margen — absorbe la jitter del scroll
       // táctil en vez de parpadear en cada pixel de oscilación.
-      setScrolled((prev) => (prev ? heroBottom > HEADER_HEIGHT + SCROLL_HYSTERESIS_PX : heroBottom <= HEADER_HEIGHT));
+      // FINDING-001 (/design-review): esta condición estaba invertida — devolvía
+      // `true` (sólido) justo cuando heroBottom superaba el margen de histéresis,
+      // que es exactamente el caso en el que debía volver a transparente. Eso
+      // dejaba el header pegado en sólido para siempre después de scrollear
+      // hasta el fondo y volver arriba (repro: scrollTo bottom → scrollTo 0).
+      setScrolled((prev) => (prev ? heroBottom <= HEADER_HEIGHT + SCROLL_HYSTERESIS_PX : heroBottom <= HEADER_HEIGHT));
     };
     // rAF-throttled: en mobile el evento scroll puede disparar más rápido
     // que un frame de pintado — sin esto, React procesa un setState por
