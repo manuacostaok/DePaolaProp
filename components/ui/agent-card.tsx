@@ -20,7 +20,7 @@ export function AgentCard({ href, name, title, photoUrl, isPlaceholderPhoto }: A
     <Link href={href} className="text-center">
       {!isPlaceholderPhoto && photoUrl ? (
         <div className="relative mb-3 aspect-[3/4] overflow-hidden rounded-card">
-          <Image src={photoUrl} alt={name} fill className="object-cover" />
+          <Image src={photoUrl} alt={name} fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 100vw" className="object-cover" />
         </div>
       ) : (
         <div className="mb-3 flex aspect-[3/4] items-center justify-center rounded-card bg-brand-tint text-4xl font-semibold text-brand-dark">
