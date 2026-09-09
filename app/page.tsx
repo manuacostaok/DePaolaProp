@@ -5,6 +5,7 @@ import { PropertyCarousel } from "@/components/ui/property-carousel";
 import { ZoneCard } from "@/components/ui/zone-card";
 import { Callout } from "@/components/ui/callout";
 import { Reveal } from "@/components/ui/reveal";
+import { HeroIntro } from "@/components/ui/hero-intro";
 import { HeroVideo } from "@/components/ui/hero-video";
 import { InstagramGrid } from "@/components/ui/instagram-grid";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
@@ -48,7 +49,7 @@ export default async function Home() {
       <section id="home-hero" className="relative flex min-h-svh items-end overflow-hidden bg-brand">
         <HeroVideo posterUrl={HERO_POSTER} className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand from-10% via-brand/55 via-45% to-brand/10" />
-        <div className="animate-fade-up relative mx-auto w-full max-w-[1240px] px-6 pt-16 pb-16 sm:px-8 md:pb-32">
+        <HeroIntro className="relative mx-auto w-full max-w-[1240px] px-6 pt-16 pb-16 sm:px-8 md:pb-32">
           <span className="mb-4 block text-[12.5px] font-semibold uppercase tracking-[0.14em] text-brand-tint">
             Zona Norte · Buenos Aires
           </span>
@@ -70,12 +71,12 @@ export default async function Home() {
               Tasá tu propiedad
             </Link>
           </div>
-        </div>
+        </HeroIntro>
       </section>
 
       <section className="py-16">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
-          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+          <Reveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
             <div>
               <span className="mb-2 block text-[12.5px] font-semibold uppercase tracking-wider text-brand">
                 Últimas propiedades
@@ -85,7 +86,7 @@ export default async function Home() {
             <Link href="/propiedades" className={buttonVariants({ variant: "outline", size: "sm" })}>
               Ver todas
             </Link>
-          </div>
+          </Reveal>
 
           <Callout>
             Las dos primeras son propiedades reales de De Paola. Las marcadas &quot;Ejemplo&quot; muestran cómo se
@@ -117,14 +118,16 @@ export default async function Home() {
 
       <section className="bg-bg-alt py-16">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
-          <span className="mb-2 block text-[12.5px] font-semibold uppercase tracking-wider text-brand">
-            Zona Norte
-          </span>
-          <h2 className="mb-3 text-[clamp(26px,3vw,36px)]">Conocé cada barrio antes de decidir</h2>
-          <p className="mb-8 max-w-xl">
-            No solo mostramos lo que está en venta: te contamos cómo se vive en cada zona, para que elijas con
-            información real, no solo con un listado de precios.
-          </p>
+          <Reveal>
+            <span className="mb-2 block text-[12.5px] font-semibold uppercase tracking-wider text-brand">
+              Zona Norte
+            </span>
+            <h2 className="mb-3 text-[clamp(26px,3vw,36px)]">Conocé cada barrio antes de decidir</h2>
+            <p className="mb-8 max-w-xl">
+              No solo mostramos lo que está en venta: te contamos cómo se vive en cada zona, para que elijas con
+              información real, no solo con un listado de precios.
+            </p>
+          </Reveal>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {neighborhoods.map((neighborhood, i) => (
               <Reveal key={neighborhood.id} delayMs={i * 60}>
@@ -143,7 +146,7 @@ export default async function Home() {
 
       <section className="bg-brand-dark py-16 text-white">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
-          <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <Reveal className="mb-8 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <svg viewBox="0 0 24 24" className="size-7 shrink-0" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
                 <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -163,7 +166,7 @@ export default async function Home() {
             >
               Seguir en Instagram
             </a>
-          </div>
+          </Reveal>
 
           <Reveal>
             <InstagramGrid />
@@ -173,7 +176,7 @@ export default async function Home() {
 
       <section className="py-16">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
-          <div className="flex flex-wrap items-center justify-between gap-6 rounded-card bg-brand p-8 text-white sm:p-12">
+          <Reveal className="flex flex-wrap items-center justify-between gap-6 rounded-card bg-brand p-8 text-white sm:p-12">
             <div>
               <h2 className="mb-1.5 text-white">¿Cuánto vale tu propiedad?</h2>
               <p className="m-0 text-[#D7DEE5]">Coordiná una tasación profesional con nuestro equipo, sin costo ni compromiso.</p>
@@ -184,7 +187,7 @@ export default async function Home() {
             >
               Tasar mi propiedad
             </Link>
-          </div>
+          </Reveal>
         </div>
       </section>
     </main>
