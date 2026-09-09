@@ -1,74 +1,43 @@
-// Firma visual propia de De Paola: elevación arquitectónica en línea fina,
-// no una foto ni un ícono — geometría de fachadas + grilla de ventanas,
-// como un plano de arquitecto. Un solo color (currentColor) a distintas
-// opacidades, sin relleno sólido, para que lea "línea y luz", no
-// ilustración decorativa. Etapa 2, iteración 2 — recupera el concepto
-// explorado en /design-html que nunca se había llevado al código.
+// Firma visual propia de De Paola: un horizonte de fachadas en línea fina,
+// como un plano de arquitecto — no una foto, no un ícono. Pensado para
+// vivir muy tenue, como textura detrás de una frase editorial, nunca
+// como panel de color propio. Un solo color (currentColor) a distintas
+// opacidades. Recupera el concepto de siluetas de edificios explorado en
+// una sesión anterior de /design-html que nunca se había llevado al
+// código — ver Home, sección editorial entre el Hero y "Propiedades".
 export function ArchitectureMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 640 800" fill="none" className={className} aria-hidden="true">
-      {/* Línea de base */}
-      <line x1="0" y1="640" x2="640" y2="640" stroke="currentColor" strokeOpacity="0.35" strokeWidth="1" />
+    <svg viewBox="0 0 1600 420" preserveAspectRatio="xMidYMax meet" fill="none" className={className} aria-hidden="true">
+      <line x1="0" y1="360" x2="1600" y2="360" stroke="currentColor" strokeWidth="1" />
 
-      {/* Edificio A — el más alto, al fondo */}
-      <rect x="70" y="120" width="120" height="520" stroke="currentColor" strokeOpacity="0.5" strokeWidth="1" />
-      {Array.from({ length: 11 }).map((_, row) =>
-        Array.from({ length: 4 }).map((_, col) => (
-          <rect
-            key={`a-${row}-${col}`}
-            x={70 + 16 + col * 26}
-            y={120 + 24 + row * 42}
-            width="14"
-            height="20"
-            fill="currentColor"
-            fillOpacity={(row + col) % 5 === 0 ? 0.22 : 0.06}
-          />
-        )),
-      )}
+      {/* Skyline: alturas y anchos irregulares a propósito, como un
+          horizonte real, no una grilla repetida. */}
+      <rect x="60" y="180" width="90" height="180" stroke="currentColor" strokeWidth="1" />
+      <rect x="180" y="230" width="60" height="130" stroke="currentColor" strokeWidth="1" />
+      <path d="M 280 360 V 140 H 340 V 100 H 400 V 360 Z" stroke="currentColor" strokeWidth="1" />
+      <rect x="440" y="260" width="70" height="100" stroke="currentColor" strokeWidth="1" />
+      <rect x="540" y="200" width="50" height="160" stroke="currentColor" strokeWidth="1" />
 
-      {/* Edificio B — mediano, con cubierta escalonada */}
-      <path
-        d="M 230 640 V 300 H 300 V 240 H 380 V 640 Z"
-        stroke="currentColor"
-        strokeOpacity="0.5"
-        strokeWidth="1"
-      />
-      {Array.from({ length: 8 }).map((_, row) =>
-        Array.from({ length: 3 }).map((_, col) => (
-          <rect
-            key={`b-${row}-${col}`}
-            x={244 + col * 30}
-            y={320 + row * 38}
-            width="16"
-            height="22"
-            fill="currentColor"
-            fillOpacity={(row * 3 + col) % 4 === 0 ? 0.24 : 0.05}
-          />
-        )),
-      )}
+      <rect x="980" y="210" width="55" height="150" stroke="currentColor" strokeWidth="1" />
+      <path d="M 1070 360 V 160 H 1130 V 200 H 1180 V 360 Z" stroke="currentColor" strokeWidth="1" />
+      <rect x="1220" y="250" width="80" height="110" stroke="currentColor" strokeWidth="1" />
+      <rect x="1340" y="190" width="60" height="170" stroke="currentColor" strokeWidth="1" />
+      <rect x="1440" y="270" width="100" height="90" stroke="currentColor" strokeWidth="1" />
 
-      {/* Edificio C — bajo, en primer plano, con marquesina */}
-      <rect x="420" y="460" width="150" height="180" stroke="currentColor" strokeOpacity="0.55" strokeWidth="1" />
-      <line x1="420" y1="500" x2="570" y2="500" stroke="currentColor" strokeOpacity="0.4" strokeWidth="1" />
-      {Array.from({ length: 3 }).map((_, row) =>
-        Array.from({ length: 4 }).map((_, col) => (
-          <rect
-            key={`c-${row}-${col}`}
-            x={434 + col * 32}
-            y={514 + row * 36}
-            width="18"
-            height="24"
-            fill="currentColor"
-            fillOpacity={(row + col) % 3 === 0 ? 0.28 : 0.07}
-          />
-        )),
-      )}
+      {/* Ventanas: dispersas y esporádicas, algunas "encendidas" a más
+          opacidad — sugiere luz sin ilustrar literalmente una fachada. */}
+      {[
+        [80, 210], [110, 210], [80, 250], [190, 260], [190, 300], [455, 285], [455, 320], [555, 230], [555, 270],
+        [995, 240], [995, 280], [1090, 190], [1150, 220], [1235, 280], [1355, 220], [1355, 260], [1460, 300],
+      ].map(([x, y], i) => (
+        <rect key={i} x={x} y={y} width="12" height="16" fill="currentColor" fillOpacity={i % 4 === 0 ? 0.6 : 0.18} />
+      ))}
 
-      {/* Planos / cotas — detalle de plano de arquitecto, no decoración suelta */}
-      <line x1="70" y1="100" x2="190" y2="100" stroke="currentColor" strokeOpacity="0.3" strokeWidth="1" />
-      <line x1="70" y1="94" x2="70" y2="106" stroke="currentColor" strokeOpacity="0.3" strokeWidth="1" />
-      <line x1="190" y1="94" x2="190" y2="106" stroke="currentColor" strokeOpacity="0.3" strokeWidth="1" />
-      <circle cx="560" cy="140" r="34" stroke="currentColor" strokeOpacity="0.25" strokeWidth="1" />
+      {/* Detalle de plano: cota + círculo, no decoración suelta. */}
+      <line x1="620" y1="120" x2="740" y2="120" stroke="currentColor" strokeWidth="1" strokeOpacity="0.6" />
+      <line x1="620" y1="114" x2="620" y2="126" stroke="currentColor" strokeWidth="1" strokeOpacity="0.6" />
+      <line x1="740" y1="114" x2="740" y2="126" stroke="currentColor" strokeWidth="1" strokeOpacity="0.6" />
+      <circle cx="860" cy="150" r="26" stroke="currentColor" strokeWidth="1" strokeOpacity="0.5" />
     </svg>
   );
 }

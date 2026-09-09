@@ -125,44 +125,38 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 01 — Identidad. Único momento full-bleed de la Home fuera del
-          Hero: la marca de arquitectura (firma visual propia, ver
-          ArchitectureMark) ocupa el borde real del viewport en vez de
-          quedar contenida en el grid de 1240px como el resto de las
-          secciones — esa asimetría es intencional, marca el quiebre de
-          ritmo justo después del Hero. */}
-      <section className="overflow-hidden bg-bg">
-        <div className="grid lg:grid-cols-2 lg:items-stretch">
-          <div className="flex flex-col justify-center px-6 py-20 sm:px-8 sm:py-28 lg:py-32 lg:pr-16 lg:pl-[max(1.5rem,calc((100vw-1240px)/2+1.5rem))]">
-            <Reveal>
-              <ChapterHeading
-                index="01"
-                eyebrow="Quiénes somos"
-                title="Conocemos cada casa de Zona Norte, no solo el mercado"
-                className="mb-8"
-              />
-            </Reveal>
-            <Reveal>
-              <p className="max-w-[52ch] text-[18px] leading-relaxed text-ink">
-                Trabajamos hace veinte años en los mismos cuatro barrios. Esa cercanía es la diferencia entre listar
-                una propiedad y entender por qué alguien elige vivir ahí — qué calle es más tranquila, qué colegio
-                queda cerca, cómo se mueve el precio cuadra por cuadra.
-              </p>
-            </Reveal>
-          </div>
-          <div className="relative min-h-[280px] bg-brand-dark sm:min-h-[360px] lg:min-h-0">
-            <ArchitectureMark className="absolute inset-0 size-full p-10 text-white/45 sm:p-14 lg:p-16" />
-          </div>
+      {/* Pausa editorial entre el Hero y el contenido inmobiliario — a
+          propósito sin numerar: no es un capítulo temático más (no tiene
+          eyebrow/acción como el resto), es un respiro con intención antes
+          de arrancar el recorrido. La arquitectura vive como textura muy
+          tenue al pie de la sección, nunca como panel de color propio —
+          ver ArchitectureMark. Reemplaza la sección "Identidad" anterior
+          (texto + panel navy), que el usuario pidió eliminar por completo
+          en vez de retocar. */}
+      <section className="relative overflow-hidden bg-bg py-28 sm:py-36 lg:py-44">
+        <ArchitectureMark
+          className="pointer-events-none absolute inset-x-0 bottom-0 mx-auto h-[220px] w-full max-w-[1600px] text-ink/[0.06] sm:h-[300px] lg:h-[380px]"
+        />
+        <div className="relative mx-auto max-w-2xl px-6 text-center sm:px-8">
+          <Reveal>
+            <span className="mx-auto mb-8 block h-px w-12 bg-brand/50" />
+            <h2 className="mb-6 text-balance font-display text-[clamp(28px,4.2vw,48px)] leading-[1.2] text-ink">
+              Elegimos cada propiedad como quien va a vivir ahí.
+            </h2>
+            <p className="mx-auto max-w-md text-[15px] text-ink-soft">
+              Ninguna publicación es automática — cada una pasa por la misma mirada de barrio.
+            </p>
+          </Reveal>
         </div>
       </section>
 
-      {/* 02 — Propiedades: una protagonista (foto grande, texto superpuesto)
+      {/* 01 — Propiedades: una protagonista (foto grande, texto superpuesto)
           + secundarias en grilla chica — no seis cards idénticas. */}
       <section className="bg-bg-alt py-20 sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
-              index="02"
+              index="01"
               eyebrow="Inventario actual"
               title="Recién publicadas"
               action={
@@ -222,7 +216,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 03 — Zonas: mosaico, no grilla pareja — el primer barrio lidera
+      {/* 02 — Zonas: mosaico, no grilla pareja — el primer barrio lidera
           en un tile grande, el resto lo acompaña más chico. La cantidad
           de propiedades reemplaza el tagline genérico ("guía del barrio"
           ya está a un click en la página de cada zona). */}
@@ -230,7 +224,7 @@ export default async function Home() {
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
-              index="03"
+              index="02"
               eyebrow="Zona Norte"
               title="Explorá el barrio, no solo el listado"
               description="No solo mostramos lo que está en venta: te contamos cómo se vive en cada zona, para que elijas con información real."
@@ -257,12 +251,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 04 — Diferencial */}
+      {/* 03 — Diferencial */}
       <section className="bg-brand-dark py-20 text-white sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
-              index="04"
+              index="03"
               eyebrow="Por qué De Paola"
               title="Un solo agente, del primer contacto al cierre"
               description="Nada de pasar de mano en mano dentro del mismo estudio. Quien te atiende conoce la propiedad, el barrio y a vos — y sigue el proceso completo, de la primera visita a la escritura."
@@ -285,13 +279,13 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 05 — Agentes */}
+      {/* 04 — Agentes */}
       {agents.length > 0 && (
         <section className="py-20 sm:py-28">
           <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
             <Reveal>
               <ChapterHeading
-                index="05"
+                index="04"
                 eyebrow="Nuestro equipo"
                 title="Un especialista por barrio, no un call center"
                 action={<TextLink href="/equipo">Ver todo el equipo</TextLink>}
@@ -314,13 +308,13 @@ export default async function Home() {
         </section>
       )}
 
-      {/* 06 — Editorial */}
+      {/* 05 — Editorial */}
       {articles.length > 0 && (
         <section className="bg-bg-alt py-20 sm:py-28">
           <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
             <Reveal>
               <ChapterHeading
-                index="06"
+                index="05"
                 eyebrow="Editorial"
                 title="Criterio de zona, no contenido genérico"
                 action={<TextLink href="/insights">Ver todos los artículos</TextLink>}
@@ -344,11 +338,11 @@ export default async function Home() {
         </section>
       )}
 
-      {/* 07 — Contacto */}
+      {/* 06 — Contacto */}
       <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
-            <ChapterHeading index="07" eyebrow="Contacto" title="¿Cuánto vale tu propiedad?" />
+            <ChapterHeading index="06" eyebrow="Contacto" title="¿Cuánto vale tu propiedad?" />
           </Reveal>
           <Reveal>
             <div className="mb-16 flex flex-wrap items-center justify-between gap-6 rounded-card bg-brand p-8 text-white sm:p-12">
