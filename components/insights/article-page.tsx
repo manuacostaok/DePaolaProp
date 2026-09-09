@@ -47,7 +47,14 @@ export async function ArticlePage({ article }: { article: ArticleWithRelations }
       </p>
 
       <div className="relative mb-6 aspect-[16/9] overflow-hidden rounded-card bg-bg-alt">
-        <Image src={article.coverImageUrl ?? "/placeholder-property.svg"} alt={article.title} fill className="object-cover" priority />
+        <Image
+          src={article.coverImageUrl ?? "/placeholder-property.svg"}
+          alt={article.title}
+          fill
+          sizes="(min-width: 760px) 760px, 100vw"
+          className="object-cover"
+          priority
+        />
       </div>
 
       {article.isSample && (
