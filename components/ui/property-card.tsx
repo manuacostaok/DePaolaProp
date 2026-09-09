@@ -109,7 +109,7 @@ export function PropertyCard({
           <Link href={`/equipo/${agent.slug}`} className="mt-3 flex items-center gap-2">
             {!agent.isPlaceholderPhoto && agent.photoUrl ? (
               <span className="relative size-6 shrink-0 overflow-hidden rounded-full">
-                <Image src={agent.photoUrl} alt={agent.name} fill className="object-cover" />
+                <Image src={agent.photoUrl} alt={agent.name} fill sizes="24px" className="object-cover" />
               </span>
             ) : (
               <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-brand-tint text-[10px] font-semibold text-brand-dark">
