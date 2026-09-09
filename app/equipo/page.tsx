@@ -29,8 +29,9 @@ export default async function EquipoPage({
 
   return (
     <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
-      <h1 className="mb-2 text-[clamp(26px,3vw,36px)]">Nuestros especialistas</h1>
-      <p className="mb-8 max-w-xl text-ink-soft">
+      <span className="mb-3 block text-[11px] font-medium uppercase tracking-[0.12em] text-brand">Nuestro equipo</span>
+      <h1 className="mb-3 text-[clamp(28px,3.4vw,40px)]">Un especialista por barrio</h1>
+      <p className="mb-10 max-w-xl text-ink-soft">
         Conocé al equipo de De Paola Propiedades y a qué zona de Zona Norte se dedica cada uno.
       </p>
 

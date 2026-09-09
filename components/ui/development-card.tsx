@@ -43,7 +43,9 @@ export function DevelopmentCard({
             className="object-cover transition-transform duration-300 ease-out group-hover:scale-[1.04]"
           />
         </Link>
-        <Badge className="pointer-events-none absolute left-3 top-3">Emprendimiento</Badge>
+        <span className="pointer-events-none absolute left-3 top-3 rounded-[3px] bg-bg/90 px-2.5 py-1 text-[10.5px] font-medium uppercase tracking-[0.12em] text-brand-dark backdrop-blur-[2px]">
+          Emprendimiento
+        </span>
         {constructionStatus && (
           <Badge variant="outline" className="pointer-events-none absolute right-3 top-3 bg-white">
             {CONSTRUCTION_STATUS_LABELS[constructionStatus]}
@@ -51,10 +53,10 @@ export function DevelopmentCard({
         )}
       </div>
       <div className="pt-4">
-        <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-soft">
+        <span className="mb-1 block text-[11px] font-medium uppercase tracking-[0.1em] text-ink-soft">
           {neighborhoodName}
         </span>
-        <Link href={href} className="mb-1.5 block text-[19px] font-medium text-ink hover:text-brand-dark">
+        <Link href={href} className="mb-1.5 block font-display text-[19px] leading-snug text-ink hover:text-brand-dark">
           {name}
         </Link>
         {tagline && <p className="mb-2 text-[14.5px] text-ink-soft">{tagline}</p>}

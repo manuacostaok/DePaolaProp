@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
@@ -21,8 +22,8 @@ function NavLinks({ items, transparent }: { items: NavItem[]; transparent: boole
           <Link
             href={item.href}
             className={cn(
-              "border-b-2 border-transparent py-1.5 text-[14.5px] font-medium",
-              transparent ? "text-white/90 hover:border-white hover:text-white" : "text-ink hover:border-brand hover:text-brand-dark",
+              "py-1.5 text-[13.5px] font-medium tracking-[0.01em] transition-colors duration-200",
+              transparent ? "text-white/80 hover:text-white" : "text-ink-soft hover:text-brand-dark",
             )}
           >
             {item.label}
@@ -102,7 +103,18 @@ export function Header() {
 
     const measure = () => {
       rafId = null;
-      const heroBottom = heroEl ? heroEl.getBoundingClientRect().bottom : window.innerHeight - window.scrollY;
+      // No usar heroEl.getBoundingClientRect().bottom acá: ese valor incluye
+      // la altura del spacer de más abajo (0 ↔ HEADER_HEIGHT, según este
+      // mismo `scrolled`), así que queda atado en un ciclo de
+      // realimentación con lo que este cálculo está por decidir — un
+      // re-render de React entre un scroll y el siguiente puede dejar el
+      // spacer todavía en el valor viejo, y ese desfasaje de HEADER_HEIGHT
+      // px se lee como un "parpadeo" real del estado sólido/transparente
+      // (regresión encontrada al correr tests/home.spec.ts con contenido
+      // de hero más alto). La altura propia del hero (`min-h-svh`, no
+      // afectada por el spacer) más scrollY da el mismo resultado sin la
+      // dependencia circular.
+      const heroBottom = heroEl ? heroEl.getBoundingClientRect().height - window.scrollY : window.innerHeight - window.scrollY;
 
       // Pasado este punto el header ya está sólido y la barra de pie del
       // hero (footNav) quedó con opacity-0 + pointer-events-none — seguir
@@ -114,7 +126,7 @@ export function Header() {
       // Una vez acá no hace falta más que sostener scrolled=true (no-op:
       // setScrolled con el mismo valor no re-renderiza).
       if (heroBottom < -HEADER_HEIGHT) {
-        setScrolled(true);
+        flushSync(() => setScrolled(true));
         return;
       }
 
@@ -122,16 +134,25 @@ export function Header() {
       tintRef.current?.style.setProperty("--scroll-tint", String(tint));
 
       const footHeight = footNavRef.current?.offsetHeight ?? 0;
-      setFootTop(heroBottom - footHeight);
-      // Histéresis: una vez sólido, solo vuelve a transparente si el borde
-      // del hero sube más allá del margen — absorbe la jitter del scroll
-      // táctil en vez de parpadear en cada pixel de oscilación.
-      // FINDING-001 (/design-review): esta condición estaba invertida — devolvía
-      // `true` (sólido) justo cuando heroBottom superaba el margen de histéresis,
-      // que es exactamente el caso en el que debía volver a transparente. Eso
-      // dejaba el header pegado en sólido para siempre después de scrollear
-      // hasta el fondo y volver arriba (repro: scrollTo bottom → scrollTo 0).
-      setScrolled((prev) => (prev ? heroBottom <= HEADER_HEIGHT + SCROLL_HYSTERESIS_PX : heroBottom <= HEADER_HEIGHT));
+      // flushSync: sin esto, el className del <header> (del que depende el
+      // spacer de más abajo) puede quedar aplicado recién 1-2 frames
+      // después de este cálculo — un re-render diferido de React, no un
+      // problema de la lógica en sí. Eso deja una ventana en la que un
+      // scroll rápido siguiente todavía ve el estado viejo, lo que se leía
+      // como una transición de más en tests/home.spec.ts. Forzar el commit
+      // acá adentro del mismo callback de rAF elimina esa ventana.
+      flushSync(() => {
+        setFootTop(heroBottom - footHeight);
+        // Histéresis: una vez sólido, solo vuelve a transparente si el borde
+        // del hero sube más allá del margen — absorbe la jitter del scroll
+        // táctil en vez de parpadear en cada pixel de oscilación.
+        // FINDING-001 (/design-review): esta condición estaba invertida — devolvía
+        // `true` (sólido) justo cuando heroBottom superaba el margen de histéresis,
+        // que es exactamente el caso en el que debía volver a transparente. Eso
+        // dejaba el header pegado en sólido para siempre después de scrollear
+        // hasta el fondo y volver arriba (repro: scrollTo bottom → scrollTo 0).
+        setScrolled((prev) => (prev ? heroBottom <= HEADER_HEIGHT + SCROLL_HYSTERESIS_PX : heroBottom <= HEADER_HEIGHT));
+      });
     };
     // rAF-throttled: en mobile el evento scroll puede disparar más rápido
     // que un frame de pintado — sin esto, React procesa un setState por

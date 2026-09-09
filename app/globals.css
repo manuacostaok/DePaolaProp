@@ -105,6 +105,14 @@
 @layer base {
   body {
     @apply bg-bg text-ink font-sans antialiased;
+    /* El spacer de Header.tsx cambia de altura (0 ↔ HEADER_HEIGHT) cuando
+       el header pasa de transparente a sólido — como vive arriba de todo
+       el documento, ese cambio de altura por scroll anchoring nativo del
+       navegador reajusta scrollY solo para "compensar" el contenido que
+       se movió, lo que dispara otra vez el cálculo de scrolled y puede
+       hacerlo oscilar. overflow-anchor:none saca a todo el body de la
+       heurística de scroll anchoring — no toca la lógica de histéresis. */
+    overflow-anchor: none;
   }
   h1,
   h2,

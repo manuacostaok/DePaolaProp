@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
 import { formatPrice } from "@/lib/format";
 import { cn } from "@/lib/cn";
 
@@ -74,11 +73,14 @@ export function PropertyCard({
             )}
           />
         </Link>
-        <Badge className="pointer-events-none absolute left-3 top-3">
+        {/* Etiqueta de operación como leyenda de galería (scrim translúcido,
+            sin peso de pastilla de e-commerce) — DESIGN.md riesgo de card
+            editorial, evolución del Badge sólido original. */}
+        <span className="pointer-events-none absolute left-3 top-3 rounded-[3px] bg-bg/90 px-2.5 py-1 text-[10.5px] font-medium uppercase tracking-[0.12em] text-brand-dark backdrop-blur-[2px]">
           {operationType === "VENTA" ? "Venta" : "Alquiler"}
-        </Badge>
+        </span>
         {isSample && (
-          <span className="pointer-events-none absolute bottom-3 left-3 rounded-[3px] bg-ink/[0.82] px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
+          <span className="pointer-events-none absolute bottom-3 left-3 rounded-[3px] bg-ink/[0.82] px-2 py-1 text-[11px] font-medium uppercase tracking-wider text-white">
             Ejemplo
           </span>
         )}
@@ -88,23 +90,21 @@ export function PropertyCard({
             onClick={onToggleFavorite}
             aria-pressed={isFavorite}
             aria-label={isFavorite ? "Quitar de favoritos" : "Guardar en favoritos"}
-            className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-white/90 text-base"
+            className="absolute right-3 top-3 flex size-8 items-center justify-center rounded-full bg-bg/90 text-base backdrop-blur-[2px]"
           >
             {isFavorite ? "♥" : "♡"}
           </button>
         )}
       </div>
       <div className="pt-4">
-        <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-soft">
+        <span className="mb-1 block text-[11px] font-medium uppercase tracking-[0.1em] text-ink-soft">
           {neighborhoodName}
         </span>
-        <Link href={href} className="mb-1.5 block text-[16px] font-medium text-ink hover:text-brand-dark">
+        <Link href={href} className="mb-1.5 block font-display text-[18px] leading-snug text-ink hover:text-brand-dark">
           {title}
         </Link>
-        <p className="mb-2 font-display text-[21px] text-brand-dark">{formatPrice(price, currency)}</p>
-        {specs.length > 0 && (
-          <p className="text-[12.5px] uppercase tracking-wide text-ink-soft">{specs.join(" · ")}</p>
-        )}
+        <p className="mb-1.5 font-display text-[23px] text-brand-dark">{formatPrice(price, currency)}</p>
+        {specs.length > 0 && <p className="text-[13px] text-ink-soft">{specs.join(" · ")}</p>}
         {agent && (
           <Link href={`/equipo/${agent.slug}`} className="mt-3 flex items-center gap-2">
             {!agent.isPlaceholderPhoto && agent.photoUrl ? (

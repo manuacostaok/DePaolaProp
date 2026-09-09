@@ -27,7 +27,7 @@ export async function PropertySearchPage({ title, basePath, fixedOperation, fixe
 
   return (
     <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
-      <h1 className="mb-6 text-[clamp(26px,3vw,36px)]">{title}</h1>
+      <h1 className="mb-6 text-[clamp(28px,3.4vw,40px)]">{title}</h1>
       {intro}
       <FilterPanel
         basePath={basePath}

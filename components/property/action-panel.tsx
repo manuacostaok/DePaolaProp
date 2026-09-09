@@ -41,9 +41,9 @@ export function ActionPanel({
   const emailHref = `mailto:${email}?subject=${encodeURIComponent(title)}`;
 
   return (
-    <div className="sticky top-24 rounded-card border border-line bg-white p-6">
+    <div className="sticky top-24 border-t border-line pt-6 lg:border-t-0 lg:pt-0">
       <div className="mb-1 flex items-start justify-between gap-3">
-        <p className="font-display text-[26px] text-brand-dark">{formatPrice(price, currency)}</p>
+        <p className="font-display text-[30px] text-brand-dark">{formatPrice(price, currency)}</p>
         <button
           type="button"
           onClick={() => {
@@ -59,31 +59,11 @@ export function ActionPanel({
       </div>
       {price == null && <p className="mb-4 text-[13.5px] text-ink-soft">Cotización a confirmar con el agente.</p>}
 
-      <a
-        href={whatsappHref}
-        target="_blank"
-        rel="noopener noreferrer"
-        onClick={() => trackEvent("whatsapp_click", { propertyId })}
-        className={cn(buttonVariants({ variant: "whatsapp" }), "mb-2.5 w-full")}
-      >
-        Consultar por WhatsApp
-      </a>
-      <a href="/contacto" className={cn(buttonVariants({ variant: "outline" }), "mb-2.5 w-full")}>
-        Solicitar visita
-      </a>
-      <a
-        href={emailHref}
-        onClick={() => trackEvent("contact_click", { propertyId, channel: "email" })}
-        className={cn(buttonVariants({ variant: "outline" }), "w-full")}
-      >
-        Consultar por email
-      </a>
-
-      <div className="mt-4 flex items-center gap-3 border-t border-line pt-4">
+      <div className="mt-5 flex items-center gap-3 border-y border-line py-4">
         {agentPhotoUrl ? (
           <Image src={agentPhotoUrl} alt={agentName} width={52} height={52} className="size-[52px] rounded-full object-cover" />
         ) : (
-          <div className="flex size-[52px] items-center justify-center rounded-full bg-brand-tint text-sm font-semibold text-brand-dark">
+          <div className="flex size-[52px] items-center justify-center rounded-full bg-brand-tint font-display text-lg text-brand-dark">
             {agentName
               .split(" ")
               .map((part) => part[0])
@@ -95,6 +75,28 @@ export function ActionPanel({
           <p className="text-[14.5px] font-semibold text-ink">{agentName}</p>
           <p className="text-[13px] text-ink-soft">{agentTitle}</p>
         </div>
+      </div>
+
+      <div className="mt-5 flex flex-col gap-2.5">
+        <a
+          href={whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => trackEvent("whatsapp_click", { propertyId })}
+          className={cn(buttonVariants({ variant: "whatsapp" }), "w-full")}
+        >
+          Consultar por WhatsApp
+        </a>
+        <a href="/contacto" className={cn(buttonVariants({ variant: "outline" }), "w-full")}>
+          Solicitar visita
+        </a>
+        <a
+          href={emailHref}
+          onClick={() => trackEvent("contact_click", { propertyId, channel: "email" })}
+          className={cn(buttonVariants({ variant: "outline" }), "w-full")}
+        >
+          Consultar por email
+        </a>
       </div>
     </div>
   );

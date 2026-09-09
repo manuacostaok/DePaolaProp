@@ -62,6 +62,12 @@ components:
     rounded: "{rounded.md}"
   nav-link:
     textColor: "{colors.text}"
+  chapter-heading:
+    numberColor: "{colors.accent}"
+    numberOpacity: 0.35
+  button-text:
+    textColor: "{colors.primary}"
+    textDecoration: "underline on hover only"
 ---
 
 # De Paola Propiedades
@@ -121,7 +127,11 @@ Grid de 12 columnas desktop / 8 tablet / 4 mobile, gutters mínimo 24px desktop 
 
 **button-whatsapp**: fondo `#25d366`, categoría aparte, siempre con ícono — nunca tratado como "otro botón secundario".
 
-**card** (propiedad): fondo blanco, `rounded.md`, `shadow-soft`, imagen con `aspect-ratio` fijo y `object-fit: cover`. Estados: hover escala la imagen interna (nunca la card completa) con la curva de marca — ver Motion, riesgo #3.
+**card** (propiedad/zona/artículo/agente): foto-primero, sin chrome de card (sin fondo blanco, sin borde, sin sombra) — imagen con `aspect-ratio` fijo y `object-fit: cover`, bloque tipográfico debajo o superpuesto con scrim. Estados: hover escala la imagen interna (nunca el bloque completo) con la curva de marca — ver Motion, riesgo #3. El primitivo `Card`/`CardBody` (fondo blanco + borde + sombra) queda reservado para contexto funcional (paneles de filtro, formularios), no para contenido editorial — Etapa 2 retiró ese patrón de `ArticleCard`, que hasta ahí era literalmente el "card kit" genérico (borde + sombra + hover-lift) señalado como anti-patrón.
+
+**chapter-heading** (`components/ui/chapter-heading.tsx`, Etapa 2): device estructural de la Home — número de capítulo (01–07) + eyebrow + título, porque la Home se lee como una secuencia real (Identidad → Propiedades → Zonas → Diferencial → Agentes → Editorial → Contacto), no como numeración decorativa. No usar este patrón fuera de una secuencia genuina.
+
+**button-text** (`components/ui/text-link.tsx`, Etapa 2): acción de bajo compromiso ("Ver todo el equipo") — sin fondo ni pill, subrayado solo en hover. Deliberadamente fuera de `buttonVariants` (que asume forma de píldora); `cn()` en este proyecto no hace merge de clases Tailwind en conflicto, así que un variant "text" dentro de `buttonVariants` pelearía con `rounded-pill`/`gap-2`/padding del size — de ahí el componente separado.
 
 **input**: borde `line` 1px, `rounded.sm`, foco cambia borde a `primary` sin halo ni sombra adicional.
 
@@ -153,3 +163,5 @@ Grid de 12 columnas desktop / 8 tablet / 4 mobile, gutters mínimo 24px desktop 
 | 2026-09-09 | Riesgo aceptado: full-bleed en hero de Home/zona, contenido normal en buscador/ficha | Refuerza "editorial" en páginas de descubrimiento sin arriesgar conversión en páginas de decisión |
 | 2026-09-09 | Riesgo aceptado: motion propio en cards de propiedad (curva de marca en hover de imagen) | Complementa el hero animado (`HeroIntro`) y el `Reveal` ya implementados con anime.js sin duplicar su rol |
 | 2026-09-09 | Riesgo #3 implementado: `duration-[430ms] ease-brand scale-[1.08]` en `property-card.tsx`, token `--ease-brand` sumado a `app/globals.css` | Valores acordados por el usuario comparando lado a lado con el `duration-300 ease-out` anterior en un prototipo de `/design-html` |
+| 2026-09-09 | Etapa 2 — transformación editorial: retira el "card kit" genérico (borde + sombra + hover-lift) de `ArticleCard`; `PropertyCard`/`ZoneCard`/`AgentCard` pasan a foto-primero puro; `ActionPanel` de la ficha pierde el chrome de buy-box (caja blanca bordeada); Home se reordena en capítulos numerados (Identidad → Propiedades → Zonas → Diferencial → Agentes → Editorial → Contacto), con dos secciones nuevas (Agentes, Editorial) que antes no existían ahí | Usuario pidió transformación visual significativa ("premium/editorial, no SaaS genérico"), no otro refinamiento — DESIGN.md no se trata como cárcel, evoluciona donde una decisión anterior limitaba esa dirección |
+| 2026-09-09 | Se mantiene sin cambios: paleta, tipografías (Newsreader/Jost), full-bleed solo Home/zona, cero motion decorativo en buscador/ficha, toda la lógica de scroll del header | Explícito en el pedido del usuario — la transformación sale de composición/tipografía/foto, no de tokens de color ni de reglas de performance ya validadas |

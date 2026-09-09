@@ -15,8 +15,9 @@ export default async function ZonasPage() {
 
   return (
     <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
-      <h1 className="mb-3 text-[clamp(26px,3vw,36px)]">Zona Norte, barrio por barrio</h1>
-      <p className="mb-8 max-w-xl text-ink-soft">
+      <span className="mb-3 block text-[11px] font-medium uppercase tracking-[0.12em] text-brand">Zona Norte</span>
+      <h1 className="mb-3 max-w-2xl text-balance text-[clamp(32px,4.5vw,52px)]">Barrio por barrio, no solo un mapa de precios</h1>
+      <p className="mb-10 max-w-xl text-ink-soft">
         20 años trabajando en estas cuatro zonas nos permiten contarte no solo qué hay en venta, sino cómo se vive
         en cada una.
       </p>

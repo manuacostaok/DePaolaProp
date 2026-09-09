@@ -26,8 +26,9 @@ export default async function InsightsPage() {
 
   return (
     <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
-      <h1 className="mb-2 text-[clamp(26px,3vw,36px)]">De Paola Insights</h1>
-      <p className="mb-8 text-ink-soft">Criterio experto sobre Zona Norte — mercado, guías, zonas y más.</p>
+      <span className="mb-3 block text-[11px] font-medium uppercase tracking-[0.12em] text-brand">Editorial</span>
+      <h1 className="mb-3 text-[clamp(28px,3.4vw,40px)]">De Paola Insights</h1>
+      <p className="mb-10 max-w-xl text-ink-soft">Criterio experto sobre Zona Norte — mercado, guías, zonas y más.</p>
 
       <div className="mb-8 flex flex-wrap gap-2">
         {categories.map((category) => (
@@ -38,14 +39,20 @@ export default async function InsightsPage() {
       </div>
 
       {featured && (
-        <Link href={`/insights/${featured.slug}`} className="mb-10 grid gap-4 overflow-hidden rounded-card border border-line bg-white sm:grid-cols-2">
-          <div className="relative aspect-[16/10] bg-bg-alt">
-            <Image src={featured.coverImageUrl ?? "/placeholder-property.svg"} alt={featured.title} fill className="object-cover" />
+        <Link href={`/insights/${featured.slug}`} className="group mb-16 grid gap-6 sm:grid-cols-2 sm:items-center sm:gap-10">
+          <div className="relative aspect-[16/10] overflow-hidden rounded-card bg-bg-alt">
+            <Image
+              src={featured.coverImageUrl ?? "/placeholder-property.svg"}
+              alt={featured.title}
+              fill
+              sizes="(min-width: 640px) 50vw, 100vw"
+              className="object-cover transition-transform duration-[430ms] ease-brand group-hover:scale-[1.05]"
+            />
           </div>
-          <div className="flex flex-col justify-center p-6">
-            <span className="mb-2 text-[12.5px] font-semibold uppercase tracking-wider text-brand">{featured.category.name}</span>
-            <h2 className="mb-2 text-2xl">{featured.title}</h2>
-            <p className="text-sm text-ink-soft">{featured.publishedAt?.toLocaleDateString("es-AR")}</p>
+          <div>
+            <span className="mb-2.5 block text-[11px] font-medium uppercase tracking-[0.12em] text-brand">{featured.category.name}</span>
+            <h2 className="mb-2 text-balance text-[clamp(24px,3vw,34px)] group-hover:text-brand-dark">{featured.title}</h2>
+            <p className="text-[13px] text-ink-soft">{featured.publishedAt?.toLocaleDateString("es-AR")}</p>
           </div>
         </Link>
       )}

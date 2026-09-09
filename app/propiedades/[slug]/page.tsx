@@ -102,37 +102,50 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
         <div>
           <Gallery images={property.images.map((img) => ({ url: img.url, alt: img.alt ?? property.title }))} title={property.title} />
 
-          <Badge className="mb-2.5">{property.operationType === "VENTA" ? "Venta" : "Alquiler"}</Badge>
-          {property.isSample && (
-            <Badge variant="dark" className="mb-2.5 ml-2">
-              Ejemplo
-            </Badge>
-          )}
-          <h1 className="mb-1 text-[32px]">{property.title}</h1>
-          <p className="mb-4 text-[15px] text-ink-soft">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-brand">
+              {property.operationType === "VENTA" ? "Venta" : "Alquiler"}
+            </span>
+            {property.isSample && (
+              <Badge variant="dark" className="!text-[10px]">
+                Ejemplo
+              </Badge>
+            )}
+          </div>
+          <h1 className="mb-2 text-balance text-[clamp(28px,3.4vw,40px)]">{property.title}</h1>
+          <p className="mb-7 text-[15px] text-ink-soft">
             {property.location.address}
             {property.location.isApproximate ? " (ubicación aproximada)" : ""}
           </p>
 
-          <div className="grid grid-cols-2 gap-2.5 border-y border-line py-4 text-sm text-ink-soft sm:grid-cols-4">
+          {/* Narrativa antes que la información dura — la descripción lidera,
+              specs/ubicación acompañan. Ver DESIGN.md Etapa 2: "fotografía →
+              narrativa → información → ubicación". */}
+          <p className="mb-8 max-w-[62ch] text-[17px] leading-relaxed text-ink">{property.description}</p>
+
+          <div className="mb-8 flex flex-wrap gap-x-10 gap-y-5 border-y border-line py-6">
             {property.rooms != null && (
               <div>
-                <strong className="block text-ink">{property.rooms}</strong>Ambientes
+                <p className="font-display text-[22px] leading-none text-ink">{property.rooms}</p>
+                <p className="mt-1.5 text-[12.5px] text-ink-soft">Ambientes</p>
               </div>
             )}
             {property.bathrooms != null && (
               <div>
-                <strong className="block text-ink">{property.bathrooms}</strong>Baños
+                <p className="font-display text-[22px] leading-none text-ink">{property.bathrooms}</p>
+                <p className="mt-1.5 text-[12.5px] text-ink-soft">Baños</p>
               </div>
             )}
             {property.coveredArea != null && (
               <div>
-                <strong className="block text-ink">{property.coveredArea} m²</strong>Cubiertos
+                <p className="font-display text-[22px] leading-none text-ink">{property.coveredArea} m²</p>
+                <p className="mt-1.5 text-[12.5px] text-ink-soft">Cubiertos</p>
               </div>
             )}
             {property.totalArea != null && (
               <div>
-                <strong className="block text-ink">{property.totalArea} m²</strong>Totales
+                <p className="font-display text-[22px] leading-none text-ink">{property.totalArea} m²</p>
+                <p className="mt-1.5 text-[12.5px] text-ink-soft">Totales</p>
               </div>
             )}
             {/* Cochera no aplica de la misma forma a un galpón (playa de
@@ -140,23 +153,21 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
                 en vez de mostrar "No" sin sentido de negocio. */}
             {property.propertyType !== "GALPON" && (
               <div>
-                <strong className="block text-ink">{property.hasGarage ? "Sí" : "No"}</strong>Cochera
+                <p className="font-display text-[22px] leading-none text-ink">{property.hasGarage ? "Sí" : "No"}</p>
+                <p className="mt-1.5 text-[12.5px] text-ink-soft">Cochera</p>
               </div>
             )}
           </div>
 
           {property.features.length > 0 && (
-            <div className="flex flex-wrap gap-2 py-4">
+            <div className="mb-8 flex flex-wrap gap-2">
               {property.features.map((feature) => (
-                <span key={feature.id} className="rounded-full border border-line bg-bg-alt px-3 py-1 text-[13px] text-ink-soft">
+                <span key={feature.id} className="rounded-full border border-line px-3 py-1 text-[13px] text-ink-soft">
                   {feature.label}
                 </span>
               ))}
             </div>
           )}
-
-          <h2 className="mt-6 mb-2">Descripción</h2>
-          <p>{property.description}</p>
 
           <h2 className="mt-6 mb-2">Ubicación</h2>
           {property.location.lat != null && property.location.lng != null ? (

@@ -46,15 +46,15 @@ export default async function ZonaPage({
   return (
     <main>
       <section
-        className="relative flex min-h-[380px] items-end bg-cover bg-center"
+        className="relative flex min-h-[440px] items-end bg-cover bg-center"
         style={{ backgroundImage: `url('${neighborhoodImage(neighborhood.slug)}')` }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-[rgba(0,39,64,0.72)] via-[rgba(0,39,64,0.28)] to-[rgba(0,39,64,0.12)]" />
-        <div className="relative mx-auto w-full max-w-[1240px] px-6 py-10 sm:px-8">
-          <span className="mb-3 block text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#DCDEE7]">
+        <div className="relative mx-auto w-full max-w-[1240px] px-6 py-12 sm:px-8">
+          <span className="mb-3 block text-[12.5px] font-medium uppercase tracking-[0.12em] text-[#DCDEE7]">
             Zona Norte
           </span>
-          <h1 className="text-[44px] text-white">{neighborhood.name}</h1>
+          <h1 className="text-[clamp(40px,6vw,68px)] text-white">{neighborhood.name}</h1>
         </div>
       </section>
 

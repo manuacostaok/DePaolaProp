@@ -67,7 +67,13 @@ test("Home en mobile: el header no parpadea al oscilar el scroll cerca del punto
     const offsets = [0, -3, 2, -5, 4, -2, 6, -8, 3, 0, -4, 5, -6, 2];
     for (const off of offsets) {
       window.scrollTo(0, base + off);
-      await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r as FrameRequestCallback)));
+      // 80ms en vez de 2 rAF: un scrollTo programático dispara el evento
+      // 'scroll' nativo de forma asíncrona (no en el mismo frame), y el
+      // handler del header lo procesa vía rAF propio — 2 frames (~33ms)
+      // no le daban margen a ese round-trip bajo carga, generando
+      // "transiciones" fantasma por leer el estado a mitad de camino
+      // (confirmado repitiendo este test 10+ veces con cada margen).
+      await new Promise((r) => setTimeout(r, 80));
       const solid = header.className.includes("bg-bg");
       if (solid !== prevSolid) count++;
       prevSolid = solid;

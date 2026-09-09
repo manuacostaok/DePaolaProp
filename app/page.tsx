@@ -3,11 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { buttonVariants } from "@/components/ui/button";
 import { PropertyCarousel } from "@/components/ui/property-carousel";
 import { ZoneCard } from "@/components/ui/zone-card";
+import { AgentCard } from "@/components/ui/agent-card";
+import { ArticleCard } from "@/components/ui/article-card";
 import { Callout } from "@/components/ui/callout";
 import { Reveal } from "@/components/ui/reveal";
 import { HeroIntro } from "@/components/ui/hero-intro";
 import { HeroVideo } from "@/components/ui/hero-video";
 import { InstagramGrid } from "@/components/ui/instagram-grid";
+import { ChapterHeading } from "@/components/ui/chapter-heading";
+import { TextLink } from "@/components/ui/text-link";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
 import { SITE } from "@/lib/nav";
 
@@ -35,8 +39,26 @@ async function getNeighborhoods() {
   return prisma.neighborhood.findMany({ orderBy: { name: "asc" } });
 }
 
+async function getFeaturedAgents() {
+  return prisma.agent.findMany({ where: { isActive: true }, orderBy: { createdAt: "asc" }, take: 3 });
+}
+
+async function getLatestArticles() {
+  return prisma.article.findMany({
+    where: { publishedAt: { not: null } },
+    orderBy: { publishedAt: "desc" },
+    take: 3,
+    include: { category: true },
+  });
+}
+
 export default async function Home() {
-  const [properties, neighborhoods] = await Promise.all([getFeaturedProperties(), getNeighborhoods()]);
+  const [properties, neighborhoods, agents, articles] = await Promise.all([
+    getFeaturedProperties(),
+    getNeighborhoods(),
+    getFeaturedAgents(),
+    getLatestArticles(),
+  ]);
 
   return (
     <main>
@@ -49,43 +71,87 @@ export default async function Home() {
       <section id="home-hero" className="relative flex min-h-svh items-end overflow-hidden bg-brand">
         <HeroVideo posterUrl={HERO_POSTER} className="absolute inset-0 size-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-brand from-10% via-brand/55 via-45% to-brand/10" />
-        <HeroIntro className="relative mx-auto w-full max-w-[1240px] px-6 pt-16 pb-16 sm:px-8 md:pb-32">
-          <span className="mb-4 block text-[12.5px] font-semibold uppercase tracking-[0.14em] text-brand-tint">
-            Zona Norte · Buenos Aires
-          </span>
-          <h1 className="mb-6 max-w-3xl text-[clamp(34px,5vw,64px)] text-white">
-            20 años acompañando cada operación inmobiliaria de Zona Norte.
-          </h1>
-          <p className="mb-8 max-w-xl text-lg text-white/85">
-            Martínez, Florida, Vicente López y Villa Martelli. Comprá, alquilá o vendé con la inmobiliaria que
-            conoce el barrio casa por casa.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/propiedades" className={buttonVariants({ variant: "onDark" })}>
-              Ver propiedades
-            </Link>
-            <Link
-              href="/vender/tasacion"
-              className={buttonVariants({ variant: "outline", className: "border-white/55 bg-white/10 text-white" })}
-            >
-              Tasá tu propiedad
-            </Link>
+        {/* Composición asimétrica: el titular lidera a la izquierda con
+            aire negativo real; la cifra de la derecha (desktop only) da
+            contrapeso sin competir por atención — DESIGN.md Etapa 2. */}
+        <div className="relative mx-auto grid w-full max-w-[1240px] gap-x-10 gap-y-12 px-6 pt-16 pb-16 sm:px-8 md:pb-32 lg:grid-cols-[1fr_auto] lg:items-end">
+          <HeroIntro className="max-w-3xl">
+            <span className="mb-5 block text-[12.5px] font-medium uppercase tracking-[0.14em] text-brand-tint">
+              Zona Norte · Buenos Aires
+            </span>
+            <h1 className="mb-7 text-balance text-[clamp(36px,6vw,72px)] leading-[1.05] text-white">
+              20 años acompañando cada operación inmobiliaria de Zona Norte.
+            </h1>
+            <p className="mb-9 max-w-lg text-lg text-white/85">
+              Martínez, Florida, Vicente López y Villa Martelli. Comprá, alquilá o vendé con la inmobiliaria que
+              conoce el barrio casa por casa.
+            </p>
+            <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
+              <Link href="/propiedades" className={buttonVariants({ variant: "onDark" })}>
+                Ver propiedades
+              </Link>
+              <Link
+                href="/vender/tasacion"
+                className="text-[14.5px] font-medium text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white"
+              >
+                Tasá tu propiedad
+              </Link>
+            </div>
+          </HeroIntro>
+          <div
+            className="animate-fade-up hidden shrink-0 self-center border-l border-white/25 py-1 pl-8 motion-reduce:animate-none lg:block"
+            style={{ animationDelay: "420ms" }}
+          >
+            <p className="font-display text-[56px] leading-none text-white">20</p>
+            <p className="mt-2 max-w-[9rem] text-[12.5px] uppercase leading-snug tracking-[0.1em] text-white/70">
+              Años en Zona Norte
+            </p>
           </div>
-        </HeroIntro>
+        </div>
       </section>
 
-      <section className="py-16">
+      {/* 01 — Identidad */}
+      <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
-          <Reveal className="mb-8 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <span className="mb-2 block text-[12.5px] font-semibold uppercase tracking-wider text-brand">
-                Últimas propiedades
-              </span>
-              <h2 className="text-[clamp(26px,3vw,36px)]">Recién publicadas</h2>
+          <Reveal>
+            <ChapterHeading index="01" eyebrow="Quiénes somos" title="Conocemos cada casa de Zona Norte, no solo el mercado" />
+          </Reveal>
+          <Reveal>
+            <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-start">
+              <p className="max-w-[58ch] text-[18px] leading-relaxed text-ink">
+                De Paola Propiedades trabaja hace 20 años en los mismos cuatro barrios. Esa cercanía es la
+                diferencia entre listar una propiedad y entender por qué alguien elige vivir ahí — qué calle es más
+                tranquila, qué colegio queda cerca, cómo se mueve el precio cuadra por cuadra.
+              </p>
+              <div className="flex gap-10 sm:gap-14">
+                <div>
+                  <p className="font-display text-[48px] leading-none text-brand-dark">20</p>
+                  <p className="mt-2 text-[13px] text-ink-soft">Años en Zona Norte</p>
+                </div>
+                <div>
+                  <p className="font-display text-[48px] leading-none text-brand-dark">4</p>
+                  <p className="mt-2 text-[13px] text-ink-soft">Barrios, sin excepción</p>
+                </div>
+              </div>
             </div>
-            <Link href="/propiedades" className={buttonVariants({ variant: "outline", size: "sm" })}>
-              Ver todas
-            </Link>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* 02 — Propiedades */}
+      <section className="bg-bg-alt py-20 sm:py-28">
+        <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
+          <Reveal>
+            <ChapterHeading
+              index="02"
+              eyebrow="Inventario actual"
+              title="Recién publicadas"
+              action={
+                <Link href="/propiedades" className={buttonVariants({ variant: "outline", size: "sm" })}>
+                  Ver todas
+                </Link>
+              }
+            />
           </Reveal>
 
           <Callout>
@@ -116,17 +182,16 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="bg-bg-alt py-16">
+      {/* 03 — Zonas */}
+      <section className="py-20 sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
-            <span className="mb-2 block text-[12.5px] font-semibold uppercase tracking-wider text-brand">
-              Zona Norte
-            </span>
-            <h2 className="mb-3 text-[clamp(26px,3vw,36px)]">Conocé cada barrio antes de decidir</h2>
-            <p className="mb-8 max-w-xl">
-              No solo mostramos lo que está en venta: te contamos cómo se vive en cada zona, para que elijas con
-              información real, no solo con un listado de precios.
-            </p>
+            <ChapterHeading
+              index="03"
+              eyebrow="Zona Norte"
+              title="Conocé cada barrio antes de decidir"
+              description="No solo mostramos lo que está en venta: te contamos cómo se vive en cada zona, para que elijas con información real, no solo con un listado de precios."
+            />
           </Reveal>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {neighborhoods.map((neighborhood, i) => (
@@ -144,49 +209,126 @@ export default async function Home() {
         </div>
       </section>
 
-      <section className="bg-brand-dark py-16 text-white">
+      {/* 04 — Diferencial */}
+      <section className="bg-brand-dark py-20 text-white sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
-          <Reveal className="mb-8 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <svg viewBox="0 0 24 24" className="size-7 shrink-0" fill="none" stroke="currentColor" strokeWidth={1.5} aria-hidden="true">
-                <rect x="3" y="3" width="18" height="18" rx="5" />
-                <circle cx="12" cy="12" r="4.2" />
-                <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
-              </svg>
-              <div>
-                <h2 className="text-white">Seguinos en Instagram</h2>
-                <p className="m-0 text-[13.5px] text-[#CCD3D8]">@{SITE.instagramHandle}</p>
-              </div>
-            </div>
-            <a
-              href={SITE.instagramUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={buttonVariants({ variant: "onDark", size: "sm" })}
-            >
-              Seguir en Instagram
-            </a>
-          </Reveal>
-
           <Reveal>
-            <InstagramGrid />
+            <ChapterHeading
+              index="04"
+              eyebrow="Por qué De Paola"
+              title="Un solo agente, del primer contacto al cierre"
+              description="Nada de pasar de mano en mano dentro del mismo estudio. Quien te atiende conoce la propiedad, el barrio y a vos — y sigue el proceso completo, de la primera visita a la escritura."
+              light
+            />
+          </Reveal>
+          <Reveal>
+            <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
+              <Link href="/vender/tasacion" className={buttonVariants({ variant: "onDark" })}>
+                Tasá tu propiedad
+              </Link>
+              <Link
+                href="/nosotros"
+                className="text-[14.5px] font-medium text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white"
+              >
+                Conocé nuestra historia
+              </Link>
+            </div>
           </Reveal>
         </div>
       </section>
 
-      <section className="py-16">
-        <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
-          <Reveal className="flex flex-wrap items-center justify-between gap-6 rounded-card bg-brand p-8 text-white sm:p-12">
-            <div>
-              <h2 className="mb-1.5 text-white">¿Cuánto vale tu propiedad?</h2>
-              <p className="m-0 text-[#D7DEE5]">Coordiná una tasación profesional con nuestro equipo, sin costo ni compromiso.</p>
+      {/* 05 — Agentes */}
+      {agents.length > 0 && (
+        <section className="py-20 sm:py-28">
+          <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
+            <Reveal>
+              <ChapterHeading
+                index="05"
+                eyebrow="Nuestro equipo"
+                title="Un especialista por barrio, no un call center"
+                action={<TextLink href="/equipo">Ver todo el equipo</TextLink>}
+              />
+            </Reveal>
+            <div className="grid gap-8 sm:grid-cols-3">
+              {agents.map((agent, i) => (
+                <Reveal key={agent.id} delayMs={i * 60}>
+                  <AgentCard
+                    href={`/equipo/${agent.slug}`}
+                    name={agent.name}
+                    title={agent.title}
+                    photoUrl={agent.photoUrl}
+                    isPlaceholderPhoto={agent.isPlaceholderPhoto}
+                  />
+                </Reveal>
+              ))}
             </div>
-            <Link
-              href="/vender/tasacion"
-              className={buttonVariants({ variant: "outline", className: "border-white bg-white text-brand-dark" })}
-            >
-              Tasar mi propiedad
-            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* 06 — Editorial */}
+      {articles.length > 0 && (
+        <section className="bg-bg-alt py-20 sm:py-28">
+          <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
+            <Reveal>
+              <ChapterHeading
+                index="06"
+                eyebrow="Editorial"
+                title="Criterio de zona, no contenido genérico"
+                action={<TextLink href="/insights">Ver todos los artículos</TextLink>}
+              />
+            </Reveal>
+            <div className="grid gap-8 sm:grid-cols-3">
+              {articles.map((article, i) => (
+                <Reveal key={article.id} delayMs={i * 60}>
+                  <ArticleCard
+                    href={`/insights/${article.slug}`}
+                    title={article.title}
+                    categoryName={article.category.name}
+                    imageUrl={article.coverImageUrl ?? "/placeholder-property.svg"}
+                    imageAlt={article.title}
+                    publishedAt={article.publishedAt?.toLocaleDateString("es-AR")}
+                  />
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* 07 — Contacto */}
+      <section className="py-20 sm:py-28">
+        <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
+          <Reveal>
+            <ChapterHeading index="07" eyebrow="Contacto" title="¿Cuánto vale tu propiedad?" />
+          </Reveal>
+          <Reveal>
+            <div className="mb-16 flex flex-wrap items-center justify-between gap-6 rounded-card bg-brand p-8 text-white sm:p-12">
+              <p className="max-w-md text-[#D7DEE5]">Coordiná una tasación profesional con nuestro equipo, sin costo ni compromiso.</p>
+              <Link
+                href="/vender/tasacion"
+                className={buttonVariants({ variant: "outline", className: "border-white bg-white text-brand-dark" })}
+              >
+                Tasar mi propiedad
+              </Link>
+            </div>
+          </Reveal>
+
+          <Reveal>
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+              <p className="text-[13px] uppercase tracking-[0.1em] text-ink-soft">
+                Seguinos en Instagram · @{SITE.instagramHandle}
+              </p>
+              <a
+                href={SITE.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[14.5px] font-medium text-brand-dark underline decoration-brand-dark/30 underline-offset-4 hover:decoration-brand-dark"
+              >
+                Ver perfil
+              </a>
+            </div>
+            <InstagramGrid />
           </Reveal>
         </div>
       </section>
