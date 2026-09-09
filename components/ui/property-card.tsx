@@ -78,7 +78,7 @@ export function PropertyCard({
           {operationType === "VENTA" ? "Venta" : "Alquiler"}
         </Badge>
         {isSample && (
-          <span className="pointer-events-none absolute bottom-3 left-3 rounded-[3px] bg-ink/[0.82] px-2 py-1 text-[10.5px] font-semibold uppercase tracking-wider text-white">
+          <span className="pointer-events-none absolute bottom-3 left-3 rounded-[3px] bg-ink/[0.82] px-2 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
             Ejemplo
           </span>
         )}
