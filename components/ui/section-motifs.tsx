@@ -187,27 +187,30 @@ const MASK_STYLE: CSSProperties = {
   WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
 };
 
-// Franja decorativa con deriva horizontal continua (loop CSS, ver
-// animate-marquee en app/globals.css) — acepta un ícono temático
+// Franja decorativa de fondo con deriva horizontal continua (loop CSS,
+// ver animate-marquee en app/globals.css) — acepta un ícono temático
 // (variant) o cualquier otro trazo de línea (children, ej. el skyline
 // completo de ArchitectureMark) para reusar el mismo mecanismo de
 // scroll infinito sin duplicar el track a mano en cada sección.
 //
-// A propósito NO es un fondo absolute detrás del contenido: en mobile,
-// con todo apilado a una columna, una sección puede ser mucho más alta
-// que en desktop y una franja "absolute bottom" terminaba cayendo
-// encima de texto/tarjetas reales en vez de en el margen vacío de
-// abajo (bug real, reportado por el usuario). Como franja de flujo
-// normal, con su propio alto reservado, es estructuralmente imposible
-// que se superponga con nada — y de paso puede verse más marcada
-// (mayor opacidad) porque ya no necesita "esconderse" detrás de texto.
+// Vive DETRÁS del contenido (absolute) y NO agrega alto a la página —
+// el pedido explícito del usuario. Para que eso sea seguro sin volver a
+// superponerse con texto/tarjetas reales (el bug de la primera versión,
+// cuando esto era una franja de flujo normal más alta que el padding
+// disponible), el alto por defecto queda siempre por debajo del padding
+// vertical real de cada sección (py-20 sm:py-28 = 80px/112px): así la
+// franja cae siempre dentro del margen que la sección YA reserva vacío
+// en su borde inferior, nunca sobre el contenido — sea cual sea la
+// cantidad de tarjetas/agentes/artículos que haya cargados. Quien usa
+// este componente debe agregar "relative overflow-hidden" a la
+// <section> contenedora.
 export function DriftBand({
   variant,
   children,
   className,
   durationS = 60,
   reverse = false,
-  heightClassName = "h-[130px] sm:h-[170px]",
+  heightClassName = "h-16 sm:h-24",
 }: {
   variant?: keyof typeof ICON_SETS;
   children?: (className: string) => ReactNode;
@@ -222,7 +225,7 @@ export function DriftBand({
   return (
     <div
       aria-hidden="true"
-      className={cn("pointer-events-none relative w-full overflow-hidden", heightClassName, className)}
+      className={cn("pointer-events-none absolute inset-x-0 bottom-0 -z-10 overflow-hidden", heightClassName, className)}
       style={MASK_STYLE}
     >
       <div

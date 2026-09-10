@@ -136,7 +136,7 @@ export default async function Home() {
           ("la segunda sección siento que está demás") — su mensaje pasó a
           ser la description de este capítulo en vez de ocupar una pantalla
           entera solo de texto. */}
-      <section className="bg-bg-alt py-20 sm:py-28">
+      <section className="relative overflow-hidden bg-bg-alt py-20 sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
@@ -222,7 +222,7 @@ export default async function Home() {
             )
           )}
         </div>
-        <DriftBand variant="houses" className="mt-16 text-ink/[0.5]" durationS={44} />
+        <DriftBand variant="houses" className="text-ink/[0.5]" durationS={44} />
       </section>
 
       {/* 02 — Zonas: un banner protagonista a todo el ancho + el resto en
@@ -233,7 +233,7 @@ export default async function Home() {
           el hueco sin importar cuántos barrios haya. La cantidad de
           propiedades reemplaza el tagline genérico ("guía del barrio" ya
           está a un click en la página de cada zona). */}
-      <section className="py-20 sm:py-28">
+      <section className="relative overflow-hidden py-20 sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
@@ -282,11 +282,11 @@ export default async function Home() {
             );
           })()}
         </div>
-        <DriftBand variant="neighborhood" reverse durationS={58} className="mt-16 text-ink/[0.5]" />
+        <DriftBand variant="neighborhood" reverse durationS={58} className="text-ink/[0.5]" />
       </section>
 
       {/* 03 — Diferencial */}
-      <section className="bg-brand-dark py-20 text-white sm:py-28">
+      <section className="relative overflow-hidden bg-brand-dark py-20 text-white sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
@@ -317,14 +317,14 @@ export default async function Home() {
             recorrido sin imagen concreta asociada (no es "casas" ni
             "personas"), así que reutiliza la firma visual de la marca en
             vez de inventar una imagen decorativa sin motivo. */}
-        <DriftBand durationS={64} heightClassName="h-[150px] sm:h-[190px]" className="mt-16">
+        <DriftBand durationS={64}>
           {(cls) => <ArchitectureMark preserveAspectRatio="xMidYMax slice" className={cn(cls, "text-white/[0.4]")} />}
         </DriftBand>
       </section>
 
       {/* 04 — Agentes */}
       {agents.length > 0 && (
-        <section className="py-20 sm:py-28">
+        <section className="relative overflow-hidden py-20 sm:py-28">
           <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
             <Reveal>
               <ChapterHeading
@@ -368,13 +368,13 @@ export default async function Home() {
               </div>
             )}
           </div>
-          <DriftBand variant="people" className="mt-16 text-ink/[0.5]" durationS={48} />
+          <DriftBand variant="people" className="text-ink/[0.5]" durationS={48} />
         </section>
       )}
 
       {/* 05 — Editorial */}
       {articles.length > 0 && (
-        <section className="bg-bg-alt py-20 sm:py-28">
+        <section className="relative overflow-hidden bg-bg-alt py-20 sm:py-28">
           <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
             <Reveal>
               <ChapterHeading
@@ -419,7 +419,7 @@ export default async function Home() {
               </div>
             )}
           </div>
-          <DriftBand variant="documents" reverse className="mt-16 text-ink/[0.5]" durationS={50} />
+          <DriftBand variant="documents" reverse className="text-ink/[0.5]" durationS={50} />
         </section>
       )}
 
