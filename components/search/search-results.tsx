@@ -84,38 +84,51 @@ export function SearchResults({ results, isFallback }: { results: PropertyResult
       )}
 
       {results.length === 0 ? (
-        <p className="py-16 text-center text-ink-soft">
-          No hay propiedades disponibles por el momento. Un agente de De Paola puede ayudarte a encontrar algo a
-          medida — contactanos.
-        </p>
-      ) : view === "lista" ? (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {results.map((property) => (
-            <PropertyCard
-              key={property.id}
-              href={`/propiedades/${property.slug}`}
-              title={property.title}
-              neighborhoodName={property.neighborhoodName}
-              price={property.price}
-              currency={property.currency}
-              operationType={property.operationType}
-              imageUrl={property.imageUrl}
-              imageAlt={property.imageAlt}
-              rooms={property.rooms}
-              bathrooms={property.bathrooms}
-              coveredArea={property.coveredArea}
-              isSample={property.isSample}
-              agent={property.agent}
-              isFavorite={isFavorite(property.id)}
-              onToggleFavorite={() => {
-                if (!isFavorite(property.id)) trackEvent("favorite_property", { propertyId: property.id });
-                toggle(property.id);
-              }}
-            />
-          ))}
+        <div className="max-w-[440px] py-16">
+          <p className="font-display text-[22px] leading-snug text-ink">Por ahora no hay propiedades que coincidan.</p>
+          <p className="mt-2 text-[14.5px] leading-relaxed text-ink-soft">
+            Un agente de De Paola conoce inventario que todavía no está publicado — contanos qué buscás y te
+            avisamos apenas aparezca algo.
+          </p>
+          <a
+            href="/contacto"
+            className="mt-4 inline-flex items-center gap-1.5 font-medium text-brand-dark underline decoration-1 underline-offset-4 decoration-transparent transition-colors duration-150 hover:decoration-current"
+          >
+            Hablar con un agente
+          </a>
         </div>
       ) : (
-        <PropertyMap properties={results} />
+        <div key={view} className="animate-overlay-in">
+          {view === "lista" ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {results.map((property) => (
+                <PropertyCard
+                  key={property.id}
+                  href={`/propiedades/${property.slug}`}
+                  title={property.title}
+                  neighborhoodName={property.neighborhoodName}
+                  price={property.price}
+                  currency={property.currency}
+                  operationType={property.operationType}
+                  imageUrl={property.imageUrl}
+                  imageAlt={property.imageAlt}
+                  rooms={property.rooms}
+                  bathrooms={property.bathrooms}
+                  coveredArea={property.coveredArea}
+                  isSample={property.isSample}
+                  agent={property.agent}
+                  isFavorite={isFavorite(property.id)}
+                  onToggleFavorite={() => {
+                    if (!isFavorite(property.id)) trackEvent("favorite_property", { propertyId: property.id });
+                    toggle(property.id);
+                  }}
+                />
+              ))}
+            </div>
+          ) : (
+            <PropertyMap properties={results} />
+          )}
+        </div>
       )}
     </div>
   );

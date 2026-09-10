@@ -18,17 +18,14 @@ export default function GalponesPage({ searchParams }: { searchParams: Promise<P
       title="Galpones y depósitos en Zona Norte"
       basePath="/propiedades/galpones"
       fixedTipo="GALPON"
+      description="De Paola Propiedades acompaña también operaciones de alquiler y venta de galpones, depósitos y naves industriales en Martínez, Florida, Vicente López y Villa Martelli."
       searchParams={searchParams}
       intro={
-        <div className="mb-8 max-w-2xl">
+        <div className="mb-8 max-w-[640px]">
           <Callout>
             Este texto es un borrador a validar con el criterio real de Tatiana De Paola y su equipo antes de
             publicarlo — mismo criterio que ya se usa para el contenido editorial de zonas.
           </Callout>
-          <p>
-            De Paola Propiedades acompaña también operaciones de alquiler y venta de galpones, depósitos y naves
-            industriales en Martínez, Florida, Vicente López y Villa Martelli.
-          </p>
         </div>
       }
     />

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { PropertyCard } from "@/components/ui/property-card";
 
@@ -22,11 +23,25 @@ export default async function DestacadasPage() {
 
   return (
     <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
-      <h1 className="mb-2 text-[clamp(26px,3vw,36px)]">Propiedades destacadas</h1>
-      <p className="mb-8 text-ink-soft">Una selección curada por el equipo de De Paola.</p>
+      <header className="mb-10 max-w-[640px]">
+        <h1 className="text-[clamp(34px,4.4vw,52px)] leading-[1.05]">Propiedades destacadas</h1>
+        <p className="mt-4 text-[16px] leading-relaxed text-ink-soft">
+          Una selección curada por el equipo de De Paola.{" "}
+          {properties.length} {properties.length === 1 ? "propiedad destacada" : "propiedades destacadas"} ahora mismo.
+        </p>
+      </header>
 
       {properties.length === 0 ? (
-        <p className="py-16 text-center text-ink-soft">Todavía no hay propiedades destacadas cargadas.</p>
+        <div className="max-w-[440px] py-16">
+          <p className="font-display text-[22px] leading-snug text-ink">Todavía no hay propiedades destacadas.</p>
+          <p className="mt-2 text-[14.5px] text-ink-soft">
+            El equipo de De Paola está seleccionando la próxima curaduría — mientras tanto, conocé{" "}
+            <Link href="/propiedades" className="text-brand-dark underline decoration-1 underline-offset-4">
+              todas las propiedades disponibles
+            </Link>
+            .
+          </p>
+        </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {properties.map((property) => (

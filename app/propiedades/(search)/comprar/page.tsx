@@ -17,6 +17,7 @@ export default function ComprarPage({
       title="Propiedades en venta"
       basePath="/propiedades/comprar"
       fixedOperation="VENTA"
+      description="Casas, departamentos y PH en venta en Martínez, Florida, Vicente López y Villa Martelli."
       searchParams={searchParams}
     />
   );

@@ -112,15 +112,17 @@ export async function FilterPanel({
       <form
         method="get"
         action={basePath}
-        className="mb-8 hidden flex-wrap gap-3 rounded-card border border-line bg-white p-4 sm:flex"
+        className="mb-8 hidden flex-col gap-4 rounded-card border border-line bg-white p-5 sm:flex"
       >
         <FilterFields {...fieldsProps} />
-        <Button type="submit">Buscar</Button>
-        {basePath && (
-          <a href={basePath} className="flex items-center text-sm text-ink-soft underline">
-            Limpiar filtros
-          </a>
-        )}
+        <div className="flex items-center gap-4 border-t border-line/60 pt-4">
+          <Button type="submit">Buscar</Button>
+          {basePath && (
+            <a href={basePath} className="text-sm text-ink-soft underline">
+              Limpiar filtros
+            </a>
+          )}
+        </div>
       </form>
 
       {/* Mobile: mismos campos, colapsados en un Drawer detrás de un botón

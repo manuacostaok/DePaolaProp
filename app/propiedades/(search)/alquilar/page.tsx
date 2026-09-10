@@ -17,6 +17,7 @@ export default function AlquilarPage({
       title="Propiedades en alquiler"
       basePath="/propiedades/alquilar"
       fixedOperation="ALQUILER"
+      description="Departamentos y casas en alquiler en Martínez, Florida, Vicente López y Villa Martelli."
       searchParams={searchParams}
     />
   );

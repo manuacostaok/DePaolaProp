@@ -20,10 +20,20 @@ export function FilterPanelMobile({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="flex w-full items-center justify-between rounded-card border border-line bg-white px-4 py-3 text-sm font-medium text-ink"
+        aria-label={`Filtros${activeCount > 0 ? ` (${activeCount})` : ""}`}
+        className="flex w-full items-center justify-between rounded-control bg-white px-4 py-3.5 text-[14.5px] font-medium text-ink shadow-soft"
       >
-        <span>Filtros{activeCount > 0 ? ` (${activeCount})` : ""}</span>
-        <span aria-hidden="true">▾</span>
+        <span aria-hidden="true">
+          Filtros
+          {activeCount > 0 && (
+            <span className="ml-2 rounded-full bg-brand-tint px-2 py-0.5 text-[12px] font-semibold text-brand-dark">
+              {activeCount}
+            </span>
+          )}
+        </span>
+        <span aria-hidden="true" className="text-ink-soft">
+          ▾
+        </span>
       </button>
 
       <Drawer open={open} onOpenChange={setOpen} title="Filtros">

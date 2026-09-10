@@ -12,10 +12,22 @@ export interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   options: SelectOption[];
   placeholder?: string;
+  // "lg" se usa para el filtro primario (Zona) — más presencia táctil y
+  // tipográfica que los selects secundarios. No se mergea vía className
+  // (lib/cn.ts no dedupea clases en conflicto) para evitar que ambos
+  // tamaños de padding/texto terminen aplicados a la vez. Se llama
+  // "uiSize" (no "size") porque size ya es un atributo HTML nativo de
+  // <select> (cantidad de filas visibles) con tipo number.
+  uiSize?: "default" | "lg";
 }
 
+const SIZE_CLASSES: Record<"default" | "lg", string> = {
+  default: "px-3.5 py-2.5 pr-9 text-sm",
+  lg: "px-4 py-3.5 pr-10 text-[15px]",
+};
+
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ label, options, placeholder, id, className, ...props }, ref) => {
+  ({ label, options, placeholder, id, className, uiSize = "default", ...props }, ref) => {
     const generatedId = useId();
     const selectId = id ?? generatedId;
 
@@ -31,7 +43,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             ref={ref}
             id={selectId}
             className={cn(
-              "w-full appearance-none rounded-control border border-line bg-white px-3.5 py-2.5 pr-9 text-sm text-ink",
+              "w-full appearance-none rounded-control border border-line bg-white text-ink",
+              SIZE_CLASSES[uiSize],
               "outline-none transition-colors focus:border-brand focus:ring-2 focus:ring-brand-tint",
               className,
             )}
@@ -51,7 +64,10 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           <svg
             aria-hidden="true"
             viewBox="0 0 20 20"
-            className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-ink-soft"
+            className={cn(
+              "pointer-events-none absolute top-1/2 -translate-y-1/2 text-ink-soft",
+              uiSize === "lg" ? "right-3.5 size-4.5" : "right-3 size-4",
+            )}
           >
             <path
               fillRule="evenodd"

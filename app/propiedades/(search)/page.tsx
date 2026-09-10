@@ -15,5 +15,12 @@ export default function PropiedadesPage({
 }: {
   searchParams: Promise<PropertySearchInput>;
 }) {
-  return <PropertySearchPage title="Propiedades" basePath="/propiedades" searchParams={searchParams} />;
+  return (
+    <PropertySearchPage
+      title="Propiedades"
+      basePath="/propiedades"
+      description="Casas, departamentos, PH y locales en venta y alquiler en Martínez, Florida, Vicente López y Villa Martelli."
+      searchParams={searchParams}
+    />
+  );
 }

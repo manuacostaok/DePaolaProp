@@ -22,7 +22,7 @@ test("El buscador filtra por zona y operación", async ({ page }) => {
   await page.goto("/propiedades?zona=martinez&operacion=venta");
 
   await expect(page.locator("select[name=zona]")).toHaveValue("martinez");
-  await expect(page.locator("select[name=operacion]")).toHaveValue("venta");
+  await expect(page.locator('input[name=operacion][value=venta]')).toBeChecked();
 
   // Martínez + Venta da 3 resultados con los datos sembrados (ver seed.ts)
   await expect(page.getByText(/^3 propiedades$/)).toBeVisible();
@@ -52,7 +52,7 @@ test("Panel de filtros en mobile: colapsado por defecto, muestra cuántos filtro
   await expect(page.getByRole("heading", { name: "Filtros" })).toBeVisible();
   // El drawer trae los mismos valores de la URL, no un form en blanco.
   await expect(page.locator('[role="dialog"] select[name=zona]')).toHaveValue("martinez");
-  await expect(page.locator('[role="dialog"] select[name=operacion]')).toHaveValue("venta");
+  await expect(page.locator('[role="dialog"] input[name=operacion][value=venta]')).toBeChecked();
 });
 
 test("Panel de filtros en desktop: sigue mostrando el form completo, sin el botón colapsado", async ({ page }) => {

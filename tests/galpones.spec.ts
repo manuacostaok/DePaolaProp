@@ -8,7 +8,7 @@ test("Galpones: la landing carga, filtra por tipo GALPON y no muestra campos res
   // No hay galpones reales cargados todavía — debe mostrar el estado
   // vacío honesto, no inventar resultados ni caer en el fallback de
   // "propiedades similares" mostrando otros tipos.
-  await expect(page.getByText("No hay propiedades disponibles por el momento")).toBeVisible();
+  await expect(page.getByText("Por ahora no hay propiedades que coincidan.")).toBeVisible();
 
   // El select de Tipo no debe aparecer (ya está fijo a Galpón) — a
   // diferencia de Ambientes/Cochera, que tampoco aplican a industriales.
