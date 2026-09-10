@@ -19,7 +19,7 @@ export function ImageMarquee({
   className,
   reverse = false,
   durationS = 46,
-  tileClassName = "w-36 sm:w-48",
+  tileClassName = "w-44 sm:w-60",
 }: {
   images: MarqueeImage[];
   className?: string;
@@ -44,7 +44,7 @@ export function ImageMarquee({
         style={{ "--marquee-duration": `${durationS}s` } as CSSProperties}
       >
         {track.map((image, index) => (
-          <div key={index} className={cn("relative h-[64%] shrink-0 overflow-hidden rounded-card", tileClassName)}>
+          <div key={index} className={cn("relative h-[72%] shrink-0 overflow-hidden rounded-card", tileClassName)}>
             <Image src={image.url} alt="" fill sizes="240px" className="object-cover" />
           </div>
         ))}

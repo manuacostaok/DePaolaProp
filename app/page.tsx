@@ -175,8 +175,8 @@ export default async function Home() {
       {/* 01 — Propiedades: una protagonista (foto grande, texto superpuesto)
           + secundarias en grilla chica — no seis cards idénticas. */}
       <section className="relative overflow-hidden bg-bg-alt py-20 sm:py-28">
-        <ImageMarquee images={propertyMarqueeImages} className="opacity-[0.22] grayscale" durationS={52} />
-        <div className="absolute inset-0 bg-bg-alt/88" />
+        <ImageMarquee images={propertyMarqueeImages} className="opacity-[0.55] grayscale-[0.3]" durationS={52} />
+        <div className="absolute inset-0 bg-bg-alt/62" />
         <div className="relative mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
@@ -277,8 +277,8 @@ export default async function Home() {
           propiedades reemplaza el tagline genérico ("guía del barrio" ya
           está a un click en la página de cada zona). */}
       <section className="relative overflow-hidden py-20 sm:py-28">
-        <ImageMarquee images={zoneMarqueeImages} className="opacity-[0.22] grayscale" durationS={56} reverse />
-        <div className="absolute inset-0 bg-bg/88" />
+        <ImageMarquee images={zoneMarqueeImages} className="opacity-[0.55] grayscale-[0.3]" durationS={56} reverse />
+        <div className="absolute inset-0 bg-bg/62" />
         <div className="relative mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
@@ -349,8 +349,8 @@ export default async function Home() {
             className="flex h-full w-[200%] animate-marquee"
             style={{ "--marquee-duration": "64s" } as CSSProperties}
           >
-            <ArchitectureMark className="h-full w-1/2 shrink-0 text-white/[0.07]" />
-            <ArchitectureMark className="h-full w-1/2 shrink-0 text-white/[0.07]" />
+            <ArchitectureMark className="h-full w-1/2 shrink-0 text-white/[0.16]" />
+            <ArchitectureMark className="h-full w-1/2 shrink-0 text-white/[0.16]" />
           </div>
         </div>
         <div className="relative mx-auto max-w-[1240px] px-6 sm:px-8">
@@ -387,8 +387,8 @@ export default async function Home() {
               Home) — se omite la textura entera en vez de forzarla. */}
           {realAgentPhotos.length >= 3 && (
             <>
-              <ImageMarquee images={realAgentPhotos} className="opacity-[0.22] grayscale" durationS={50} tileClassName="w-28 sm:w-36" />
-              <div className="absolute inset-0 bg-bg/88" />
+              <ImageMarquee images={realAgentPhotos} className="opacity-[0.55] grayscale-[0.3]" durationS={50} tileClassName="w-32 sm:w-44" />
+              <div className="absolute inset-0 bg-bg/62" />
             </>
           )}
           <div className="relative mx-auto max-w-[1240px] px-6 sm:px-8">
@@ -442,8 +442,8 @@ export default async function Home() {
         <section className="relative overflow-hidden bg-bg-alt py-20 sm:py-28">
           {articleCoverImages.length >= 3 && (
             <>
-              <ImageMarquee images={articleCoverImages} className="opacity-[0.22] grayscale" durationS={54} reverse />
-              <div className="absolute inset-0 bg-bg-alt/88" />
+              <ImageMarquee images={articleCoverImages} className="opacity-[0.55] grayscale-[0.3]" durationS={54} reverse />
+              <div className="absolute inset-0 bg-bg-alt/62" />
             </>
           )}
           <div className="relative mx-auto max-w-[1240px] px-6 sm:px-8">
