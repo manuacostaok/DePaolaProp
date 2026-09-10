@@ -348,6 +348,7 @@ export default async function Home() {
                       title={agent.title}
                       photoUrl={agent.photoUrl}
                       isPlaceholderPhoto={agent.isPlaceholderPhoto}
+                      isSample={agent.isSample}
                     />
                   </Reveal>
                 ))}
@@ -362,6 +363,7 @@ export default async function Home() {
                       title={agent.title}
                       photoUrl={agent.photoUrl}
                       isPlaceholderPhoto={agent.isPlaceholderPhoto}
+                      isSample={agent.isSample}
                     />
                   </Reveal>
                 ))}

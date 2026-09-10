@@ -61,6 +61,11 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ sl
         {!agent.isPlaceholderPhoto && agent.photoUrl ? (
           <div className="relative aspect-[3/4] overflow-hidden rounded-card">
             <Image src={agent.photoUrl} alt={agent.name} fill className="object-cover" priority />
+            {agent.isSample && (
+              <span className="pointer-events-none absolute bottom-3 left-3 rounded-[3px] bg-ink/[0.82] px-2 py-1 text-[11px] font-medium uppercase tracking-wider text-white">
+                Ejemplo
+              </span>
+            )}
           </div>
         ) : (
           <div className="flex aspect-[3/4] items-center justify-center rounded-card bg-brand-tint text-6xl font-semibold text-brand-dark">

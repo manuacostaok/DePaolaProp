@@ -604,6 +604,68 @@ async function seedZonapropProperties() {
   }
 }
 
+// Agentes de ejemplo (isSample: true) para que "Nuestro equipo" no se vea
+// como un estudio de una sola persona mientras se suma el resto del staff
+// real — mismo criterio que las propiedades/artículos de ejemplo: marcados
+// con isSample y con badge "Ejemplo" visible (ver AgentCard), nunca
+// presentados como personas reales. Las fotos son rostros generados por IA
+// (StyleGAN2, thispersondoesnotexist.com — no son personas reales, así que
+// no hay tema de consentimiento/derechos de imagen), autohospedadas en
+// /public/agents. Sin bio/teléfono/email/whatsapp a propósito: inventarle
+// una historia o un contacto a una persona ficticia sería peor que dejarlo
+// vacío (alguien podría intentar escribirle a un agente que no existe).
+async function seedSampleAgents() {
+  const martinez = await prisma.neighborhood.findUniqueOrThrow({ where: { slug: "martinez" } });
+  const florida = await prisma.neighborhood.findUniqueOrThrow({ where: { slug: "florida" } });
+  const vicenteLopez = await prisma.neighborhood.findUniqueOrThrow({ where: { slug: "vicente-lopez" } });
+
+  const sampleAgents = [
+    {
+      slug: "carolina-ibanez",
+      name: "Carolina Ibáñez",
+      title: "Agente inmobiliaria",
+      photoUrl: "/agents/carolina-ibanez.jpg",
+      officeId: "office-villa-martelli",
+      neighborhoodId: martinez.id,
+    },
+    {
+      slug: "mariana-sosa",
+      name: "Mariana Sosa",
+      title: "Agente inmobiliaria",
+      photoUrl: "/agents/mariana-sosa.jpg",
+      officeId: "office-florida",
+      neighborhoodId: florida.id,
+    },
+    {
+      slug: "diego-fernandez",
+      name: "Diego Fernández",
+      title: "Agente inmobiliario",
+      photoUrl: "/agents/diego-fernandez.jpg",
+      officeId: "office-villa-martelli",
+      neighborhoodId: vicenteLopez.id,
+    },
+  ];
+
+  for (const a of sampleAgents) {
+    await prisma.agent.upsert({
+      where: { slug: a.slug },
+      update: {},
+      create: {
+        slug: a.slug,
+        name: a.name,
+        title: a.title,
+        photoUrl: a.photoUrl,
+        isPlaceholderPhoto: false,
+        isSample: true,
+        isActive: true,
+        role: "AGENTE",
+        office: { connect: { id: a.officeId } },
+        specializations: { connect: { id: a.neighborhoodId } },
+      },
+    });
+  }
+}
+
 // Campus Norte: emprendimiento activo que De Paola comercializa (no es
 // contenido editorial) — ver de-paola-00-pendientes-y-que-pedir.md, punto 5.
 // Contenido tomado del sitio actual (depaolapropiedades.com/campusnorte).
@@ -783,6 +845,7 @@ async function main() {
   await seedRealProperties();
   await removeOldSampleProperties();
   await seedZonapropProperties();
+  await seedSampleAgents();
   await seedCampusNorte();
   await seedCategories();
   await seedArticles();

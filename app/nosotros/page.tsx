@@ -93,6 +93,7 @@ export default async function NosotrosPage() {
                 title={agent.title}
                 photoUrl={agent.photoUrl}
                 isPlaceholderPhoto={agent.isPlaceholderPhoto}
+                isSample={agent.isSample}
               />
             ))}
           </div>

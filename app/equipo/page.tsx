@@ -62,6 +62,7 @@ export default async function EquipoPage({
               title={agent.title}
               photoUrl={agent.photoUrl}
               isPlaceholderPhoto={agent.isPlaceholderPhoto}
+              isSample={agent.isSample}
             />
           ))}
         </div>
@@ -75,6 +76,7 @@ export default async function EquipoPage({
                 title={agent.title}
                 photoUrl={agent.photoUrl}
                 isPlaceholderPhoto={agent.isPlaceholderPhoto}
+                isSample={agent.isSample}
               />
             </div>
           ))}
