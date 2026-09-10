@@ -59,6 +59,10 @@ export async function Footer() {
             Instagram
           </a>
         </div>
+
+        <div className="mt-8 border-t border-white/10 pt-6 text-center text-[11.5px] text-[#6B747B]">
+          Hecho por Aura Tech Solutions
+        </div>
       </div>
     </footer>
   );

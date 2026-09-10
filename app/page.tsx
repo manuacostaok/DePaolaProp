@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { prisma } from "@/lib/prisma";
 import { buttonVariants } from "@/components/ui/button";
 import { PropertyCard } from "@/components/ui/property-card";
@@ -7,6 +8,7 @@ import { ZoneCard } from "@/components/ui/zone-card";
 import { AgentCard } from "@/components/ui/agent-card";
 import { ArticleCard } from "@/components/ui/article-card";
 import { ArchitectureMark } from "@/components/ui/architecture-mark";
+import { ImageMarquee } from "@/components/ui/image-marquee";
 import { Callout } from "@/components/ui/callout";
 import { Reveal } from "@/components/ui/reveal";
 import { HeroIntro } from "@/components/ui/hero-intro";
@@ -75,6 +77,24 @@ export default async function Home() {
   ]);
 
   const [featuredProperty, ...secondaryProperties] = properties;
+
+  // Texturas de fondo por sección (ver ImageMarquee) — cada una arma su
+  // propia lista de imágenes reales a partir de datos ya consultados
+  // arriba, sin pegarle a la base de nuevo. Con material real escaso
+  // (agentes/artículos) el loop se omite en vez de repetir 1-2 fotos
+  // hasta que se vea roto — mismo criterio "sparse data" que el resto de
+  // Home (ver grillas de Agentes/Editorial más abajo).
+  const propertyMarqueeImages = properties.map((p) => ({
+    url: p.images[0]?.url ?? "/placeholder-property.svg",
+    alt: p.title,
+  }));
+  const zoneMarqueeImages = neighborhoods.map((n) => ({ url: neighborhoodImage(n.slug), alt: n.name }));
+  const realAgentPhotos = agents
+    .filter((a) => !a.isPlaceholderPhoto && a.photoUrl)
+    .map((a) => ({ url: a.photoUrl as string, alt: a.name }));
+  const articleCoverImages = articles
+    .filter((a) => a.coverImageUrl)
+    .map((a) => ({ url: a.coverImageUrl as string, alt: a.title }));
 
   return (
     <main>
@@ -154,8 +174,10 @@ export default async function Home() {
 
       {/* 01 — Propiedades: una protagonista (foto grande, texto superpuesto)
           + secundarias en grilla chica — no seis cards idénticas. */}
-      <section className="bg-bg-alt py-20 sm:py-28">
-        <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
+      <section className="relative overflow-hidden bg-bg-alt py-20 sm:py-28">
+        <ImageMarquee images={propertyMarqueeImages} className="opacity-[0.22] grayscale" durationS={52} />
+        <div className="absolute inset-0 bg-bg-alt/88" />
+        <div className="relative mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
               index="01"
@@ -254,8 +276,10 @@ export default async function Home() {
           el hueco sin importar cuántos barrios haya. La cantidad de
           propiedades reemplaza el tagline genérico ("guía del barrio" ya
           está a un click en la página de cada zona). */}
-      <section className="py-20 sm:py-28">
-        <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
+      <section className="relative overflow-hidden py-20 sm:py-28">
+        <ImageMarquee images={zoneMarqueeImages} className="opacity-[0.22] grayscale" durationS={56} reverse />
+        <div className="absolute inset-0 bg-bg/88" />
+        <div className="relative mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
               index="02"
@@ -306,8 +330,30 @@ export default async function Home() {
       </section>
 
       {/* 03 — Diferencial */}
-      <section className="bg-brand-dark py-20 text-white sm:py-28">
-        <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
+      <section className="relative overflow-hidden bg-brand-dark py-20 text-white sm:py-28">
+        {/* Mismo motivo de skyline que la pausa editorial de arriba, acá
+            sí con deriva lenta — la sección de "por qué De Paola"
+            (permanencia, un solo agente hasta el cierre) es la única del
+            recorrido sin imagen concreta asociada (no es "casas" ni
+            "personas"), así que reutiliza la firma visual de la marca en
+            vez de inventar una imagen decorativa sin motivo. */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-[220px] overflow-hidden sm:h-[300px]"
+          style={{
+            maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+            WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+          }}
+        >
+          <div
+            className="flex h-full w-[200%] animate-marquee"
+            style={{ "--marquee-duration": "64s" } as CSSProperties}
+          >
+            <ArchitectureMark className="h-full w-1/2 shrink-0 text-white/[0.07]" />
+            <ArchitectureMark className="h-full w-1/2 shrink-0 text-white/[0.07]" />
+          </div>
+        </div>
+        <div className="relative mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
               index="03"
@@ -335,8 +381,17 @@ export default async function Home() {
 
       {/* 04 — Agentes */}
       {agents.length > 0 && (
-        <section className="py-20 sm:py-28">
-          <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
+        <section className="relative overflow-hidden py-20 sm:py-28">
+          {/* Con menos de 3 fotos reales distintas, repetir 1-2 caras en
+              loop se vería roto (no escaso-y-centrado como el resto de
+              Home) — se omite la textura entera en vez de forzarla. */}
+          {realAgentPhotos.length >= 3 && (
+            <>
+              <ImageMarquee images={realAgentPhotos} className="opacity-[0.22] grayscale" durationS={50} tileClassName="w-28 sm:w-36" />
+              <div className="absolute inset-0 bg-bg/88" />
+            </>
+          )}
+          <div className="relative mx-auto max-w-[1240px] px-6 sm:px-8">
             <Reveal>
               <ChapterHeading
                 index="04"
@@ -384,8 +439,14 @@ export default async function Home() {
 
       {/* 05 — Editorial */}
       {articles.length > 0 && (
-        <section className="bg-bg-alt py-20 sm:py-28">
-          <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
+        <section className="relative overflow-hidden bg-bg-alt py-20 sm:py-28">
+          {articleCoverImages.length >= 3 && (
+            <>
+              <ImageMarquee images={articleCoverImages} className="opacity-[0.22] grayscale" durationS={54} reverse />
+              <div className="absolute inset-0 bg-bg-alt/88" />
+            </>
+          )}
+          <div className="relative mx-auto max-w-[1240px] px-6 sm:px-8">
             <Reveal>
               <ChapterHeading
                 index="05"

@@ -52,6 +52,41 @@
   }
 }
 
+/* Texturas de fondo animadas por sección (Home) — franja de imágenes en
+   loop infinito, muy tenue, detrás del contenido. El track duplica el
+   array de imágenes y recorre -50% para que el loop sea perfectamente
+   continuo sin salto. Ver components/ui/image-marquee.tsx. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes marquee-reverse {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@layer utilities {
+  .animate-marquee {
+    animation: marquee var(--marquee-duration, 46s) linear infinite;
+  }
+  .animate-marquee-reverse {
+    animation: marquee-reverse var(--marquee-duration, 46s) linear infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation: none;
+  }
+}
+
 /* Drawers (menú mobile, filtros) — ver reference/STYLE_GUIDE.md, curva
    "de marca" cubic-bezier(.455,.03,.515,.955) para que se sienta premium. */
 @keyframes overlay-in {
