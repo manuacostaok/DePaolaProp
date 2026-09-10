@@ -89,7 +89,7 @@ export default async function MercadoPage() {
         <p className="text-ink-soft">
           Todavía no hay artículos en esta categoría — mientras tanto, mirá el resto de{" "}
           <Link href="/insights" className="underline">
-            Insights
+            Novedades
           </Link>
           .
         </p>

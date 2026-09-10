@@ -43,7 +43,7 @@ export async function ArticlePage({ article }: { article: ArticleWithRelations }
         }}
       />
       <p className="mb-3 text-sm text-ink-soft">
-        <Link href="/insights">Insights</Link> / <Link href={`/insights/${article.category.slug}`}>{article.category.name}</Link>
+        <Link href="/insights">Novedades</Link> / <Link href={`/insights/${article.category.slug}`}>{article.category.name}</Link>
       </p>
 
       <div className="relative mb-6 aspect-[16/9] overflow-hidden rounded-card bg-bg-alt">

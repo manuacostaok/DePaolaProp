@@ -30,7 +30,7 @@ export const MAIN_NAV: NavItem[] = [
   { label: "Campus Norte", href: "/emprendimientos" },
   { label: "Vender", href: "/vender" },
   { label: "Invertir", href: "/invertir" },
-  { label: "Insights", href: "/insights" },
+  { label: "Novedades", href: "/insights" },
   { label: "Nosotros", href: "/nosotros" },
   { label: "Contacto", href: "/contacto" },
 ];
@@ -62,7 +62,7 @@ export const FOOTER_COLUMNS: { title: string; links: NavLink[] }[] = [
   {
     title: "Recursos",
     links: [
-      { label: "Insights", href: "/insights" },
+      { label: "Novedades", href: "/insights" },
       { label: "Mercado", href: "/mercado" },
       { label: "Tasá tu propiedad", href: "/vender/tasacion" },
     ],

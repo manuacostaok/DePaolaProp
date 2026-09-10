@@ -1,5 +1,6 @@
 import { Prisma, OperationType, PropertyType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { sortNeighborhoodsByPriority } from "@/lib/neighborhood-order";
 
 export interface PropertySearchInput {
   operacion?: string;
@@ -231,14 +232,14 @@ export async function getNeighborhoodCenter(neighborhoodId: string): Promise<[nu
 
 export async function getNeighborhoodOptions() {
   const neighborhoods = await prisma.neighborhood.findMany({ orderBy: { name: "asc" } });
-  return neighborhoods.map((n) => ({ value: n.slug, label: n.name }));
+  return sortNeighborhoodsByPriority(neighborhoods).map((n) => ({ value: n.slug, label: n.name }));
 }
 
 // Distinto del anterior: acá el value es el id real (FK), no el slug de URL —
 // lo necesitan los flujos que crean registros (Lead, ValuationRequest, etc.).
 export async function getNeighborhoodIdOptions() {
   const neighborhoods = await prisma.neighborhood.findMany({ orderBy: { name: "asc" } });
-  return neighborhoods.map((n) => ({ value: n.id, label: n.name }));
+  return sortNeighborhoodsByPriority(neighborhoods).map((n) => ({ value: n.id, label: n.name }));
 }
 
 // Usado por /favoritos: los IDs guardados viven en localStorage (cliente),

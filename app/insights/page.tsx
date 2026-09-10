@@ -6,7 +6,7 @@ import { ArticleCard } from "@/components/ui/article-card";
 import { NewsletterForm } from "@/components/insights/newsletter-form";
 
 export const metadata: Metadata = {
-  title: "Insights",
+  title: "Novedades",
   description: "Criterio experto sobre Zona Norte — mercado, guías, zonas y más.",
   alternates: { canonical: "/insights" },
 };
@@ -27,7 +27,7 @@ export default async function InsightsPage() {
   return (
     <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
       <span className="mb-3 block text-[11px] font-medium uppercase tracking-[0.12em] text-brand">Editorial</span>
-      <h1 className="mb-3 text-[clamp(28px,3.4vw,40px)]">De Paola Insights</h1>
+      <h1 className="mb-3 text-[clamp(28px,3.4vw,40px)]">Novedades</h1>
       <p className="mb-10 max-w-xl text-ink-soft">Criterio experto sobre Zona Norte — mercado, guías, zonas y más.</p>
 
       <div className="mb-8 flex flex-wrap gap-2">

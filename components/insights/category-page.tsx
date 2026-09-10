@@ -24,10 +24,10 @@ export async function CategoryPage({ category }: { category: Category }) {
   return (
     <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
       <p className="mb-3 text-sm text-ink-soft">
-        <Link href="/insights">Insights</Link> / {category.name}
+        <Link href="/insights">Novedades</Link> / {category.name}
       </p>
       <h1 className="mb-2 text-[clamp(26px,3vw,36px)]">{category.name}</h1>
-      <p className="mb-8 max-w-xl text-ink-soft">{CATEGORY_INTRO[category.slug] ?? "Artículos de De Paola Insights."}</p>
+      <p className="mb-8 max-w-xl text-ink-soft">{CATEGORY_INTRO[category.slug] ?? "Artículos de De Paola sobre Zona Norte."}</p>
 
       {articles.length === 0 ? (
         <p className="py-16 text-center text-ink-soft">Todavía no hay artículos publicados en esta categoría.</p>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import { ZoneCard } from "@/components/ui/zone-card";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
+import { sortNeighborhoodsByPriority } from "@/lib/neighborhood-order";
 
 export const metadata: Metadata = {
   title: "Zonas",
@@ -11,7 +12,9 @@ export const metadata: Metadata = {
 export const revalidate = 300;
 
 export default async function ZonasPage() {
-  const neighborhoods = await prisma.neighborhood.findMany({ orderBy: { name: "asc" } });
+  const neighborhoods = sortNeighborhoodsByPriority(
+    await prisma.neighborhood.findMany({ orderBy: { name: "asc" } }),
+  );
 
   return (
     <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">

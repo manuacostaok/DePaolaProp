@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/cn";
+import { sortNeighborhoodsByPriority } from "@/lib/neighborhood-order";
 import { buttonVariants } from "@/components/ui/button";
 import { PropertyCard } from "@/components/ui/property-card";
 import { FeaturedProperty } from "@/components/ui/featured-property";
@@ -42,7 +43,8 @@ async function getFeaturedProperties() {
 }
 
 async function getNeighborhoods() {
-  return prisma.neighborhood.findMany({ orderBy: { name: "asc" } });
+  const neighborhoods = await prisma.neighborhood.findMany({ orderBy: { name: "asc" } });
+  return sortNeighborhoodsByPriority(neighborhoods);
 }
 
 async function getNeighborhoodPropertyCounts() {
@@ -464,6 +466,13 @@ export default async function Home() {
                 Tasar mi propiedad
               </Link>
             </div>
+          </Reveal>
+
+          <Reveal>
+            <p className="mb-16 text-[14.5px] text-ink-soft">
+              ¿Preferís hablar en persona? <TextLink href="/sucursales">Visitá una de nuestras sucursales</TextLink> en
+              Zona Norte.
+            </p>
           </Reveal>
 
           <Reveal>
