@@ -307,9 +307,7 @@ export default async function Home() {
             );
           })()}
         </div>
-        <DriftBand reverse durationS={60} className="mt-16">
-          {(cls) => <ArchitectureMark preserveAspectRatio="xMidYMax slice" className={cn(cls, "text-ink/[0.5]")} />}
-        </DriftBand>
+        <DriftBand variant="neighborhood" reverse durationS={58} className="mt-16 text-ink/[0.5]" />
       </section>
 
       {/* 03 — Diferencial */}
