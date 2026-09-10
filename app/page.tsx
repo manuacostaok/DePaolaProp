@@ -10,7 +10,6 @@ import { AgentCard } from "@/components/ui/agent-card";
 import { ArticleCard } from "@/components/ui/article-card";
 import { ArchitectureMark } from "@/components/ui/architecture-mark";
 import { DriftBand } from "@/components/ui/section-motifs";
-import { Callout } from "@/components/ui/callout";
 import { Reveal } from "@/components/ui/reveal";
 import { HeroIntro } from "@/components/ui/hero-intro";
 import { HeroVideo } from "@/components/ui/hero-video";
@@ -152,11 +151,6 @@ export default async function Home() {
               }
             />
           </Reveal>
-
-          <Callout>
-            Las dos primeras son propiedades reales de De Paola. Las marcadas &quot;Ejemplo&quot; muestran cómo se
-            va a ver la grilla completa una vez cargado el resto del inventario real.
-          </Callout>
 
           {featuredProperty && (
             <Reveal className="mb-10 block">

@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { PrismaClient, OperationType, PropertyType, PropertyCondition } from "@prisma/client";
+import { PrismaClient, OperationType, PropertyType, Currency } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { hashPassword } from "../lib/password";
 
@@ -162,6 +162,34 @@ async function seedNeighborhoods() {
   }
 }
 
+// Los 9 slugs "Ejemplo" (isSample: true) que reemplaza seedZonapropProperties
+// más abajo — se borran explícitamente (con su PropertyLocation, que no
+// tiene cascade) en vez de dejarlos huérfanos en la base. Ver Decisions Log
+// 2026-09-10: el usuario pidió reemplazar los datos ficticios por
+// propiedades reales extraídas de las publicaciones de De Paola en Zonaprop.
+const OLD_SAMPLE_SLUGS = [
+  "departamento-3-ambientes-vicente-lopez",
+  "casa-4-ambientes-pileta-martinez",
+  "ph-2-ambientes-florida",
+  "departamento-2-ambientes-alquiler-martinez",
+  "casa-5-ambientes-villa-martelli-ejemplo",
+  "departamento-1-ambiente-alquiler-vicente-lopez",
+  "local-comercial-florida",
+  "casa-6-ambientes-jardin-martinez",
+  "departamento-3-ambientes-villa-martelli",
+];
+
+async function removeOldSampleProperties() {
+  const oldProperties = await prisma.property.findMany({
+    where: { slug: { in: OLD_SAMPLE_SLUGS } },
+    select: { id: true, locationId: true },
+  });
+  if (oldProperties.length === 0) return;
+
+  await prisma.property.deleteMany({ where: { id: { in: oldProperties.map((p) => p.id) } } });
+  await prisma.propertyLocation.deleteMany({ where: { id: { in: oldProperties.map((p) => p.locationId) } } });
+}
+
 async function seedRealProperties() {
   const agent = await prisma.agent.findUniqueOrThrow({ where: { slug: "tatiana-de-paola" } });
 
@@ -215,26 +243,53 @@ async function seedRealProperties() {
     },
   });
 
+  // Precio, ambientes y fotos reales cargados a partir de la publicación
+  // vigente de De Paola en Zonaprop (2026-09-10) — antes solo tenía 1 foto
+  // y precio "a consultar".
   await prisma.property.upsert({
     where: { slug: "chalet-6-ambientes-martinez" },
     update: {
+      description:
+        "Chalet de 6 ambientes a 400 metros de Av. Santa Fe, en Martínez. Living comedor con hogar, cocina comedor, toilette y jardín en planta baja; 4 dormitorios (suite principal incluida) en planta alta, con garage para dos autos que se convierte en quincho con parrilla. Publicado actualmente por De Paola Propiedades en Zonaprop.",
+      price: 370000,
+      currency: Currency.USD,
+      coveredArea: 205,
+      totalArea: 250,
+      rooms: 6,
+      bedrooms: 4,
+      bathrooms: 3,
+      sourceUrl: "https://www.zonaprop.com.ar/propiedades/clasificado/venta-chalet-6-ambientes-jardin-garage-a-m-av-santa-fe-57916041.html",
       location: { update: jitter(NEIGHBORHOOD_COORDS["martinez"], 1) },
+      images: {
+        deleteMany: {},
+        create: [
+          { url: "/properties/chalet-martinez/1.jpg", alt: "Chalet en Martínez — fachada", order: 0, isCover: true },
+          { url: "/properties/chalet-martinez/2.jpg", alt: "Chalet en Martínez — living comedor", order: 1 },
+          { url: "/properties/chalet-martinez/3.jpg", alt: "Chalet en Martínez — dormitorio", order: 2 },
+          { url: "/properties/chalet-martinez/4.jpg", alt: "Chalet en Martínez — jardín", order: 3 },
+        ],
+      },
     },
     create: {
       slug: "chalet-6-ambientes-martinez",
       title: "Chalet 6 ambientes",
       description:
-        "Chalet de 6 ambientes en Martínez, con jardín y garage. Publicado actualmente por De Paola Propiedades en Zonaprop y Argenprop.",
+        "Chalet de 6 ambientes a 400 metros de Av. Santa Fe, en Martínez. Living comedor con hogar, cocina comedor, toilette y jardín en planta baja; 4 dormitorios (suite principal incluida) en planta alta, con garage para dos autos que se convierte en quincho con parrilla. Publicado actualmente por De Paola Propiedades en Zonaprop.",
       operationType: OperationType.VENTA,
       propertyType: PropertyType.CASA,
-      price: null,
-      currency: null,
+      price: 370000,
+      currency: Currency.USD,
+      coveredArea: 205,
+      totalArea: 250,
       rooms: 6,
+      bedrooms: 4,
+      bathrooms: 3,
       hasGarage: true,
       status: "ACTIVA",
       isSample: false,
       isFeatured: true,
       publishedAt: new Date(),
+      sourceUrl: "https://www.zonaprop.com.ar/propiedades/clasificado/venta-chalet-6-ambientes-jardin-garage-a-m-av-santa-fe-57916041.html",
       agent: { connect: { id: agent.id } },
       office: { connect: { id: "office-villa-martelli" } },
       location: {
@@ -246,7 +301,12 @@ async function seedRealProperties() {
         },
       },
       images: {
-        create: [{ url: "https://static.wixstatic.com/media/c9cb98_3e01d1892099477eb7ec2df49fcfc858~mv2.jpg", alt: "Chalet en Martínez", order: 0, isCover: true }],
+        create: [
+          { url: "/properties/chalet-martinez/1.jpg", alt: "Chalet en Martínez — fachada", order: 0, isCover: true },
+          { url: "/properties/chalet-martinez/2.jpg", alt: "Chalet en Martínez — living comedor", order: 1 },
+          { url: "/properties/chalet-martinez/3.jpg", alt: "Chalet en Martínez — dormitorio", order: 2 },
+          { url: "/properties/chalet-martinez/4.jpg", alt: "Chalet en Martínez — jardín", order: 3 },
+        ],
       },
       features: {
         create: [
@@ -258,221 +318,286 @@ async function seedRealProperties() {
   });
 }
 
-const SAMPLE_PROPERTIES: Array<{
-  slug: string;
-  title: string;
-  neighborhoodSlug: string;
-  operationType: OperationType;
-  propertyType: PropertyType;
-  price: number;
-  currency: "ARS" | "USD";
-  coveredArea: number;
-  rooms: number;
-  bedrooms: number;
-  bathrooms: number;
-  hasGarage: boolean;
-  condition: PropertyCondition;
-  address: string;
-  features: string[];
-}> = [
-  {
-    slug: "departamento-3-ambientes-vicente-lopez",
-    title: "Departamento 3 ambientes con balcón",
-    neighborhoodSlug: "vicente-lopez",
-    operationType: OperationType.VENTA,
-    propertyType: PropertyType.DEPARTAMENTO,
-    price: 320000,
-    currency: "USD",
-    coveredArea: 78,
-    rooms: 3,
-    bedrooms: 2,
-    bathrooms: 1,
-    hasGarage: true,
-    condition: PropertyCondition.MUY_BUENO,
-    address: "Av. Maipú al 1500, Vicente López",
-    features: ["Balcón", "Cochera"],
-  },
-  {
-    slug: "casa-4-ambientes-pileta-martinez",
-    title: "Casa 4 ambientes con pileta",
-    neighborhoodSlug: "martinez",
-    operationType: OperationType.VENTA,
-    propertyType: PropertyType.CASA,
-    price: 410000,
-    currency: "USD",
-    coveredArea: 190,
-    rooms: 4,
-    bedrooms: 3,
-    bathrooms: 2,
-    hasGarage: true,
-    condition: PropertyCondition.MUY_BUENO,
-    address: "Zona Martínez",
-    features: ["Pileta", "Jardín", "Garage"],
-  },
-  {
-    slug: "ph-2-ambientes-florida",
-    title: "PH 2 ambientes a estrenar",
-    neighborhoodSlug: "florida",
-    operationType: OperationType.VENTA,
-    propertyType: PropertyType.PH,
-    price: 145000,
-    currency: "USD",
-    coveredArea: 52,
-    rooms: 2,
-    bedrooms: 1,
-    bathrooms: 1,
-    hasGarage: false,
-    condition: PropertyCondition.A_ESTRENAR,
-    address: "Zona Florida",
-    features: ["Patio"],
-  },
-  {
-    slug: "departamento-2-ambientes-alquiler-martinez",
-    title: "Departamento 2 ambientes con balcón",
-    neighborhoodSlug: "martinez",
-    operationType: OperationType.ALQUILER,
-    propertyType: PropertyType.DEPARTAMENTO,
-    price: 950,
-    currency: "USD",
-    coveredArea: 58,
-    rooms: 2,
-    bedrooms: 1,
-    bathrooms: 1,
-    hasGarage: false,
-    condition: PropertyCondition.BUENO,
-    address: "Zona Martínez",
-    features: ["Balcón"],
-  },
-  {
-    slug: "casa-5-ambientes-villa-martelli-ejemplo",
-    title: "Casa 5 ambientes con quincho",
-    neighborhoodSlug: "villa-martelli",
-    operationType: OperationType.VENTA,
-    propertyType: PropertyType.CASA,
-    price: 380000,
-    currency: "USD",
-    coveredArea: 210,
-    rooms: 5,
-    bedrooms: 3,
-    bathrooms: 2,
-    hasGarage: true,
-    condition: PropertyCondition.BUENO,
-    address: "Zona Villa Martelli",
-    features: ["Quincho", "Garage"],
-  },
-  {
-    slug: "departamento-1-ambiente-alquiler-vicente-lopez",
-    title: "Monoambiente a estrenar",
-    neighborhoodSlug: "vicente-lopez",
-    operationType: OperationType.ALQUILER,
-    propertyType: PropertyType.DEPARTAMENTO,
-    price: 480,
-    currency: "USD",
-    coveredArea: 32,
-    rooms: 1,
-    bedrooms: 1,
-    bathrooms: 1,
-    hasGarage: false,
-    condition: PropertyCondition.A_ESTRENAR,
-    address: "Zona Vicente López",
-    features: ["Amenities"],
-  },
-  {
-    slug: "local-comercial-florida",
-    title: "Local comercial sobre avenida",
-    neighborhoodSlug: "florida",
-    operationType: OperationType.ALQUILER,
-    propertyType: PropertyType.LOCAL,
-    price: 700000,
-    currency: "ARS",
-    coveredArea: 45,
-    rooms: 1,
-    bedrooms: 0,
-    bathrooms: 1,
-    hasGarage: false,
-    condition: PropertyCondition.BUENO,
-    address: "Av. San Martín, Florida",
-    features: ["Vidriera"],
-  },
-  {
-    slug: "casa-6-ambientes-jardin-martinez",
-    title: "Casa 6 ambientes con jardín",
-    neighborhoodSlug: "martinez",
-    operationType: OperationType.VENTA,
-    propertyType: PropertyType.CASA,
-    price: 520000,
-    currency: "USD",
-    coveredArea: 260,
-    rooms: 6,
-    bedrooms: 4,
-    bathrooms: 3,
-    hasGarage: true,
-    condition: PropertyCondition.MUY_BUENO,
-    address: "Zona Martínez",
-    features: ["Jardín", "Pileta", "Garage"],
-  },
-  {
-    slug: "departamento-3-ambientes-villa-martelli",
-    title: "Departamento 3 ambientes con cochera",
-    neighborhoodSlug: "villa-martelli",
-    operationType: OperationType.ALQUILER,
-    propertyType: PropertyType.DEPARTAMENTO,
-    price: 1100,
-    currency: "USD",
-    coveredArea: 70,
-    rooms: 3,
-    bedrooms: 2,
-    bathrooms: 1,
-    hasGarage: true,
-    condition: PropertyCondition.BUENO,
-    address: "Zona Villa Martelli",
-    features: ["Cochera", "Balcón"],
-  },
-];
-
-async function seedSampleProperties() {
+// Reemplaza los 9 slugs "Ejemplo" (isSample: true, ver OLD_SAMPLE_SLUGS más
+// arriba) por propiedades reales, extraídas de las publicaciones vigentes de
+// De Paola en Zonaprop (2026-09-10) — mismo criterio y estructura que
+// seedRealProperties, con sourceUrl como referencia a la publicación
+// original. Solo se cubrieron 8, no 9: la novena candidata (otro chalet en
+// Martínez) resultó ser la misma propiedad que "chalet-6-ambientes-martinez"
+// (ya real desde antes) — se usó esa coincidencia para sumarle más fotos
+// reales en vez de crear un duplicado (ver seedRealProperties).
+async function seedZonapropProperties() {
   const agent = await prisma.agent.findUniqueOrThrow({ where: { slug: "tatiana-de-paola" } });
+  const villaMartelli = await prisma.neighborhood.findUniqueOrThrow({ where: { slug: "villa-martelli" } });
+  const florida = await prisma.neighborhood.findUniqueOrThrow({ where: { slug: "florida" } });
+  const vicenteLopez = await prisma.neighborhood.findUniqueOrThrow({ where: { slug: "vicente-lopez" } });
 
-  for (const [index, sample] of SAMPLE_PROPERTIES.entries()) {
-    const neighborhood = await prisma.neighborhood.findUniqueOrThrow({ where: { slug: sample.neighborhoodSlug } });
-    const coords = jitter(NEIGHBORHOOD_COORDS[sample.neighborhoodSlug], index + 2);
+  const properties: Array<{
+    slug: string;
+    title: string;
+    description: string;
+    operationType: OperationType;
+    propertyType: PropertyType;
+    price: number;
+    currency: Currency;
+    coveredArea: number;
+    totalArea?: number;
+    rooms: number;
+    bedrooms: number;
+    bathrooms: number;
+    hasGarage: boolean;
+    address: string;
+    neighborhoodId: string;
+    officeId: string;
+    coordsBase: { lat: number; lng: number };
+    seedIndex: number;
+    imagesDir: string;
+    imageCount: number;
+    features: string[];
+    sourceUrl: string;
+  }> = [
+    {
+      slug: "casa-5-ambientes-grecia-villa-martelli",
+      title: "Casa 5 ambientes en lote propio",
+      description:
+        "Casa de 5 ambientes en lote propio, en la tranquila zona de Villa Martelli. Distribuida en una sola planta, con amplio living comedor, 4 dormitorios, 2 baños completos, jardín, terraza y cochera fija. A metros de las avenidas Laprida y Mitre. Publicada actualmente por De Paola Propiedades en Zonaprop.",
+      operationType: OperationType.VENTA,
+      propertyType: PropertyType.CASA,
+      price: 149000,
+      currency: Currency.USD,
+      coveredArea: 165,
+      totalArea: 227,
+      rooms: 5,
+      bedrooms: 4,
+      bathrooms: 2,
+      hasGarage: true,
+      address: "Grecia al 400, Villa Martelli",
+      neighborhoodId: villaMartelli.id,
+      officeId: "office-villa-martelli",
+      coordsBase: NEIGHBORHOOD_COORDS["villa-martelli"],
+      seedIndex: 10,
+      imagesDir: "casa-villa-martelli",
+      imageCount: 4,
+      features: ["Jardín", "Terraza", "Cochera"],
+      sourceUrl: "https://www.zonaprop.com.ar/propiedades/clasificado/venta-casa-en-lote-propio-5-ambientes-villa-martelli-56012441.html",
+    },
+    {
+      slug: "departamento-3-ambientes-cipriano-lima-villa-martelli",
+      title: "Departamento 3 ambientes con cochera",
+      description:
+        "Departamento de 3 ambientes en el corazón de Villa Martelli — Barrio Parque, a metros de la Ciudad Autónoma de Buenos Aires y con fácil acceso a General Paz, Panamericana y el Shopping DOT. Living comedor, cocina equipada, 2 dormitorios, baño completo y cochera cubierta. Publicado actualmente por De Paola Propiedades en Zonaprop.",
+      operationType: OperationType.ALQUILER,
+      propertyType: PropertyType.DEPARTAMENTO,
+      price: 950000,
+      currency: Currency.ARS,
+      coveredArea: 60,
+      rooms: 3,
+      bedrooms: 2,
+      bathrooms: 1,
+      hasGarage: true,
+      address: "Cipriano Lima al 4000, Villa Martelli",
+      neighborhoodId: villaMartelli.id,
+      officeId: "office-villa-martelli",
+      coordsBase: NEIGHBORHOOD_COORDS["villa-martelli"],
+      seedIndex: 11,
+      imagesDir: "depto-3amb-alquiler-villa-martelli",
+      imageCount: 4,
+      features: ["Cochera"],
+      sourceUrl: "https://www.zonaprop.com.ar/propiedades/clasificado/alclapin-departamento-3-ambientes-con-cochera-barrio-parque-59845026.html",
+    },
+    {
+      slug: "monoambiente-campus-norte-villa-martelli",
+      title: "Monoambiente con cochera en Campus Norte",
+      description:
+        "Monoambiente con cochera fija cubierta en el complejo Campus Norte, Villa Martelli. Balcón, placard y aire acondicionado; el edificio cuenta con seguridad, piscina y parrilla de uso común. Publicado actualmente por De Paola Propiedades en Zonaprop.",
+      operationType: OperationType.ALQUILER,
+      propertyType: PropertyType.DEPARTAMENTO,
+      price: 685000,
+      currency: Currency.ARS,
+      coveredArea: 38,
+      totalArea: 42,
+      rooms: 1,
+      bedrooms: 1,
+      bathrooms: 1,
+      hasGarage: true,
+      address: "Venezuela al 4100, Villa Martelli",
+      neighborhoodId: villaMartelli.id,
+      officeId: "office-villa-martelli",
+      coordsBase: NEIGHBORHOOD_COORDS["villa-martelli"],
+      seedIndex: 12,
+      imagesDir: "monoambiente-campus-norte",
+      imageCount: 4,
+      features: ["Amenities", "Cochera"],
+      sourceUrl: "https://www.zonaprop.com.ar/propiedades/clasificado/alclapin-departamento-monoambiente-campus-norte-59803422.html",
+    },
+    {
+      slug: "casa-3-ambientes-florida-oeste",
+      title: "Casa 3 ambientes con garage y patio",
+      description:
+        "Casa de 3 ambientes refaccionada, en lote propio en Florida Oeste. Dos dormitorios, baño completo renovado, amplia cocina comedor integrada al living, garage cubierto para un vehículo, dos patios y terraza. Apta crédito. Publicada actualmente por De Paola Propiedades en Zonaprop.",
+      operationType: OperationType.VENTA,
+      propertyType: PropertyType.CASA,
+      price: 169000,
+      currency: Currency.USD,
+      coveredArea: 165,
+      totalArea: 250,
+      rooms: 3,
+      bedrooms: 2,
+      bathrooms: 1,
+      hasGarage: true,
+      address: "Bolivia al 1000, Florida Oeste",
+      neighborhoodId: florida.id,
+      officeId: "office-florida",
+      coordsBase: NEIGHBORHOOD_COORDS["florida"],
+      seedIndex: 13,
+      imagesDir: "casa-florida",
+      imageCount: 4,
+      features: ["Patio", "Terraza", "Garage"],
+      sourceUrl: "https://www.zonaprop.com.ar/propiedades/clasificado/venta-casa-apta-credito-3-ambientes-garage-patio-58939115.html",
+    },
+    {
+      slug: "ph-3-ambientes-alvear-florida",
+      title: "PH 3 ambientes sin expensas",
+      description:
+        "PH de 3 ambientes sin expensas, a metros de Av. San Martín y de la estación Florida (línea Mitre). Dos dormitorios, baño completo, cocina comedor y lavadero. Publicado actualmente por De Paola Propiedades en Zonaprop.",
+      operationType: OperationType.ALQUILER,
+      propertyType: PropertyType.PH,
+      price: 850000,
+      currency: Currency.ARS,
+      coveredArea: 55,
+      rooms: 3,
+      bedrooms: 2,
+      bathrooms: 1,
+      hasGarage: false,
+      address: "Alvear al 1400, Florida",
+      neighborhoodId: florida.id,
+      officeId: "office-florida",
+      coordsBase: NEIGHBORHOOD_COORDS["florida"],
+      seedIndex: 14,
+      imagesDir: "ph-alquiler-florida",
+      imageCount: 4,
+      features: ["Lavadero"],
+      sourceUrl: "https://www.zonaprop.com.ar/propiedades/clasificado/alclphin-alquiler-ph-3-ambientes-con-terraza-y-lavadero-59024605.html",
+    },
+    {
+      slug: "ph-4-ambientes-french-villa-martelli",
+      title: "PH 4 ambientes reciclado",
+      description:
+        "PH de 4 ambientes completamente reciclado en Villa Martelli, con diseño moderno y funcional. Tres dormitorios, baño completo con antebaño, amplio living comedor y cocina comedor. Todos los servicios renovados. Publicado actualmente por De Paola Propiedades en Zonaprop.",
+      operationType: OperationType.VENTA,
+      propertyType: PropertyType.PH,
+      price: 119000,
+      currency: Currency.USD,
+      coveredArea: 88,
+      rooms: 4,
+      bedrooms: 3,
+      bathrooms: 1,
+      hasGarage: false,
+      address: "French al 200, Villa Martelli",
+      neighborhoodId: villaMartelli.id,
+      officeId: "office-villa-martelli",
+      coordsBase: NEIGHBORHOOD_COORDS["villa-martelli"],
+      seedIndex: 15,
+      imagesDir: "ph-villa-martelli",
+      imageCount: 4,
+      features: [],
+      sourceUrl: "https://www.zonaprop.com.ar/propiedades/clasificado/casa-ph-4-ambientes-reciclada-3-dorm.-57992443.html",
+    },
+    {
+      slug: "departamento-2-ambientes-vergara-florida",
+      title: "Departamento 2 ambientes tipo loft",
+      description:
+        "Departamento 2 ambientes tipo loft a 20 metros de Av. Mitre, con cochera fija y posibilidad de ampliación a 3 ambientes. Doble ventanal al frente, entrepiso con baño completo, living comedor con cocina integrada. El edificio ofrece SUM con parrilla y piscina. Publicado actualmente por De Paola Propiedades en Zonaprop.",
+      operationType: OperationType.VENTA,
+      propertyType: PropertyType.DEPARTAMENTO,
+      price: 99900,
+      currency: Currency.USD,
+      coveredArea: 50,
+      rooms: 2,
+      bedrooms: 1,
+      bathrooms: 1,
+      hasGarage: true,
+      address: "Vergara al 3600, Florida",
+      neighborhoodId: florida.id,
+      officeId: "office-florida",
+      coordsBase: NEIGHBORHOOD_COORDS["florida"],
+      seedIndex: 16,
+      imagesDir: "depto-loft-florida",
+      imageCount: 4,
+      features: ["Amenities", "Cochera"],
+      sourceUrl: "https://www.zonaprop.com.ar/propiedades/clasificado/en-venta-departamento-3-ambientes-tipo-loft-56422800.html",
+    },
+    {
+      slug: "casa-4-ambientes-olivos-vicente-lopez",
+      title: "Dúplex 4 ambientes en Olivos",
+      description:
+        "Dúplex de 4 ambientes en Olivos, orientado al norte con abundante luz natural. Tres dormitorios (uno en suite), 3 baños y un toilette adicional, patio privado con parrilla y cochera descubierta. Publicado actualmente por De Paola Propiedades en Zonaprop.",
+      operationType: OperationType.VENTA,
+      propertyType: PropertyType.CASA,
+      price: 240000,
+      currency: Currency.USD,
+      coveredArea: 110,
+      rooms: 4,
+      bedrooms: 3,
+      bathrooms: 3,
+      hasGarage: true,
+      address: "Acassuso al 2200, Olivos",
+      neighborhoodId: vicenteLopez.id,
+      officeId: "office-villa-martelli",
+      coordsBase: NEIGHBORHOOD_COORDS["vicente-lopez"],
+      seedIndex: 17,
+      imagesDir: "casa-vicente-lopez",
+      imageCount: 4,
+      features: ["Patio"],
+      sourceUrl: "https://www.zonaprop.com.ar/propiedades/clasificado/venta-casa-triplex-4-ambientes-en-olivos-59964308.html",
+    },
+  ];
 
+  for (const p of properties) {
+    const coords = jitter(p.coordsBase, p.seedIndex);
     await prisma.property.upsert({
-      where: { slug: sample.slug },
+      where: { slug: p.slug },
       update: {
         location: { update: coords },
       },
       create: {
-        slug: sample.slug,
-        title: sample.title,
-        description: `Propiedad de ejemplo (isSample) usada para completar la grilla mientras se carga el inventario real de De Paola — ${sample.title.toLowerCase()}.`,
-        operationType: sample.operationType,
-        propertyType: sample.propertyType,
-        price: sample.price,
-        currency: sample.currency,
-        coveredArea: sample.coveredArea,
-        rooms: sample.rooms,
-        bedrooms: sample.bedrooms,
-        bathrooms: sample.bathrooms,
-        hasGarage: sample.hasGarage,
-        condition: sample.condition,
+        slug: p.slug,
+        title: p.title,
+        description: p.description,
+        operationType: p.operationType,
+        propertyType: p.propertyType,
+        price: p.price,
+        currency: p.currency,
+        coveredArea: p.coveredArea,
+        totalArea: p.totalArea,
+        rooms: p.rooms,
+        bedrooms: p.bedrooms,
+        bathrooms: p.bathrooms,
+        hasGarage: p.hasGarage,
         status: "ACTIVA",
-        isSample: true,
+        isSample: false,
         publishedAt: new Date(),
+        sourceUrl: p.sourceUrl,
         agent: { connect: { id: agent.id } },
+        office: { connect: { id: p.officeId } },
         location: {
           create: {
-            address: sample.address,
-            isApproximate: true,
-            neighborhoodId: neighborhood.id,
+            address: p.address,
+            isApproximate: false,
+            neighborhoodId: p.neighborhoodId,
             ...coords,
           },
         },
         images: {
-          create: [{ url: "/placeholder-property.svg", alt: sample.title, order: 0, isCover: true }],
+          create: Array.from({ length: p.imageCount }).map((_, i) => ({
+            url: `/properties/${p.imagesDir}/${i + 1}.jpg`,
+            alt: p.title,
+            order: i,
+            isCover: i === 0,
+          })),
         },
         features: {
-          create: sample.features.map((label) => ({ key: label.toLowerCase(), label })),
+          create: p.features.map((label) => ({ key: label.toLowerCase(), label })),
         },
       },
     });
@@ -656,7 +781,8 @@ async function main() {
   await seedOfficesAndAgent();
   await seedNeighborhoods();
   await seedRealProperties();
-  await seedSampleProperties();
+  await removeOldSampleProperties();
+  await seedZonapropProperties();
   await seedCampusNorte();
   await seedCategories();
   await seedArticles();
