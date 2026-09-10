@@ -31,14 +31,25 @@ test("El botón de favorito persiste en localStorage", async ({ page }) => {
 });
 
 test("Galería en mobile: todas las fotos son alcanzables (regresión)", async ({ page }) => {
-  // Bug real: en mobile solo se mostraba la foto principal — las demás
-  // tenían "hidden sm:block", invisibles e inalcanzables (sin swipe, sin
-  // forma de verlas). REAL_PROPERTY_SLUG tiene 3 fotos reales sembradas.
+  // Bug real original: en mobile solo se mostraba la foto principal — las
+  // demás tenían "hidden sm:block", invisibles e inalcanzables (sin swipe,
+  // sin forma de verlas). Ahora la galería es una sola composición (foto
+  // grande + tira de miniaturas) igual en todos los tamaños: cada
+  // miniatura es alcanzable y además abre el lightbox con todas las
+  // fotos. REAL_PROPERTY_SLUG tiene 3 fotos reales sembradas.
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto(`/propiedades/${REAL_PROPERTY_SLUG}`);
 
-  const mobileGallery = page.locator(".overflow-x-auto.snap-x");
-  await expect(mobileGallery.locator("img")).toHaveCount(3);
+  const thumbnails = page.getByRole("button", { name: /^Ver foto \d/ });
+  await expect(thumbnails).toHaveCount(3);
+
+  await thumbnails.nth(2).click();
+  const mainPhoto = page.getByRole("button", { name: /Ver las 3 fotos/ });
+  await expect(mainPhoto).toBeVisible();
+
+  await mainPhoto.click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByText("3 / 3")).toBeVisible();
 });
 
 test("Una propiedad inexistente devuelve 404", async ({ page }) => {

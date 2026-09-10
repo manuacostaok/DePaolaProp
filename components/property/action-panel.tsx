@@ -43,7 +43,7 @@ export function ActionPanel({
   return (
     <div className="sticky top-24 border-t border-line pt-6 lg:border-t-0 lg:pt-0">
       <div className="mb-1 flex items-start justify-between gap-3">
-        <p className="font-display text-[30px] text-brand-dark">{formatPrice(price, currency)}</p>
+        <p className="font-display text-[36px] leading-none text-brand-dark">{formatPrice(price, currency)}</p>
         <button
           type="button"
           onClick={() => {

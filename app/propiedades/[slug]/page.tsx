@@ -98,10 +98,15 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
         <Link href="/">Inicio</Link> / <Link href="/propiedades">Propiedades</Link> / {property.title}
       </p>
 
-      <div className="grid gap-8 lg:grid-cols-[1.6fr_1fr] lg:items-start">
-        <div>
-          <Gallery images={property.images.map((img) => ({ url: img.url, alt: img.alt ?? property.title }))} title={property.title} />
+      {/* La galería sale de la columna de 1.6fr y ocupa todo el ancho del
+          contenedor — la fotografía lidera la composición en vez de
+          convivir apretada junto al sidebar desde el primer renglón.
+          Sigue sin romper el contenedor de 1240px (DESIGN.md: buscador y
+          ficha no llevan full-bleed, son las páginas de conversión). */}
+      <Gallery images={property.images.map((img) => ({ url: img.url, alt: img.alt ?? property.title }))} title={property.title} />
 
+      <div className="mt-8 grid gap-8 lg:grid-cols-[1.6fr_1fr] lg:items-start">
+        <div>
           <div className="mb-3 flex items-center gap-2">
             <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-brand">
               {property.operationType === "VENTA" ? "Venta" : "Alquiler"}
@@ -112,7 +117,7 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
               </Badge>
             )}
           </div>
-          <h1 className="mb-2 text-balance text-[clamp(28px,3.4vw,40px)]">{property.title}</h1>
+          <h1 className="mb-2 text-balance font-display text-[clamp(30px,4vw,48px)] leading-[1.1]">{property.title}</h1>
           <p className="mb-7 text-[15px] text-ink-soft">
             {property.location.address}
             {property.location.isApproximate ? " (ubicación aproximada)" : ""}
@@ -159,10 +164,13 @@ export default async function PropertyDetailPage({ params }: { params: Promise<{
             )}
           </div>
 
+          {/* Fondo suave en vez de pastillas con borde — DESIGN.md:
+              accent-tint es justo para esto (fondo de badge/estado
+              activo), evita apilar bordes finos uno al lado del otro. */}
           {property.features.length > 0 && (
             <div className="mb-8 flex flex-wrap gap-2">
               {property.features.map((feature) => (
-                <span key={feature.id} className="rounded-full border border-line px-3 py-1 text-[13px] text-ink-soft">
+                <span key={feature.id} className="rounded-[4px] bg-brand-tint px-3 py-1.5 text-[13px] text-brand-dark">
                   {feature.label}
                 </span>
               ))}
