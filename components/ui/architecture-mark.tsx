@@ -5,9 +5,20 @@
 // opacidades. Recupera el concepto de siluetas de edificios explorado en
 // una sesión anterior de /design-html que nunca se había llevado al
 // código — ver Home, sección editorial entre el Hero y "Propiedades".
-export function ArchitectureMark({ className }: { className?: string }) {
+export function ArchitectureMark({
+  className,
+  preserveAspectRatio = "xMidYMax meet",
+}: {
+  className?: string;
+  // "meet" (default, uso original en la pausa editorial) deja aire si el
+  // contenedor es más angosto que el viewBox. "slice" llena siempre el
+  // alto completo del contenedor recortando los costados — mejor cuando
+  // el motivo tiene que "destacar" a pantalla completa (ver DriftBand en
+  // Home, secciones 02/03).
+  preserveAspectRatio?: "xMidYMax meet" | "xMidYMax slice";
+}) {
   return (
-    <svg viewBox="0 0 1600 420" preserveAspectRatio="xMidYMax meet" fill="none" className={className} aria-hidden="true">
+    <svg viewBox="0 0 1600 420" preserveAspectRatio={preserveAspectRatio} fill="none" className={className} aria-hidden="true">
       <line x1="0" y1="360" x2="1600" y2="360" stroke="currentColor" strokeWidth="1" />
 
       {/* Skyline: alturas y anchos irregulares a propósito, como un
