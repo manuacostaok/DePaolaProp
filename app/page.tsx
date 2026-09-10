@@ -130,33 +130,13 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Pausa editorial entre el Hero y el contenido inmobiliario — a
-          propósito sin numerar: no es un capítulo temático más (no tiene
-          eyebrow/acción como el resto), es un respiro con intención antes
-          de arrancar el recorrido. La arquitectura vive como textura muy
-          tenue al pie de la sección, nunca como panel de color propio —
-          ver ArchitectureMark. Reemplaza la sección "Identidad" anterior
-          (texto + panel navy), que el usuario pidió eliminar por completo
-          en vez de retocar. */}
-      <section className="relative overflow-hidden bg-bg py-28 sm:py-36 lg:py-44">
-        <ArchitectureMark
-          className="pointer-events-none absolute inset-x-0 bottom-0 mx-auto h-[220px] w-full max-w-[1600px] text-ink/[0.06] sm:h-[300px] lg:h-[380px]"
-        />
-        <div className="relative mx-auto max-w-2xl px-6 text-center sm:px-8">
-          <Reveal>
-            <span className="mx-auto mb-8 block h-px w-12 bg-brand/50" />
-            <h2 className="mb-6 text-balance font-display text-[clamp(28px,4.2vw,48px)] leading-[1.2] text-ink">
-              Elegimos cada propiedad como quien va a vivir ahí.
-            </h2>
-            <p className="mx-auto max-w-md text-[15px] text-ink-soft">
-              Ninguna publicación es automática — cada una pasa por la misma mirada de barrio.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
       {/* 01 — Propiedades: una protagonista (foto grande, texto superpuesto)
-          + secundarias en grilla chica — no seis cards idénticas. */}
+          + secundarias en grilla chica — no seis cards idénticas. La pausa
+          editorial que antes vivía acá como sección propia (sin numerar,
+          entre el Hero y este capítulo) se retiró por pedido del usuario
+          ("la segunda sección siento que está demás") — su mensaje pasó a
+          ser la description de este capítulo en vez de ocupar una pantalla
+          entera solo de texto. */}
       <section className="bg-bg-alt py-20 sm:py-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
@@ -164,6 +144,7 @@ export default async function Home() {
               index="01"
               eyebrow="Inventario actual"
               title="Recién publicadas"
+              description="Elegimos cada propiedad como quien va a vivir ahí — ninguna publicación es automática, todas pasan por la misma mirada de barrio."
               action={
                 <Link href="/propiedades" className={buttonVariants({ variant: "outline", size: "sm" })}>
                   Ver todas
