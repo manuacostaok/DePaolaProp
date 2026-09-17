@@ -33,6 +33,32 @@ test("Home: la búsqueda del hero queda accesible en una barra compacta al scrol
   await expect(page).toHaveURL("/propiedades");
 });
 
+test("Home: el video del hero se pausa fuera de pantalla y se reanuda al volver (regresión)", async ({ page }) => {
+  // Autoplay + loop indefinido de fondo gasta batería/datos de más una vez
+  // que el usuario ya scrolleó lejos del hero (hallazgo de ui-ux-pro-max,
+  // categoría Sustainability) — el IntersectionObserver de HeroVideo lo
+  // pausa fuera de pantalla y lo reanuda al volver, en vez de dejarlo
+  // corriendo indefinidamente sin importar qué tan lejos se scrolleó.
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await page.goto("/");
+
+  const video = page.locator("#home-hero video");
+  await expect(video).toBeVisible();
+  await expect
+    .poll(() => video.evaluate((v: HTMLVideoElement) => !v.paused))
+    .toBe(true);
+
+  await page.evaluate(() => window.scrollTo(0, 3000));
+  await expect
+    .poll(() => video.evaluate((v: HTMLVideoElement) => v.paused))
+    .toBe(true);
+
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect
+    .poll(() => video.evaluate((v: HTMLVideoElement) => !v.paused))
+    .toBe(true);
+});
+
 test("Home no tiene overflow horizontal en mobile", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/");

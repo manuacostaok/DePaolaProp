@@ -44,6 +44,27 @@ export function HeroVideo({ posterUrl, className }: { posterUrl: string; classNa
     video.play().catch(() => {});
   }, [clipIndex]);
 
+  // Pausa el video cuando el hero sale del viewport (scroll lejos) en vez de
+  // seguir reproduciendo de fondo indefinidamente — autoplay+loop sin pausa
+  // fuera de pantalla gasta batería/datos de más, sobre todo en mobile.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0 },
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, [enabled]);
+
   if (!enabled) {
     // eslint-disable-next-line @next/next/no-img-element -- fondo decorativo full-bleed, no contenido
     return <img src={posterUrl} alt="" className={className} />;
