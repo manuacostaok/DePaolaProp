@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { cn } from "@/lib/cn";
 import { sortNeighborhoodsByPriority } from "@/lib/neighborhood-order";
 import { buttonVariants } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
+import { StickySearchBar } from "@/components/home/sticky-search-bar";
 import { PropertyCard } from "@/components/ui/property-card";
 import { FeaturedProperty } from "@/components/ui/featured-property";
 import { ZoneCard } from "@/components/ui/zone-card";
@@ -105,17 +107,51 @@ export default async function Home() {
             <p className="mb-9 max-w-lg text-lg text-white/85">
               Liderazgo en Zona Norte — comprá, alquilá o vendé con una mirada que va más allá del metro cuadrado.
             </p>
-            <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
-              <Link href="/propiedades" className={buttonVariants({ variant: "onDark" })}>
-                Ver propiedades
-              </Link>
-              <Link
-                href="/vender/tasacion"
-                className="text-[14.5px] font-medium text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white"
-              >
-                Tasá tu propiedad
-              </Link>
-            </div>
+            {/* El buscador real reemplaza al botón "Ver propiedades": es la
+                misma acción (ir a /propiedades) pero ya con los filtros
+                elegidos, en vez de un CTA decorativo aparte. Reusa el
+                buscador real (operacion/zona de lib/search.ts), no un campo
+                de adorno — un solo acento por pantalla (ver DESIGN.md). */}
+            <form
+              action="/propiedades"
+              method="get"
+              className="mb-5 flex w-full max-w-xl flex-col gap-3 rounded-card bg-white/95 p-3 shadow-soft backdrop-blur-sm sm:flex-row sm:items-center sm:gap-2 sm:p-2 sm:pl-3"
+            >
+              <div className="flex rounded-control bg-bg-alt p-1">
+                <input type="radio" name="operacion" id="hero-op-venta" value="venta" defaultChecked className="peer/venta sr-only" />
+                <label
+                  htmlFor="hero-op-venta"
+                  className="flex-1 cursor-pointer rounded-[3px] px-4 py-2.5 text-center text-sm font-semibold text-ink-soft transition-colors peer-checked/venta:bg-brand peer-checked/venta:text-white sm:flex-none"
+                >
+                  Comprar
+                </label>
+                <input type="radio" name="operacion" id="hero-op-alquiler" value="alquiler" className="peer/alquiler sr-only" />
+                <label
+                  htmlFor="hero-op-alquiler"
+                  className="flex-1 cursor-pointer rounded-[3px] px-4 py-2.5 text-center text-sm font-semibold text-ink-soft transition-colors peer-checked/alquiler:bg-brand peer-checked/alquiler:text-white sm:flex-none"
+                >
+                  Alquilar
+                </label>
+              </div>
+              <Select
+                name="zona"
+                aria-label="Zona"
+                defaultValue=""
+                placeholder="Elegí tu zona"
+                uiSize="lg"
+                className="border-0 bg-transparent focus:ring-0 sm:flex-1"
+                options={neighborhoods.map((n) => ({ value: n.slug, label: n.name }))}
+              />
+              <button type="submit" className={buttonVariants({ className: "w-full sm:w-auto" })}>
+                Buscar propiedades
+              </button>
+            </form>
+            <Link
+              href="/vender/tasacion"
+              className="text-[14.5px] font-medium text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white"
+            >
+              Tasá tu propiedad
+            </Link>
           </HeroIntro>
           <div
             className="animate-fade-up hidden shrink-0 self-center border-l border-white/25 py-1 pl-8 motion-reduce:animate-none lg:block"
@@ -128,6 +164,8 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      <StickySearchBar />
 
       {/* 01 — Propiedades: una protagonista (foto grande, texto superpuesto)
           + secundarias en grilla chica — no seis cards idénticas. La pausa

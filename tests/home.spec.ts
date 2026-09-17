@@ -5,7 +5,32 @@ test("Home carga con hero y propiedades", async ({ page }) => {
 
   await expect(page.getByRole("heading", { name: /barrio detrás/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Recién publicadas" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Ver propiedades", exact: true })).toHaveAttribute("href", "/propiedades");
+
+  // El buscador del hero es funcional: navega a /propiedades con los
+  // filtros reales aplicados (Dirección 8 — reemplaza al botón "Ver
+  // propiedades" decorativo por el buscador de verdad).
+  const heroSearch = page.locator('form[action="/propiedades"]');
+  await heroSearch.getByText("Alquilar", { exact: true }).click();
+  await heroSearch.getByLabel("Zona").selectOption("martinez");
+  await heroSearch.getByRole("button", { name: "Buscar propiedades" }).click();
+
+  await expect(page).toHaveURL(/\/propiedades\?operacion=alquiler&zona=martinez/);
+});
+
+test("Home: la búsqueda del hero queda accesible en una barra compacta al scrollear más allá (regresión)", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  const stickyLink = page.getByRole("link", { name: /Buscar en Zona Norte/ });
+  const stickyWrapper = stickyLink.locator("xpath=..");
+  await expect(stickyWrapper).toHaveAttribute("inert", "");
+
+  await page.evaluate(() => window.scrollTo(0, 1500));
+  await expect(stickyWrapper).not.toHaveAttribute("inert", "");
+
+  await stickyLink.click();
+  await expect(page).toHaveURL("/propiedades");
 });
 
 test("Home no tiene overflow horizontal en mobile", async ({ page }) => {
