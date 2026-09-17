@@ -1,17 +1,13 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { cn } from "@/lib/cn";
 import { sortNeighborhoodsByPriority } from "@/lib/neighborhood-order";
 import { buttonVariants } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
-import { StickySearchBar } from "@/components/home/sticky-search-bar";
 import { PropertyCard } from "@/components/ui/property-card";
 import { FeaturedProperty } from "@/components/ui/featured-property";
 import { ZoneCard } from "@/components/ui/zone-card";
 import { AgentCard } from "@/components/ui/agent-card";
 import { ArticleCard } from "@/components/ui/article-card";
-import { ArchitectureMark } from "@/components/ui/architecture-mark";
-import { DriftBand } from "@/components/ui/section-motifs";
 import { Reveal } from "@/components/ui/reveal";
 import { HeroIntro } from "@/components/ui/hero-intro";
 import { HeroVideo } from "@/components/ui/hero-video";
@@ -160,8 +156,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <StickySearchBar />
-
       {/* 01 — Propiedades: una protagonista (foto grande, texto superpuesto)
           + secundarias en grilla chica — no seis cards idénticas. La pausa
           editorial que antes vivía acá como sección propia (sin numerar,
@@ -255,7 +249,6 @@ export default async function Home() {
             )
           )}
         </div>
-        <DriftBand variant="houses" className="text-ink/[0.5]" durationS={44} />
       </section>
 
       {/* 02 — Zonas: un banner protagonista a todo el ancho + el resto en
@@ -315,7 +308,6 @@ export default async function Home() {
             );
           })()}
         </div>
-        <DriftBand variant="neighborhood" reverse durationS={58} className="text-ink/[0.5]" />
       </section>
 
       {/* 03 — Diferencial */}
@@ -344,15 +336,6 @@ export default async function Home() {
             </div>
           </Reveal>
         </div>
-        {/* Mismo motivo de skyline que la pausa editorial de arriba, acá
-            sí con deriva lenta — la sección de "por qué De Paola"
-            (permanencia, un solo agente hasta el cierre) es la única del
-            recorrido sin imagen concreta asociada (no es "casas" ni
-            "personas"), así que reutiliza la firma visual de la marca en
-            vez de inventar una imagen decorativa sin motivo. */}
-        <DriftBand durationS={64}>
-          {(cls) => <ArchitectureMark preserveAspectRatio="xMidYMax slice" className={cn(cls, "text-white/[0.4]")} />}
-        </DriftBand>
       </section>
 
       {/* 04 — Agentes */}
@@ -403,7 +386,6 @@ export default async function Home() {
               </div>
             )}
           </div>
-          <DriftBand variant="people" className="text-ink/[0.5]" durationS={48} />
         </section>
       )}
 
@@ -454,7 +436,6 @@ export default async function Home() {
               </div>
             )}
           </div>
-          <DriftBand variant="documents" reverse className="text-ink/[0.5]" durationS={50} />
         </section>
       )}
 

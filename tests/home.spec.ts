@@ -17,22 +17,6 @@ test("Home carga con hero y propiedades", async ({ page }) => {
   await expect(page).toHaveURL(/\/propiedades\?operacion=alquiler&zona=martinez/);
 });
 
-test("Home: la búsqueda del hero queda accesible en una barra compacta al scrollear más allá (regresión)", async ({
-  page,
-}) => {
-  await page.goto("/");
-
-  const stickyLink = page.getByRole("link", { name: /Buscar en Zona Norte/ });
-  const stickyWrapper = stickyLink.locator("xpath=..");
-  await expect(stickyWrapper).toHaveAttribute("inert", "");
-
-  await page.evaluate(() => window.scrollTo(0, 1500));
-  await expect(stickyWrapper).not.toHaveAttribute("inert", "");
-
-  await stickyLink.click();
-  await expect(page).toHaveURL("/propiedades");
-});
-
 test("Home: el video del hero se pausa fuera de pantalla y se reanuda al volver (regresión)", async ({ page }) => {
   // Autoplay + loop indefinido de fondo gasta batería/datos de más una vez
   // que el usuario ya scrolleó lejos del hero (hallazgo de ui-ux-pro-max,
