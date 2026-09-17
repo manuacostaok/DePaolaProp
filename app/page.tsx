@@ -102,7 +102,7 @@ export default async function Home() {
               Zona Norte · Buenos Aires
             </span>
             <h1 className="mb-7 text-balance text-[clamp(36px,6vw,72px)] leading-[1.05] text-white">
-              Cada casa tiene un barrio detrás. Nosotros lo conocemos primero.
+              Encontrá tu próxima casa en Zona Norte.
             </h1>
             <p className="mb-9 max-w-lg text-lg text-white/85">
               Liderazgo en Zona Norte — comprá, alquilá o vendé con una mirada que va más allá del metro cuadrado.
@@ -146,12 +146,7 @@ export default async function Home() {
                 Buscar propiedades
               </button>
             </form>
-            <Link
-              href="/vender/tasacion"
-              className="text-[14.5px] font-medium text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white"
-            >
-              Tasá tu propiedad
-            </Link>
+            <p className="text-[13px] text-white/70">Más de 20 años acompañando a Zona Norte, casa por casa.</p>
           </HeroIntro>
           <div
             className="animate-fade-up hidden shrink-0 self-center border-l border-white/25 py-1 pl-8 motion-reduce:animate-none lg:block"
