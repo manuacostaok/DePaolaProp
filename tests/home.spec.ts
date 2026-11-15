@@ -120,3 +120,41 @@ test("Home en mobile: el header no parpadea al oscilar el scroll cerca del punto
   // cruce del umbral exacto); con histéresis, a lo sumo una vez.
   expect(transitions).toBeLessThanOrEqual(1);
 });
+
+test("Home: la consulta guiada arma el mensaje y el link de WhatsApp con lo elegido", async ({ page }) => {
+  await page.goto("/");
+
+  await page.getByRole("button", { name: "Vender o tasar" }).scrollIntoViewIfNeeded();
+  await page.getByRole("button", { name: "Vender o tasar" }).click();
+  await page.getByRole("button", { name: "Villa Martelli" }).click();
+  await page.getByRole("button", { name: "Casa", exact: true }).click();
+  await page.getByLabel(/cómo te llamás/i).fill("Lucía");
+
+  await expect(page.getByText("Hola, soy Lucía. Quiero vender o tasar en Villa Martelli (casa). ¿Podemos hablar?")).toBeVisible();
+
+  const popupPromise = page.waitForEvent("popup");
+  await page.getByRole("button", { name: "Abrir WhatsApp" }).click();
+  const popup = await popupPromise;
+  const url = popup.url();
+  expect(url).toMatch(/(wa\.me\/|phone=)5491128755265/);
+  expect(decodeURIComponent(url).replace(/\+/g, " ")).toContain("Quiero vender o tasar en Villa Martelli (casa)");
+});
+
+test("Home: la sección anclada tiene su ilustración y el footer acredita a Aura Soft Solutions", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.getByRole("img", { name: /casa de Zona Norte que se dibuja/i })).toBeAttached();
+  await expect(page.getByRole("link", { name: "Aura Soft Solutions" })).toHaveAttribute("href", "https://aurasoftsolutions.com.ar");
+});
+
+test("Home: sin overflow horizontal a 390px aun a mitad de la sección anclada", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  const y = await page.evaluate(() => {
+    const el = document.querySelector('svg[aria-label^="Ilustración de una casa"]');
+    return el ? el.getBoundingClientRect().top + window.scrollY - 200 : 0;
+  });
+  await page.evaluate((top) => window.scrollTo(0, top + 900), y);
+  await page.waitForTimeout(300);
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth);
+  expect(overflow).toBe(false);
+});

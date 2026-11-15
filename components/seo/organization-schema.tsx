@@ -15,7 +15,7 @@ export async function OrganizationSchema() {
         url: SITE_URL,
         logo: SITE.logoUrl,
         image: SITE.logoUrl,
-        areaServed: ["Martínez", "Florida", "Vicente López", "Villa Martelli"],
+        areaServed: ["Zona Norte", "Villa Martelli", "Florida", "Martínez", "Vicente López"],
         location: offices.map((office) => ({
           "@type": "Place",
           name: office.name,

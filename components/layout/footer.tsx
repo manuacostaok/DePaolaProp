@@ -61,7 +61,10 @@ export async function Footer() {
         </div>
 
         <div className="mt-8 border-t border-white/10 pt-6 text-center text-[11.5px] text-[#6B747B]">
-          Hecho por Aura Tech Solutions
+          Hecho por{" "}
+          <a href="https://aurasoftsolutions.com.ar" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-white">
+            Aura Soft Solutions
+          </a>
         </div>
       </div>
     </footer>

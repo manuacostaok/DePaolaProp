@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     default: "De Paola Propiedades — Zona Norte, Buenos Aires",
     template: "%s | De Paola Propiedades",
   },
-  description: "Inmobiliaria en Zona Norte, Buenos Aires — Martínez, Florida, Vicente López y Villa Martelli. 20 años de trayectoria.",
+  description: "Inmobiliaria líder en Zona Norte, Buenos Aires: venta, alquiler y tasación de casas, departamentos y PH. Más de 20 años de trayectoria, con base en Villa Martelli.",
   // Fallback para Home (app/page.tsx no define metadata propio, hereda
   // todo este objeto) — el resto de las páginas define su propio
   // `alternates.canonical` y lo pisa.
@@ -52,6 +52,7 @@ export const metadata: Metadata = {
     locale: "es_AR",
     siteName: "De Paola Propiedades",
   },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = {

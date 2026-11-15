@@ -13,6 +13,13 @@ import { HeroIntro } from "@/components/ui/hero-intro";
 import { HeroVideo } from "@/components/ui/hero-video";
 import { InstagramGrid } from "@/components/ui/instagram-grid";
 import { ChapterHeading } from "@/components/ui/chapter-heading";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
+import { HeroScrollFx } from "@/components/ui/hero-scroll-fx";
+import { CountUp } from "@/components/ui/count-up";
+import { Magnetic } from "@/components/ui/magnetic";
+import { ClipReveal } from "@/components/ui/clip-reveal";
+import { StickyHouse } from "@/components/ui/sticky-house";
+import { WhatsAppBrief } from "@/components/ui/whatsapp-brief";
 import { TextLink } from "@/components/ui/text-link";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
 import { SITE } from "@/lib/nav";
@@ -79,6 +86,7 @@ export default async function Home() {
 
   return (
     <main>
+      <ScrollProgress />
       {/* min-h-svh (no dvh): el header (Header.tsx) sigue el borde inferior real
           de este hero durante el scroll — con dvh, la altura del viewport (y por
           lo tanto la del hero) se recalcula sola en mobile cuando la barra de
@@ -86,13 +94,21 @@ export default async function Home() {
           "salte" en medio de la transición. svh usa el viewport chico (con la
           barra siempre visible), que no cambia durante el scroll. */}
       <section id="home-hero" className="relative flex min-h-svh items-end overflow-hidden bg-brand">
-        <HeroVideo posterUrl={HERO_POSTER} className="absolute inset-0 size-full object-cover" />
+        <HeroScrollFx />
+        {/* El video hace un zoom lento a medida que se sale del hero (--hp la
+            publica HeroScrollFx). Solo transform: sin reflow por frame. */}
+        <div className="absolute inset-0 will-change-transform" style={{ transform: "scale(calc(1 + var(--hp, 0) * 0.14))" }}>
+          <HeroVideo posterUrl={HERO_POSTER} className="absolute inset-0 size-full object-cover" />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-brand from-10% via-brand/55 via-45% to-brand/10" />
         {/* Composición asimétrica: el titular lidera a la izquierda con
             aire negativo real; la cifra "20" de la derecha (desktop only)
             es el único lugar del Hero donde aparece ese dato — el
             contenido principal no lo repite, ver DESIGN.md Etapa 2. */}
-        <div className="relative mx-auto grid w-full max-w-[1240px] gap-x-10 gap-y-12 px-6 pt-16 pb-16 sm:px-8 md:pb-32 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div
+          className="relative mx-auto grid w-full max-w-[1240px] gap-x-10 gap-y-12 px-6 pt-16 pb-16 will-change-transform sm:px-8 md:pb-32 lg:grid-cols-[1fr_auto] lg:items-end"
+          style={{ transform: "translateY(calc(var(--hp, 0) * -70px))", opacity: "calc(1 - var(--hp, 0) * 1.1)" }}
+        >
           <HeroIntro className="max-w-3xl">
             <span className="mb-5 block text-[12.5px] font-medium uppercase tracking-[0.14em] text-brand-tint">
               Zona Norte · Buenos Aires
@@ -148,7 +164,9 @@ export default async function Home() {
             className="animate-fade-up hidden shrink-0 self-center border-l border-white/25 py-1 pl-8 motion-reduce:animate-none lg:block"
             style={{ animationDelay: "420ms" }}
           >
-            <p className="font-display text-[56px] leading-none text-white">20</p>
+            <p className="font-display text-[56px] leading-none text-white">
+              <CountUp to={20} />
+            </p>
             <p className="mt-2 max-w-[9rem] text-[12.5px] uppercase leading-snug tracking-[0.1em] text-white/70">
               Años en Zona Norte
             </p>
@@ -171,6 +189,7 @@ export default async function Home() {
               eyebrow="Inventario actual"
               title="Recién publicadas"
               description="Elegimos cada propiedad como quien va a vivir ahí — ninguna publicación es automática, todas pasan por la misma mirada de barrio."
+              revealDescription
               action={
                 <Link href="/propiedades" className={buttonVariants({ variant: "outline", size: "sm" })}>
                   Ver todas
@@ -267,6 +286,7 @@ export default async function Home() {
               eyebrow="Zona Norte"
               title="Explorá el barrio, no solo el listado"
               description="No solo mostramos lo que está en venta: te contamos cómo se vive en cada zona, para que elijas con información real."
+              revealDescription
             />
           </Reveal>
           {(() => {
@@ -278,7 +298,7 @@ export default async function Home() {
             return (
               <>
                 {featuredZone && (
-                  <Reveal className="mb-6 block">
+                  <ClipReveal className="mb-6">
                     <ZoneCard
                       href={`/zonas/${featuredZone.slug}`}
                       name={featuredZone.name}
@@ -287,12 +307,12 @@ export default async function Home() {
                       imageAlt={featuredZone.name}
                       size="large"
                     />
-                  </Reveal>
+                  </ClipReveal>
                 )}
                 {otherZones.length > 0 && (
                   <div className="grid gap-6 sm:grid-cols-3">
                     {otherZones.map((neighborhood, i) => (
-                      <Reveal key={neighborhood.id} delayMs={i * 60}>
+                      <ClipReveal key={neighborhood.id} delayMs={i * 120}>
                         <ZoneCard
                           href={`/zonas/${neighborhood.slug}`}
                           name={neighborhood.name}
@@ -300,7 +320,7 @@ export default async function Home() {
                           imageUrl={neighborhoodImage(neighborhood.slug)}
                           imageAlt={neighborhood.name}
                         />
-                      </Reveal>
+                      </ClipReveal>
                     ))}
                   </div>
                 )}
@@ -311,7 +331,9 @@ export default async function Home() {
       </section>
 
       {/* 03 — Diferencial */}
-      <section className="relative overflow-hidden bg-brand-dark py-20 text-white sm:py-28">
+      {/* overflow-clip (no hidden): hidden convierte al <section> en scroll
+          container y rompe el sticky de StickyHouse. */}
+      <section className="relative overflow-clip bg-brand-dark pt-20 pb-20 text-white sm:pt-28 sm:pb-28">
         <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <ChapterHeading
@@ -319,14 +341,21 @@ export default async function Home() {
               eyebrow="Por qué De Paola"
               title="Un solo agente, del primer contacto al cierre"
               description="Nada de pasar de mano en mano dentro del mismo estudio. Quien te atiende conoce la propiedad, el barrio y a vos — y sigue el proceso completo, de la primera visita a la escritura."
+              revealDescription
               light
+              className="!mb-0"
             />
           </Reveal>
+        </div>
+        <StickyHouse />
+        <div className="mx-auto max-w-[1240px] px-6 sm:px-8">
           <Reveal>
             <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
-              <Link href="/vender/tasacion" className={buttonVariants({ variant: "onDark" })}>
-                Tasá tu propiedad
-              </Link>
+              <Magnetic>
+                <Link href="/vender/tasacion" className={buttonVariants({ variant: "onDark" })}>
+                  Tasá tu propiedad
+                </Link>
+              </Magnetic>
               <Link
                 href="/nosotros"
                 className="text-[14.5px] font-medium text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white"
@@ -448,13 +477,19 @@ export default async function Home() {
           <Reveal>
             <div className="mb-16 flex flex-wrap items-center justify-between gap-6 rounded-card bg-brand p-8 text-white sm:p-12">
               <p className="max-w-md text-[#D7DEE5]">Coordiná una tasación profesional con nuestro equipo, sin costo ni compromiso.</p>
-              <Link
-                href="/vender/tasacion"
-                className={buttonVariants({ variant: "outline", className: "border-white bg-white text-brand-dark" })}
-              >
-                Tasar mi propiedad
-              </Link>
+              <Magnetic>
+                <Link
+                  href="/vender/tasacion"
+                  className={buttonVariants({ variant: "outline", className: "border-white bg-white text-brand-dark" })}
+                >
+                  Tasar mi propiedad
+                </Link>
+              </Magnetic>
             </div>
+          </Reveal>
+
+          <Reveal className="mb-16">
+            <WhatsAppBrief whatsapp={SITE.whatsapp} />
           </Reveal>
 
           <Reveal>
