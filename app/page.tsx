@@ -20,6 +20,7 @@ import { Magnetic } from "@/components/ui/magnetic";
 import { ClipReveal } from "@/components/ui/clip-reveal";
 import { StickyHouse } from "@/components/ui/sticky-house";
 import { WhatsAppBrief } from "@/components/ui/whatsapp-brief";
+import { PropertyTypeTiles } from "@/components/ui/property-type-tiles";
 import { TextLink } from "@/components/ui/text-link";
 import { neighborhoodImage } from "@/lib/neighborhood-images";
 import { SITE } from "@/lib/nav";
@@ -60,6 +61,21 @@ async function getNeighborhoodPropertyCounts() {
   return new Map(counts.map((c) => [c.neighborhoodId, c._count._all]));
 }
 
+async function getTypeCounts() {
+  const rows = await prisma.property.groupBy({
+    by: ["propertyType", "operationType"],
+    where: { status: "ACTIVA" },
+    _count: { _all: true },
+  });
+  const sum = (pred: (r: (typeof rows)[number]) => boolean) => rows.filter(pred).reduce((n, r) => n + r._count._all, 0);
+  return {
+    casas: sum((r) => r.propertyType === "CASA"),
+    deptos: sum((r) => r.propertyType === "DEPARTAMENTO"),
+    ph: sum((r) => r.propertyType === "PH"),
+    alquileres: sum((r) => r.operationType === "ALQUILER"),
+  };
+}
+
 async function getFeaturedAgents() {
   return prisma.agent.findMany({ where: { isActive: true }, orderBy: { createdAt: "asc" }, take: 3 });
 }
@@ -74,12 +90,13 @@ async function getLatestArticles() {
 }
 
 export default async function Home() {
-  const [properties, neighborhoods, neighborhoodCounts, agents, articles] = await Promise.all([
+  const [properties, neighborhoods, neighborhoodCounts, agents, articles, typeCounts] = await Promise.all([
     getFeaturedProperties(),
     getNeighborhoods(),
     getNeighborhoodPropertyCounts(),
     getFeaturedAgents(),
     getLatestArticles(),
+    getTypeCounts(),
   ]);
 
   const [featuredProperty, ...secondaryProperties] = properties;
@@ -195,6 +212,17 @@ export default async function Home() {
                   Ver todas
                 </Link>
               }
+            />
+          </Reveal>
+
+          <Reveal>
+            <PropertyTypeTiles
+              tiles={[
+                { label: "Casas", href: "/propiedades?tipo=CASA", count: typeCounts.casas, imageSrc: "/properties/casa-florida/2.jpg", imageAlt: "Casa con jardín en Florida" },
+                { label: "Departamentos", href: "/propiedades?tipo=DEPARTAMENTO", count: typeCounts.deptos, imageSrc: "/properties/depto-loft-florida/2.jpg", imageAlt: "Edificio de departamentos en Florida" },
+                { label: "PH", href: "/propiedades?tipo=PH", count: typeCounts.ph, imageSrc: "/properties/ph-villa-martelli/3.jpg", imageAlt: "PH en Villa Martelli" },
+                { label: "En alquiler", href: "/propiedades/alquilar", count: typeCounts.alquileres, imageSrc: "/properties/monoambiente-campus-norte/4.jpg", imageAlt: "Ambiente luminoso de un departamento en alquiler" },
+              ]}
             />
           </Reveal>
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { getNeighborhoodIdOptions } from "@/lib/search";
+import { PageHero } from "@/components/ui/page-hero";
 import { VenderWizard } from "@/components/leads/vender-wizard";
 
 export const metadata: Metadata = {
@@ -31,21 +32,17 @@ export default async function VenderPage() {
 
   return (
     <main>
-      <section className="bg-brand-dark py-16 text-center text-white">
-        <div className="mx-auto max-w-2xl px-6 sm:px-8">
-          <span className="mb-3 block text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#DCDEE7]">
-            Quiero vender
-          </span>
-          <h1 className="mb-4 text-white">Vendé tu propiedad con quien conoce Zona Norte hace 20 años</h1>
-          <p className="mb-8 text-[#EDEAE0]">
-            El primer paso es saber cuánto vale hoy. Es gratis, no tiene compromiso, y no hace falta cargar fotos
-            todavía.
-          </p>
-          <Link href="/vender/tasacion" className={buttonVariants({ className: "border-white bg-white text-brand-dark" })}>
-            Tasar mi propiedad
-          </Link>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Quiero vender"
+        title="Vendé tu propiedad con quien conoce Zona Norte hace 20 años"
+        description="El primer paso es saber cuánto vale hoy. Es gratis, no tiene compromiso, y no hace falta cargar fotos todavía."
+        imageSrc="/pages/vender.jpg"
+        imageAlt="Casa en Villa Martelli con el cartel de venta de De Paola Propiedades"
+      >
+        <Link href="/vender/tasacion" className={buttonVariants({ variant: "onDark" })}>
+          Tasar mi propiedad
+        </Link>
+      </PageHero>
 
       <section className="mx-auto max-w-[1240px] px-6 py-16 sm:px-8">
         <div className="grid gap-8 sm:grid-cols-3">

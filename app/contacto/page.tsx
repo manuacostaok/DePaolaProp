@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { buttonVariants } from "@/components/ui/button";
+import { PageHero } from "@/components/ui/page-hero";
 import { SITE } from "@/lib/nav";
 
 export const metadata: Metadata = {
@@ -26,12 +27,15 @@ export default async function ContactoPage() {
   const email = offices[0]?.email ?? "contacto@depaolapropiedades.com";
 
   return (
-    <main className="mx-auto max-w-[1240px] px-6 py-10 sm:px-8">
-      <h1 className="mb-2 text-[clamp(26px,3vw,36px)]">Contacto</h1>
-      <p className="mb-8 max-w-xl text-ink-soft">
-        Elegí el canal que prefieras — te contestamos nosotros o un agente, según lo que necesites.
-      </p>
-
+    <main>
+      <PageHero
+        eyebrow="Contacto"
+        title="Hablemos de tu próxima propiedad"
+        description="Elegí el canal que prefieras — te contestamos nosotros o un agente, según lo que necesites."
+        imageSrc="/pages/contacto.jpg"
+        imageAlt="PH en Villa Martelli con el cartel de De Paola Propiedades"
+      />
+      <div className="mx-auto max-w-[1240px] px-6 py-12 sm:px-8">
       <div className="grid gap-8 sm:grid-cols-2">
         <div>
           <h2 className="mb-4 text-xl">Hablemos directo</h2>
@@ -77,6 +81,7 @@ export default async function ContactoPage() {
             ))}
           </div>
         </div>
+      </div>
       </div>
     </main>
   );

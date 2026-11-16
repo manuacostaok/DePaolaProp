@@ -828,7 +828,7 @@ async function seedArticles() {
         slug: article.slug,
         title: article.title,
         body: article.body,
-        coverImageUrl: "/placeholder-property.svg",
+        coverImageUrl: `/articles/${article.slug}.jpg`,
         authorName: "Equipo De Paola",
         isSample: true,
         publishedAt: new Date(),

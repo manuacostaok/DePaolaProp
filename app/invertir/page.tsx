@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { getNeighborhoodIdOptions } from "@/lib/search";
+import { PageHero } from "@/components/ui/page-hero";
 import { InvertirWizard } from "@/components/leads/invertir-wizard";
 
 export const metadata: Metadata = {
@@ -14,18 +15,13 @@ export default async function InvertirPage() {
 
   return (
     <main>
-      <section className="bg-brand-dark py-16 text-center text-white">
-        <div className="mx-auto max-w-2xl px-6 sm:px-8">
-          <span className="mb-3 block text-[12.5px] font-semibold uppercase tracking-[0.12em] text-[#DCDEE7]">
-            Quiero invertir
-          </span>
-          <h1 className="mb-4 text-white">Oportunidades de inversión en Zona Norte</h1>
-          <p className="text-[#EDEAE0]">
-            Renta, reventa o desarrollo — contanos qué buscás y te conectamos con un agente especializado en
-            inversión, no con un vendedor genérico.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Quiero invertir"
+        title="Oportunidades de inversión en Zona Norte"
+        description="Renta, reventa o desarrollo — contanos qué buscás y te conectamos con un agente especializado en inversión, no con un vendedor genérico."
+        imageSrc="/pages/invertir.jpg"
+        imageAlt="Pileta en la terraza de un edificio de Campus Norte, Zona Norte"
+      />
 
       <section className="mx-auto max-w-[560px] px-6 py-16 sm:px-8">
         <InvertirWizard neighborhoodOptions={neighborhoodOptions} />
